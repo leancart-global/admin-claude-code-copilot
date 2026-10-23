@@ -1,0 +1,37 @@
+{
+  "enabledMcpjsonServers": [
+    "admin-browser"
+  ],
+  "permissions": {
+    "allow": [
+      "mcp__admin-browser__browser_snapshot",
+      "mcp__admin-browser__browser_take_screenshot",
+      "mcp__admin-browser__browser_navigate",
+      "mcp__admin-browser__browser_navigate_back",
+      "mcp__admin-browser__browser_tabs",
+      "mcp__admin-browser__browser_wait_for",
+      "mcp__admin-browser__browser_find",
+      "mcp__admin-browser__browser_hover",
+      "mcp__admin-browser__browser_console_messages",
+      "mcp__admin-browser__browser_network_requests",
+      "mcp__admin-browser__browser_resize"
+    ],
+    "deny": [
+      "Read(./.browser-profile/**)",
+      "Bash(*.browser-profile*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "mcp__admin-browser__.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/browser-guard.mjs\""
+          }
+        ]
+      }
+    ]
+  }
+}

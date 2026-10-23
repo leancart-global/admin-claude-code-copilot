@@ -1,0 +1,9 @@
+# Chrome for Testing binary and the persistent browser profile (holds the user's session cookies)
+.browsers/
+.browser-profile/
+.playwright-output/
+
+# Per-machine choices written by /onboard (admin URL, locale, tenant label) — no secrets, but personal
+config/local*.json
+
+.DS_Store
