@@ -1,8 +1,8 @@
 {
   "mcpServers": {
     "admin-browser": {
-      "command": "bash",
-      "args": ["scripts/mcp-browser.sh"]
+      "command": "node",
+      "args": ["scripts/browser.mjs", "mcp"]
     }
   }
 }

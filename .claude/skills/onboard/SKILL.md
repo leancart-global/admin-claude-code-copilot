@@ -10,7 +10,7 @@ bilmesi ve formları doldururken ihtiyaç duyacağı tenant bağlamının hazır
 
 ## 1. Tarayıcı hazır mı?
 
-- `bash scripts/chrome-path.sh` → hata verirse `bash scripts/setup-browser.sh` (Chrome for Testing'i `.browsers/`'a kurar).
+- `node scripts/browser.mjs path` → hata verirse `node scripts/browser.mjs setup` (Chrome for Testing'i `.browsers/`'a kurar; macOS, Linux, Windows).
 - `mcp__admin-browser__*` araçları yoksa: kullanıcıya Claude Code'u bu klasörde yeniden başlatmasını ve
   `.mcp.json`'daki `admin-browser` sunucusunu onaylamasını söyle (`/mcp` ile kontrol edilir). Dur.
 
