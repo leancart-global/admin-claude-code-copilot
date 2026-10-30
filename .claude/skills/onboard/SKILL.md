@@ -18,14 +18,15 @@ bilmesi ve formları doldururken ihtiyaç duyacağı tenant bağlamının hazır
 
 `config/local.json` varsa oku ve kullanıcıya "şu ortamla devam edelim mi?" diye sor. Yoksa AskUserQuestion ile sor:
 
-- **Mağazanın admin adresi.** Tenant, adresin subdomain'inden çözülür; tenant seçici yoktur. Desenler:
-  prod `https://admin.<mağaza>.leancart.global`, dev `https://admin.<mağaza>.dev.leancart.global`
-  (ör. `leancart` tenant'ı → `https://admin.leancart.dev.leancart.global`; 2026-10-23'te 200 dönüyor),
-  local: adresi kullanıcıdan al.
-  Kullanıcıdan mağaza subdomain'ini ya da tam adresi iste. Ortak `admin.leancart.global` ile login büyük
-  olasılıkla `TENANT_REQUIRED` ("We couldn't identify your store…") verir; bu oturum değil, **yanlış adres**
-  sorunudur. Başka tenant'a geçmek = o tenant'ın adresinde yeniden giriş. Ortamı (prod/dev/local) adresten çıkar.
-  Ayrıntı: `domain/project/environments-and-auth.md`.
+- **Tenant ID (mağaza subdomain'i).** Kullanıcıdan yalnız tenant ID'yi iste (ör. `gym-tayt`); prod/dev seçeneği
+  ya da örnek tenant önerme. Adresler tek desenden üretilir — production tenant'lar dahil hepsi `.dev.` içerir:
+  - Admin: `https://admin.<tenant>.dev.leancart.global` (ör. `https://admin.gym-tayt.dev.leancart.global`)
+  - Vitrin: `https://<tenant>.dev.leancart.global` (ör. `https://gym-tayt.dev.leancart.global`)
+  Adresteki `.dev.` ortamı **belirtmez**; ortam varsayılan olarak `prod`'dur (canlı tenant, kural 7 geçerli).
+  Kullanıcı tenant'ın test/dev olduğunu açıkça söylerse `dev` yaz. Local kurulumda adresi kullanıcıdan al.
+  Tenant, adresin subdomain'inden çözülür; tenant seçici yoktur. Login `TENANT_REQUIRED` ("We couldn't identify
+  your store…") verirse bu oturum değil, **yanlış tenant ID / adres** sorunudur. Başka tenant'a geçmek = o tenant'ın
+  adresinde yeniden giriş. Ayrıntı: `domain/project/environments-and-auth.md`.
 - Arayüz dili: `tr` (önerilen) / `en`. Admin URL'lerinde locale **yoktur**; varsayılan dil `en`.
   Dili girişten sonra UI'daki dil
   değiştiriciyle ayarla (`domain/project/environments-and-auth.md`). Haritalar label'ları tr ve en verir.
@@ -78,7 +79,9 @@ kurulmalı" diye listele (`domain/screens/products/product-create.md` § Ön ko�
 ```json
 {
   "environment": "prod|dev|local|custom",
-  "adminUrl": "https://…",
+  "tenantId": "…",
+  "adminUrl": "https://admin.<tenant>.dev.leancart.global",
+  "storefrontUrl": "https://<tenant>.dev.leancart.global",
   "locale": "tr",
   "user": { "displayName": "…", "role": "…" },
   "tenant": { "name": "…" },

@@ -11,16 +11,21 @@
 
 Her mağazanın (tenant) **kendi admin adresi** vardır; mağaza bu adresten anlaşılır.
 
-| Ortam | Admin URL deseni | Not |
+Tüm tenant'lar — **production tenant'lar dahil** — aynı desendedir; `<tenant>` = tenant ID (mağaza alt alan adı):
+
+| Adres | Desen | Örnek (`gym-tayt`) |
 |---|---|---|
-| prod | `https://admin.<sub>.leancart.global` | `<sub>` = mağazanın alt alan adı |
-| dev | `https://admin.<sub>.dev.leancart.global` | doğrulanmadı (canlı) |
-| staging | Kullanıcıdan al | Adres deseni ve kullanımda olup olmadığı: doğrulanmadı |
+| Admin | `https://admin.<tenant>.dev.leancart.global` | `https://admin.gym-tayt.dev.leancart.global` |
+| Vitrin | `https://<tenant>.dev.leancart.global` | `https://gym-tayt.dev.leancart.global` |
 | local | Kullanıcının verdiği yerel adres | Tek mağazalı geliştirme kurulumu |
 | Özel alan adı | Merchant'ın kendi domaini (Ayarlar → Alan Adları) | Admin'in özel domainde açılıp açılmadığı: doğrulanmadı |
 
-`config/local.json` (`/onboard` yazar) seçili ortamı ve **tam admin URL'sini** tutar. URL'yi kullanıcıya
-teyit ettir; tahmin etme.
+- Adresteki `.dev.` **ortamı belirtmez**. `admin.<tenant>.leancart.global` (dev'siz) deseni kullanılmaz.
+- Ortam (prod/dev) adresten çıkarılmaz: tenant'lar varsayılan olarak **prod** (canlı) kabul edilir; yalnız kullanıcı
+  tenant'ın test amaçlı olduğunu söylerse `dev` yazılır.
+- Kullanıcıdan yalnız tenant ID istenir; adresler bundan üretilir.
+
+`config/local.json` (`/onboard` yazar) ortamı, tenant ID'yi, **tam admin URL'sini** ve vitrin URL'sini tutar.
 
 ## 2. Arayüz dili — URL'de dil öneki YOK
 
@@ -46,7 +51,7 @@ teyit ettir; tahmin etme.
 
 **Mağaza (tenant) seçici YOK.** Admin'de mağaza değiştirme menüsü bulunmaz.
 
-- Mağaza, girişin yapıldığı **admin adresinin alt alan adından** belirlenir (`admin.acme.leancart.global` → `acme`).
+- Mağaza, girişin yapıldığı **admin adresinin alt alan adından** belirlenir (`admin.acme.dev.leancart.global` → `acme`).
   Giriş yapıldıktan sonra oturum o mağazaya bağlıdır.
 - Başka mağazaya geçmek = o mağazanın admin adresinde yeniden giriş.
 - Adres bir mağazaya çözülemezse login formu kırmızı uyarı kutusunda şunu gösterir (kod `TENANT_REQUIRED`):
