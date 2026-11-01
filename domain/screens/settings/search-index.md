@@ -9,6 +9,12 @@
 - Ön koşul yok. Kataloğun kendisini değiştirmez; yalnız vitrinde aramada görünenleri değiştirir.
 - Etkiledikleri: vitrin arama sonuçları, filtreler/listeler (arama tabanlı ise — doğrulanmadı).
 
+## Ne zaman çalıştırılır (şu anki işleyiş)
+- **Toplu ürün aktarımından sonra** (çok sayıda ürünün bir seferde eklenmesi): dizin şimdilik **elle** yeniden oluşturulur.
+  Aktarımın sonunda bu ekranı aç; rozet "{n} ürün aramada eksik" gösteriyorsa (n ≈ yeni yayınlanan ürün sayısı)
+  özet + onayla "Dizini yeniden oluştur". İleride bu adım otomatik olacak (kullanıcı bilgisi, 2026-11-01).
+- Tek tek, ekrandan girilen ürünlerde rozet birkaç saniye içinde kendiliğinden eşleşir; yeniden oluşturma gerekmez.
+
 ## Yerleşim
 Tek kart "Dizin durumu / Index status":
 - Başlıkta durum rozeti (`data-testid="search-index-status-badge"`): "Arama kataloğunuzla eşleşiyor" (yeşil) | "{n} ürün aramada eksik" | "{n} fazla öğe aramada görünüyor ama orada olmamalı" (kırmızı). Yanında "{zaman} itibarıyla" tazelik etiketi (`data-testid="search-index-status-freshness"`); okunamazsa "Yenilenemedi — {zaman} itibarıyla olan sayılar gösteriliyor".
@@ -42,5 +48,6 @@ Form alanı yoktur.
 
 ## Doğrulama
 1. Toast metnindeki eklenen/kaldırılan sayılar.
-2. "Yenile" → rozet "Arama kataloğunuzla eşleşiyor"; "Son yeniden oluşturma" zamanı güncel.
+2. "Yenile" → rozet "Arama kataloğunuzla eşleşiyor"; "Kataloğunuzda" ve "Arama dizininde" sayıları eşit; "Son yeniden oluşturma" zamanı güncel ("{n} ürün dizine eklendi, 0 eski kayıt kaldırıldı").
 3. Kısmi başarıda listelenen ürün id'lerini kullanıcıya bildir.
+4. Vitrinde kontrol: kategori listesi `{STOREFRONT_URL}/products/{kategori urlKey}` ürünü gösteriyor; ürün sayfası `{STOREFRONT_URL}/product/{ürün slug}` açılıyor (tekil `product`; `/products/{slug}` ve `/products/{id}` ürün sayfası değildir, "Sayfa Bulunamadı" verir). Liste geç dolar ("Loading…" kaybolana kadar bekle).

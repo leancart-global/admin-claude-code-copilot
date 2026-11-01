@@ -99,8 +99,9 @@ Her adımdan sonra `browser_snapshot` ile değerleri doğrula.
 1. Toast: "Ürün başarıyla oluşturuldu" (tam) / "Ürün taslak olarak kaydedildi, ancak bazı zorunlu alanlar eksik." (eksik taslak — eksikleri kullanıcıya bildir) / "Ürün oluşturuldu ancak varyantları kaydedilemedi…" (→ edit sayfasında Varyantlar sekmesinden yeniden dene, ayrı onay).
 2. Hata toast'ı ve sayfada kalma → mesajı oku: kategori/plan/depo/kademe/vergi sınıfı eşlemesi ../domain/screens/products/product-create.md "Aksiyonlar". Fiyatlandırma sekmesinde kırmızı uyarı kutusu olabilir. Düzelt → özet değiştiyse **yeniden onay**.
 3. Başarıda URL `{ADMIN_URL}/products/{id}` (detay). Kontrol: ad, SKU, durum/tip rozeti, fiyat kartı, kategoriler, özel nitelikler, varyant sayısı, "Satılabilir Toplam" stok, görseller.
-4. Rapor: ürün linki, oluşturulan ön koşul kayıtları, yapılamayanlar (ör. marka, çeviri).
-5. Çeviri (store view) istenmişse → ../domain/screens/products/product-edit.md (Görünüm seçici; ayrı onay).
+4. Yayındaysa vitrinde aç: `{STOREFRONT_URL}/product/{slug}` (beden/renk seçicileri, fiyat, görseller). Toplu aktarımdan sonra önce arama dizinini kontrol et ve gerekiyorsa onayla yeniden oluştur (../domain/screens/settings/search-index.md § Ne zaman çalıştırılır).
+5. Rapor: ürün linki, oluşturulan ön koşul kayıtları, yapılamayanlar (ör. marka, çeviri).
+6. Çeviri (store view) istenmişse → ../domain/screens/products/product-edit.md (Görünüm seçici; ayrı onay).
 
 ## 7. Kısıtlar ve dikkat edilecekler
 - `published` durumla tek seferde kaydetmek tüm zorunlu alanları ister; kullanıcı açıkça yayın istemediyse **Taslak** kaydet, sonra yayın için ayrı onay al (edit ekranında Durum → Yayında).

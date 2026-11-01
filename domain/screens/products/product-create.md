@@ -255,7 +255,8 @@ Sonuç toast'ları:
 ## Yan etkiler
 - Ürün oluşurken: slug addan üretilir, vergi sınıfı boşsa tenant varsayılanı atanır, para birimi boşsa tenant varsayılanı kullanılır.
 - Miktar > 0 ise seçili (veya varsayılan) depoya stok yazılır; **stok yazılamazsa ürün de oluşturulmaz** ve hata döner.
-- Yayında ve görünür ürün vitrin aramasına birkaç dakika içinde eklenir; taslak veya "Görünmez" ürün aramada çıkmaz.
+- Yayında ve görünür ürün vitrin aramasına birkaç dakika içinde eklenir; taslak veya "Görünmez" ürün aramada çıkmaz. Toplu aktarımla eklenen ürünler için arama dizini şimdilik elle yeniden oluşturulur (`../settings/search-index.md` § Ne zaman çalıştırılır).
+- Vitrin adresleri: ürün sayfası `{STOREFRONT_URL}/product/{slug}`, kategori listesi `{STOREFRONT_URL}/products/{kategori urlKey}`.
 - Varyantlar kaydedilince her varyant için depoda stok satırı oluşur.
 - Medya yüklemesi ürün kaydından **bağımsız** kalıcıdır (medya kütüphanesine anında yazılır; ürün kaydedilmese de kütüphanede kalır).
 - Çeviriler create'te kaydedilmez.
