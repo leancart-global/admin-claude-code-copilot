@@ -1,5 +1,7 @@
 # Chrome for Testing binary and the persistent browser profile (holds the user's session cookies)
 .browsers/
+# Private Node copy downloaded by scripts/run.sh when the machine has no Node 20+
+.runtime/
 .browser-profile/
 .playwright-output/
 

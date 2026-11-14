@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 // Cross-platform (macOS / Linux / Windows) browser helper for the admin-browser MCP.
-//   node scripts/browser.mjs setup  → installs Chrome for Testing into ./.browsers (project-local, gitignored)
-//   node scripts/browser.mjs path   → prints the newest Chrome for Testing executable, exits 1 if none
-//   node scripts/browser.mjs mcp    → launches Playwright MCP on headed Chrome for Testing with a persistent profile,
+//   sh scripts/run.sh scripts/browser.mjs setup  → installs Chrome for Testing into ./.browsers (project-local, gitignored)
+//   sh scripts/run.sh scripts/browser.mjs path   → prints the newest Chrome for Testing executable, exits 1 if none
+//   sh scripts/run.sh scripts/browser.mjs mcp    → launches Playwright MCP on headed Chrome for Testing with a persistent profile,
 //                                     so the user logs in once by hand and the session survives restarts
 
 import { spawn } from 'node:child_process';
@@ -73,13 +73,13 @@ switch (process.argv[2]) {
   }
   case 'path': {
     const exe = findChrome();
-    if (!exe) fail('Chrome for Testing bulunamadı. Önce: node scripts/browser.mjs setup');
+    if (!exe) fail('Chrome for Testing bulunamadı. Önce: sh scripts/run.sh scripts/browser.mjs setup');
     console.log(exe);
     break;
   }
   case 'mcp': {
     const exe = findChrome();
-    if (!exe) fail('Chrome for Testing bulunamadı. Önce: node scripts/browser.mjs setup');
+    if (!exe) fail('Chrome for Testing bulunamadı. Önce: sh scripts/run.sh scripts/browser.mjs setup');
     const child = npx(
       [
         PLAYWRIGHT_MCP,
@@ -95,5 +95,5 @@ switch (process.argv[2]) {
     break;
   }
   default:
-    fail('Kullanım: node scripts/browser.mjs setup | path | mcp');
+    fail('Kullanım: sh scripts/run.sh scripts/browser.mjs setup | path | mcp');
 }

@@ -16,11 +16,12 @@ a change summary and waits for your approval.**
 
 ### Setup (once)
 
-1. Install Node 20+ and [Claude Code](https://claude.com/claude-code).
-2. In this folder run `node scripts/browser.mjs setup`. It downloads Chrome for Testing into `.browsers/` and works the
-   same on macOS, Linux and Windows (PowerShell, cmd or Git Bash).
-3. Start `claude` and approve the `admin-browser` MCP server.
-4. Type `/onboard`. It asks for your tenant ID (e.g. `gym-tayt`) and opens the admin at
+1. Install [Claude Code](https://claude.com/claude-code). Nothing else: no Node, no browser. On Windows, Claude Code
+   already requires Git for Windows; `/onboard` registers the browser server with Git's `sh.exe` for you.
+2. Start `claude` in this folder and approve the `admin-browser` MCP server.
+3. Type `/onboard`. If the machine has no Node 20+, it downloads a private copy into `.runtime/` and Chrome for Testing
+   into `.browsers/` (once, nothing installed system-wide). It may then ask you to restart Claude Code once.
+4. Every new window self-updates the project (`git pull --ff-only`, never overwrites local edits). `/onboard` continues: It asks for your tenant ID (e.g. `gym-tayt`) and opens the admin at
    `https://admin.<tenant>.dev.leancart.global` (the storefront is `https://<tenant>.dev.leancart.global`; production
    tenants use this same `.dev.` address). **Sign in
    yourself** in the browser window that opens. Claude never sees, asks for or types your password. The session is
@@ -43,6 +44,7 @@ a change summary and waits for your approval.**
 | `domain/` | Admin map: screens, fields, business rules and record relationships (functional only) |
 | `playbooks/` | Step-by-step recipes for common tasks |
 | `.claude/skills/onboard/` | The `/onboard` flow |
+| `scripts/run.sh` | Node launcher (uses system Node 20+ or downloads a private copy) |
 | `scripts/browser.mjs` | Browser setup and MCP launcher |
 
 The maps and playbooks are written in Turkish; Claude reads them and works in either language. Scope and how the map
@@ -64,11 +66,12 @@ onayını ister.**
 
 ### Kurulum (bir kez)
 
-1. Node 20+ ve [Claude Code](https://claude.com/claude-code) kurulu olmalı.
-2. Bu klasörde: `node scripts/browser.mjs setup`. Chrome for Testing'i `.browsers/`'a indirir; macOS, Linux ve Windows'ta
-   (PowerShell, cmd ya da Git Bash) aynı komutla çalışır.
-3. `claude` ile başlat, `admin-browser` MCP sunucusunu onayla.
-4. `/onboard` yaz. Tenant ID'ni (ör. `gym-tayt`) soracak ve admini
+1. Yalnız [Claude Code](https://claude.com/claude-code) kurulu olmalı; Node ya da tarayıcı kurmana gerek yok.
+   Windows'ta Claude Code zaten Git for Windows ister; `/onboard` tarayıcı sunucusunu Git'in `sh.exe`'siyle senin yerine kaydeder.
+2. Bu klasörde `claude` başlat, `admin-browser` MCP sunucusunu onayla.
+3. `/onboard` yaz. Makinede Node 20+ yoksa `.runtime/`'a özel bir kopya, ayrıca Chrome for Testing'i `.browsers/`'a
+   kendisi indirir (bir kez, sisteme kalıcı kurulum yapmaz). Ardından Claude Code'u bir kez yeniden başlatmanı isteyebilir.
+4. Her yeni pencerede proje kendini günceller (`git pull --ff-only`, yerel değişikliklerin üzerine yazmaz). `/onboard` devam eder: Tenant ID'ni (ör. `gym-tayt`) soracak ve admini
    `https://admin.<tenant>.dev.leancart.global` adresinde açacak (vitrin: `https://<tenant>.dev.leancart.global`;
    production tenant'lar da bu `.dev.` adresini kullanır). Açılan pencerede
    **kendin giriş yap**. Claude şifreni hiçbir zaman görmez, istemez, yazmaz. Oturum `.browser-profile/`'da
@@ -90,6 +93,7 @@ onayını ister.**
 | `domain/` | Admin haritası: ekranlar, alanlar, iş kuralları ve kayıt ilişkileri (yalnız fonksiyonel) |
 | `playbooks/` | Sık yapılan işlerin adım adım tarifleri |
 | `.claude/skills/onboard/` | `/onboard` akışı |
+| `scripts/run.sh` | Node başlatıcı (sistemdeki Node 20+ ya da özel kopya) |
 | `scripts/browser.mjs` | Tarayıcı kurulumu ve MCP başlatıcı |
 
 Kapsam ve haritanın güncellenmesi: `domain/README.md`.

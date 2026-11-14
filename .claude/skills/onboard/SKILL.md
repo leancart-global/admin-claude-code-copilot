@@ -8,9 +8,22 @@ description: Admin operatörü kurulumu ve oturum açma — Chrome for Testing'i
 Amaç: kullanıcı ilk komutunu verdiğinde Claude'un hangi ortamda, hangi tenant'ta, hangi yetkilerle çalıştığını
 bilmesi ve formları doldururken ihtiyaç duyacağı tenant bağlamının hazır olması. **Bu akışta hiçbir kayıt yapılmaz.**
 
+## 0. Güncelle
+
+Her yeni pencerede bir SessionStart hook'u `sh scripts/update.sh` ile depoyu `git pull --ff-only` ile günceller.
+Onboard başında da bir kez çalıştır; çıktıyı kullanıcıya tek satırla aktar. "Güncelleme yapılamadı" derse
+(internet yok / yerel değişiklik) devam et ve sadece haber ver. Güncelleme `CLAUDE.md`, skill veya hook'ları
+değiştirdiyse bu pencerede eski hâli yüklüdür: kullanıcıya Claude Code'u yeniden açmasını söyle.
+
 ## 1. Tarayıcı hazır mı?
 
-- `node scripts/browser.mjs path` → hata verirse `node scripts/browser.mjs setup` (Chrome for Testing'i `.browsers/`'a kurar; macOS, Linux, Windows).
+- Kullanıcıdan hiçbir şey kurmasını isteme; eksikleri sen kur (teknik olmayan kullanıcı, yalnız Claude Code kurulu):
+  1. `sh scripts/run.sh --ensure` → Node 20+ yoksa `.runtime/`'a özel bir kopya indirir (bir kereye mahsus, sistemde kalıcı kurulum yok).
+  2. `sh scripts/run.sh scripts/browser.mjs path` → hata verirse `sh scripts/run.sh scripts/browser.mjs setup` (Chrome for Testing'i `.browsers/`'a kurar; macOS, Linux, Windows).
+  3. Windows'ta (Git Bash; `uname -s` MINGW/MSYS verir) `sh scripts/register-windows-mcp.sh` çalıştır: `.mcp.json`'daki çıplak `sh`
+     Windows'ta PATH'te olmadığından sunucu Git'in `sh.exe` yoluyla (yerel kapsamda) yeniden kaydedilir. Diğer sistemlerde gerekmez.
+  4. Bu adımlardan biri yeni kurulum yaptıysa `admin-browser` sunucusu ilk açılışta başarısız olmuş olabilir: kullanıcıya sade bir dille
+     "Claude Code'u kapatıp bu klasörde yeniden aç, çıkan 'admin-browser' sorusuna evet de" de.
 - `mcp__admin-browser__*` araçları yoksa: kullanıcıya Claude Code'u bu klasörde yeniden başlatmasını ve
   `.mcp.json`'daki `admin-browser` sunucusunu onaylamasını söyle (`/mcp` ile kontrol edilir). Dur.
 

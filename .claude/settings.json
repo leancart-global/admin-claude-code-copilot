@@ -22,13 +22,24 @@
     ]
   },
   "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh \"$CLAUDE_PROJECT_DIR/scripts/update.sh\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
     "PreToolUse": [
       {
         "matcher": "mcp__admin-browser__.*",
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/browser-guard.mjs\""
+            "command": "sh \"$CLAUDE_PROJECT_DIR/scripts/run.sh\" \"$CLAUDE_PROJECT_DIR/.claude/hooks/browser-guard.mjs\""
           }
         ]
       }
