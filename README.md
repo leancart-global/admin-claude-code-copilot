@@ -21,7 +21,7 @@ a change summary and waits for your approval.**
 2. Start `claude` in this folder and approve the `admin-browser` MCP server.
 3. Type `/onboard`. If the machine has no Node 20+, it downloads a private copy into `.runtime/` and Chrome for Testing
    into `.browsers/` (once, nothing installed system-wide). It may then ask you to restart Claude Code once.
-4. Every new window self-updates the project (`git pull --ff-only`, never overwrites local edits). `/onboard` continues: It asks for your tenant ID (e.g. `gym-tayt`) and opens the admin at
+4. Every new window self-updates the project (`git pull --ff-only`, never overwrites local edits). `/onboard` continues: It asks for your tenant ID (e.g. `leancart`) and opens the admin at
    `https://admin.<tenant>.dev.leancart.global` (the storefront is `https://<tenant>.dev.leancart.global`; production
    tenants use this same `.dev.` address). **Sign in
    yourself** in the browser window that opens. Claude never sees, asks for or types your password. The session is
@@ -71,7 +71,7 @@ onayını ister.**
 2. Bu klasörde `claude` başlat, `admin-browser` MCP sunucusunu onayla.
 3. `/onboard` yaz. Makinede Node 20+ yoksa `.runtime/`'a özel bir kopya, ayrıca Chrome for Testing'i `.browsers/`'a
    kendisi indirir (bir kez, sisteme kalıcı kurulum yapmaz). Ardından Claude Code'u bir kez yeniden başlatmanı isteyebilir.
-4. Her yeni pencerede proje kendini günceller (`git pull --ff-only`, yerel değişikliklerin üzerine yazmaz). `/onboard` devam eder: Tenant ID'ni (ör. `gym-tayt`) soracak ve admini
+4. Her yeni pencerede proje kendini günceller (`git pull --ff-only`, yerel değişikliklerin üzerine yazmaz). `/onboard` devam eder: Tenant ID'ni (ör. `leancart`) soracak ve admini
    `https://admin.<tenant>.dev.leancart.global` adresinde açacak (vitrin: `https://<tenant>.dev.leancart.global`;
    production tenant'lar da bu `.dev.` adresini kullanır). Açılan pencerede
    **kendin giriş yap**. Claude şifreni hiçbir zaman görmez, istemez, yazmaz. Oturum `.browser-profile/`'da

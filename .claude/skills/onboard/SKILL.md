@@ -31,10 +31,10 @@ değiştirdiyse bu pencerede eski hâli yüklüdür: kullanıcıya Claude Code'u
 
 `config/local.json` varsa oku ve kullanıcıya "şu ortamla devam edelim mi?" diye sor. Yoksa AskUserQuestion ile sor:
 
-- **Tenant ID (mağaza subdomain'i).** Kullanıcıdan yalnız tenant ID'yi iste (ör. `gym-tayt`); prod/dev seçeneği
+- **Tenant ID (mağaza subdomain'i).** Kullanıcıdan yalnız tenant ID'yi iste (ör. `leancart`); prod/dev seçeneği
   ya da örnek tenant önerme. Adresler tek desenden üretilir — production tenant'lar dahil hepsi `.dev.` içerir:
-  - Admin: `https://admin.<tenant>.dev.leancart.global` (ör. `https://admin.gym-tayt.dev.leancart.global`)
-  - Vitrin: `https://<tenant>.dev.leancart.global` (ör. `https://gym-tayt.dev.leancart.global`)
+  - Admin: `https://admin.<tenant>.dev.leancart.global` (ör. `https://admin.leancart.dev.leancart.global`)
+  - Vitrin: `https://<tenant>.dev.leancart.global` (ör. `https://leancart.dev.leancart.global`)
   Adresteki `.dev.` ortamı **belirtmez**; ortam varsayılan olarak `prod`'dur (canlı tenant, kural 7 geçerli).
   Kullanıcı tenant'ın test/dev olduğunu açıkça söylerse `dev` yaz. Local kurulumda adresi kullanıcıdan al.
   Tenant, adresin subdomain'inden çözülür; tenant seçici yoktur. Login `TENANT_REQUIRED` ("We couldn't identify

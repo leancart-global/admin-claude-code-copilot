@@ -13,10 +13,10 @@ Her mağazanın (tenant) **kendi admin adresi** vardır; mağaza bu adresten anl
 
 Tüm tenant'lar — **production tenant'lar dahil** — aynı desendedir; `<tenant>` = tenant ID (mağaza alt alan adı):
 
-| Adres | Desen | Örnek (`gym-tayt`) |
+| Adres | Desen | Örnek (`leancart`) |
 |---|---|---|
-| Admin | `https://admin.<tenant>.dev.leancart.global` | `https://admin.gym-tayt.dev.leancart.global` |
-| Vitrin | `https://<tenant>.dev.leancart.global` | `https://gym-tayt.dev.leancart.global` |
+| Admin | `https://admin.<tenant>.dev.leancart.global` | `https://admin.leancart.dev.leancart.global` |
+| Vitrin | `https://<tenant>.dev.leancart.global` | `https://leancart.dev.leancart.global` |
 | local | Kullanıcının verdiği yerel adres | Tek mağazalı geliştirme kurulumu |
 | Özel alan adı | Merchant'ın kendi domaini (Ayarlar → Alan Adları) | Admin'in özel domainde açılıp açılmadığı: doğrulanmadı |
 
