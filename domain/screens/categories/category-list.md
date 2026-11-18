@@ -41,8 +41,8 @@
 | Tablo ⋯ → Detayları Görüntüle | `/categories/{id}` | – | [category-detail.md](category-detail.md) |
 | Tablo ⋯ → Alt Kategori Ekle / Add Subcategory | `/categories/new?parentId={id}` | – | Üst kategori önceden seçili gelir |
 | Tablo ⋯ → Çevirileri Yönet | edit sayfasını açar | – | Çeviri için edit sayfasında store view çubuğu kullanılır |
-| Tablo ⋯ → Sil / Delete | Dialog "Emin misiniz?": "\"{name}\" ve tüm alt kategorileri kalıcı olarak silinecek. Bu işlem geri alınamaz." → "Sil" | evet | Başarı: "Kategori başarıyla silindi". Ret: "“{name}” kategorisinin alt kategorileri var. Önce onları silin veya taşıyın." / "“{name}” kategorisinde hâlâ ürün var. Ürünleri taşıyın veya kaldırın, sonra tekrar deneyin." |
-| Seçileni Sil / Seçilenleri Sil | Dialog "Seçilen # kategori kalıcı olarak silinecek…" → "Sil" | evet | Tam başarı: "{n} kategori başarıyla silindi."; kısmi: başlık "Kısmı Başarı", "{a} silindi, {b} başarısız." + satır başı ret nedenleri. |
+| Tablo ⋯ → Sil / Delete | Dialog "Emin misiniz?": "\"{name}\" silinecek ve mağazada artık görünmeyecek. Alt kategorisi veya ürünü olan bir kategori silinmez." → "Sil" | evet | Başarı: "Kategori başarıyla silindi". Ret: "“{name}” kategorisinin alt kategorileri var. Önce onları silin veya taşıyın." / "“{name}” kategorisinde hâlâ ürün var. Ürünleri taşıyın veya kaldırın, sonra tekrar deneyin." |
+| Seçileni Sil / Seçilenleri Sil | Dialog "Seçilen # kategori silinecek ve mağazada artık görünmeyecek." + "Alt kategorisi olan bir kategoriyi silmek için alt kategorilerini de seçin; ürünü olan kategoriler silinmez." → "Sil" | evet | Seçimdeki kategoriler **önce alt kategoriler, sonra ebeveynleri** olacak şekilde sırayla silinir (seçim sırası önemli değil; ebeveyn ve çocukları birlikte seçilmişse ebeveyn de silinir). Zaten arşivli olan kategoriler atlanır. Tek tek silmeyle aynı yan etkiler uygulanır (ebeveynin alt kategori listesinden çıkar). Tam başarı: "{n} kategori başarıyla silindi."; kısmi: başlık "Kısmi başarı", "{a} silindi, {b} başarısız." (b = reddedilen kategori sayısı) + her reddedilen için bir satır neden. |
 | Sağ panel → Ürün Ekle / Add Products | Ürün seçici dialog "Ürün Seç" (arama "İsim veya SKU ile ürün ara...", çoklu seçim) → "Seçilenleri Ekle ({n})" | dialog | **Anında** kaydolur (form kaydı yok) → tıklamadan önce kullanıcı onayı al |
 
 ## Yan etkiler
@@ -51,7 +51,7 @@
 ## Tuzaklar
 - **Sürükle-bırak ile sıralama/taşıma YOK.** Sıra = kategori formundaki "Sıralama" sayısı; ebeveyn = "Üst Kategori" alanı. Ağaç kardeşleri sıralama sayısına göre dizilir.
 - **Ağaç görünümünde satır bazlı Sil / Alt Kategori Ekle yok.** Tek kategori silmek için: tablo görünümüne geç ya da checkbox ile seç → "Seçileni Sil", ya da detay sayfasındaki "Sil".
-- Alt kategorisi olan kategori silinemez; önce çocukları sil ya da taşı.
+- Alt kategorisi olan kategori, alt kategorileri silinmeden/taşınmadan silinemez; toplu silmede ebeveyn ve alt kategorilerini **birlikte seçmek** yeterlidir (önce çocuklar silinir). Ürünü olan kategori silinmez.
 - Ağaç filtreliyken, eşleşmeyen ebeveyni gelmeyen çocuklar kök düzeyinde gösterilir; konumu doğrulamak için filtresiz bak.
 
 ## Doğrulama

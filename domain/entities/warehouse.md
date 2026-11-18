@@ -32,7 +32,7 @@ için en az bir depo, ürün formundan depo seçmeden stok girmek için de **akt
 | Adres satırı 1 / 2 | Adres Satırı 1 / Address Line 1, Adres Satırı 2 | string | 1: evet | — | ≤255 |
 | Ülke | Ülke Kodu / Country Code | ISO alpha-2 | evet | — | Seçilebilen ülke: **Türkiye (TR)** |
 | İl | Şehir / City | string | evet | — | TR'de il listeden seçilir (kargo ile aynı il listesi) |
-| İlçe | İlçe / District | string | TR'de yıldızlı | — | İl seçilince listelenir; kargo fiyatı ilçeye duyarlıdır |
+| İlçe | İlçe / District | string | TR'de yıldızlı (kargo hesabı yoksa ve il için liste boşsa serbest metin, zorunlu değil) | — | İl seçilince listelenir; kargo fiyatı ilçeye duyarlıdır. Kargo hesabı varken liste gelmezse ilçe seçilemez ve depo kaydedilemez |
 | Eyalet / İl | İl / Eyalet / State / Province | string | hayır | — | Serbest metin, ≤100 |
 | Posta kodu | Posta Kodu / Postal Code | string | evet | — | ≤20; TR'de 5 hane |
 | Konum | Enlem / Latitude, Boylam / Longitude | sayı | hayır | — | −90..90 / −180..180. "Müşteriye En Yakın" dağıtım stratejisi için gerekli |

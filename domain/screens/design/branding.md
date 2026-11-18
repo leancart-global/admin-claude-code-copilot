@@ -53,7 +53,7 @@ Ortak kontroller:
 | Kimlik › Logo Ayarları / Logo Settings | Ana Logo URL * / Primary Logo URL * | `identity.logo.primary.url` | Medya seçici alanı (görsel, geniş) | Yayın için evet | boşsa yayında toast "Yayınlamadan önce lütfen bir ana logo ekleyin / Please add a primary logo before publishing" | Browse butonu bu bloğun içinde | |
 | Kimlik | Logo Alt Metni / Logo Alt Text | `identity.logo.primary.alt` | Input | Hayır | placeholder "Marka Logosu" | `#logoAlt` | |
 | Kimlik | Favicon URL | `identity.logo.favicon` | Medya seçici alanı | Hayır | | | |
-| Kimlik | Apple Touch Icon URL | `identity.logo.appleTouchIcon` | Medya seçici alanı | Hayır | | | |
+| Kimlik | Apple Touch Icon URL | `identity.logo.appleTouchIcon` | Medya seçici alanı | Hayır | | | Favicon ve Apple Touch Icon, yayındaki markadan vitrinde sekme/ana ekran ikonu olarak yayınlanır (mutlak `http(s)` adresi ya da `/` ile başlayan yol); ikisi de boşsa varsayılan site ikonu kalır |
 | Kimlik | Marka Tonu / Brand Tone | `tone.style` | Select | Hayır | varsayılan `professional`; seçenekler luxury "Lüks - Zarif, premium, sofistike", minimal, playful "Eğlenceli", professional "Profesyönel", bold "Cesur" | `#brandTone` yok — Label metniyle bul | Claude'un ürettiği metinlerin tonu için de okunur ([../../project/brand-voice.md](../../project/brand-voice.md)) |
 | Renkler › Ana Renkler / Primary Colors | Ana / Primary | `colors.primary` | Renk seçici | – | #004438 | combobox name "Ana"/"Primary" | butonlar, linkler |
 | Renkler | Ana Açık / Primary Light | `colors.primaryLight` | Renk seçici | – | #006652 | | |

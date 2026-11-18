@@ -26,7 +26,7 @@ Form yok (salt okunur). Okuma ipuçları:
 | Düğme (tr / en) | Etki | Onay | Sonuç |
 |---|---|---|---|
 | Düzenle / Edit | `/categories/{id}/edit` | – | [category-edit.md](category-edit.md) |
-| Sil / Delete | Dialog "Emin misiniz?" — "\"{name}\" ve tüm alt kategorileri kalıcı olarak silinecek. Bu işlem geri alınamaz." → "Sil" | evet (+ kullanıcı onayı) | Başarı: toast "Kategori başarıyla silindi" → `/categories`. Hata: kırmızı toast, sunucu mesajı ya da "Kategori silinemedi. Lütfen tekrar deneyin." |
+| Sil / Delete | Dialog "Emin misiniz?" — "\"{name}\" silinecek ve mağazada artık görünmeyecek. Alt kategorisi veya ürünü olan bir kategori silinmez." → "Sil" | evet (+ kullanıcı onayı) | Başarı: toast "Kategori başarıyla silindi" → `/categories`. Hata: kırmızı toast, sunucu mesajı ya da "Kategori silinemedi. Lütfen tekrar deneyin." |
 | Kategorilere Dön | `/categories` | – | |
 
 ## Yan etkiler

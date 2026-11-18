@@ -7,10 +7,11 @@
   | İşlem | Ne yapar | Yetki |
   |---|---|---|
   | Yükle | Sayfayı tüm dilleriyle getirir | `content:read` |
-  | Kaydet | Formu (Durum alanı dahil), blokları ve çevirileri kaydeder; üst sayfa değiştiyse onu da günceller | `content:write` |
-  | Yayınla (varsayılan dil) | Kaydeder + sayfayı yayınlar | `content:write` |
+  | Kaydet | Formu (Durum alanı dahil), blokları ve çevirileri kaydeder; üst sayfa değiştiyse onu da günceller. **Ana sayfa kaydı yayındaysa içerik taslağa yazılır** (aşağıda) | `content:write` |
+  | Yayınla (varsayılan dil) | Kaydeder + sayfayı yayınlar (ana sayfa kaydında kayıtlı taslağı canlıya alır) | `content:write` |
   | Yayınla (çeviri) | Kaydeder + yalnız seçili dili yayınlar | `content:write` |
   | Taslağa Dön | Sayfayı (çeviri kapsamında o dili) yayından kaldırır | `content:write` |
+  Şablonu veya "Ana Sayfa Olarak Ayarla"yı değiştirmek ayrıca `design:write` ister (yoksa alanlar disabled, not: "Şablonu veya ana sayfa ayarını değiştirmek için sayfa düzeni yetkisi gerekir. Bunu sizin yerinize yapması için bir yöneticiye başvurun.").
   Alanlar page-create.md ile aynı.
 
 ## Ön koşullar ve bağımlılıklar
@@ -21,7 +22,7 @@
 ## Yerleşim
 - Başlık "Sayfa Düzenle / Edit Page", açıklama = sayfa başlığı; geri "Geri / Back".
 - Sağ aksiyonlar: "Sayfayı Önizle / Preview Page" (vitrinde `/pages/{slug}` yeni sekmede; vitrin URL'si tanımlı değilse disabled), "Kaydet / Save", ve durum **taslak** ise "Yayınla / Publish"; **yayında** ise "Güncelle ve Yayınla / Update & Publish" + yanında ChevronDown açılır menü → "Taslağa Dön / Revert to Draft".
-- Durum çubuğu (çoklu dilde): "Görünüm / View" dil seçici (Select), rozet "Taslak / Draft" | "Aktif / Active" | "Kaydedilmemiş Değişiklikler / Unsaved Changes" (yalnız yayındayken değişiklik varsa), "{name} için içerik düzenleniyor", "Senkronize et... / Sync from...".
+- Durum çubuğu (çoklu dilde): "Görünüm / View" dil seçici (Select), rozet "Taslak / Draft" | "Aktif / Active" | "Kaydedilmemiş Değişiklikler / Unsaved Changes" (yalnız yayındayken değişiklik varsa) | "Yayınlanmamış değişiklikler / Unpublished changes" (yalnız **ana sayfa kaydında**, yayındayken kayıtlı taslak varsa), "{name} için içerik düzenleniyor", "Senkronize et... / Sync from...".
 - Sekmeler: "Temel Bilgiler / Basic Info" (**varsayılan**), "İçerik / Content" (= blok editörü), "SEO", "Ayarlar / Settings".
 - Validasyon özeti (yayın denemesinden sonra): "Kaydetmeden önce N hatayı düzeltin" + alan listesi (tıklayınca ilgili sekmeye gider).
 
@@ -55,7 +56,8 @@ Hata: "Kaydedilemedi. Lütfen bir dakika sonra tekrar deneyin." / "Sayfa kaydedi
 - Çerez politikası sayfasında "Evet, tekrar sor" seçilirse tüm alışverişçilerden çerez onayı yeniden istenir.
 
 ## Tuzaklar
-- **Yayındaki sayfada "Kaydet" de canlıya yazar**: içerik anında değişir, sayfa yayında kalır. Yayındaki sayfada taslak çalışma alanı yok — onay her iki butondan önce alınmalı.
+- **Yayındaki (ana sayfa olmayan) sayfada "Kaydet" de canlıya yazar**: içerik anında değişir, sayfa yayında kalır. Bu sayfalarda taslak çalışma alanı yok — onay her iki butondan önce alınmalı.
+- **İstisna: ana sayfa kaydı.** Ana sayfa olarak işaretli sayfa yayındaysa Kaydet içeriği (başlık, bloklar, SEO, çeviriler, şablon) taslağa yazar, canlı değişmez; Yayınla/Güncelle ve Yayınla taslağı canlıya alır. Durum, adres (slug), üst sayfa gibi alanlar taslağa girmez, doğrudan canlıya yazılır. Ana sayfa içeriğini tercihen `/design/homepage` ekranında düzenle (sürüm geçmişi ve müşteri gözüyle önizleme yalnız orada).
 - Temel Bilgiler'deki **Durum** select'ini "Yayında" yapıp "Kaydet" demek de sayfayı yayınlar — durum değişikliği için Yayınla/Taslağa Dön butonlarını kullan.
 - Ayarlar'da "Ana Sayfa Olarak Ayarla" mevcut ana sayfayı devre dışı bırakır.
 - Çeviri kapsamına geçince birincil bloklar o dile kopyalanır; Yayınla yalnız seçili dili yayınlar.

@@ -70,7 +70,7 @@ different address" → "Yeni Adres" formu; "Kayıtlı adreslere dön" ile geri. 
 | Adres Satırı 2 / Address Line 2 | Input | hayır | — | `#address2` | |
 | Ülke / Country * | Select ("Ülke seçin") | evet | **varsayılan "United States"** | `#country` | Seçenekler: United States, Canada, United Kingdom, Germany, France, Italy, Spain, Australia, Japan, **Turkey** |
 | Şehir / City * | Ülke Turkey ise **aranabilir combobox (il listesi)**, değilse Input | evet | "Şehir zorunludur" | `#city` | TR'de il yazıp listeden tıkla |
-| İlçe / District * | (yalnız Turkey) aranabilir combobox; il seçilmeden pasif | TR'de evet | — | `#district` | Kargo fiyatı ilçeye göre hesaplanır |
+| İlçe / District * | (yalnız Turkey) aranabilir combobox; il seçilmeden pasif; kargo hesabı yoksa ve il için liste boşsa serbest metin ("İlçe adını yazın") | TR'de evet | — | `#district` | Kargo fiyatı ilçeye göre hesaplanır. Kargo hesabı varken liste gelmezse / yükleme hata verirse kutu pasif kalır, altında uyarı + "Tekrar dene" butonu çıkar |
 | İl/Eyalet / State/Province | (Turkey dışı) Input | hayır | — | `#state` | |
 | Posta Kodu / Postal Code * | Input | evet | ülkeye göre biçim ("Geçersiz posta kodu formatı") | `#postalCode` | Kargo tarifesi için şart |
 | Telefon / Phone | Telefon girişi | hayır | biçim | label | |

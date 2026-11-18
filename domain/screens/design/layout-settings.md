@@ -20,7 +20,7 @@
 | Footer çevirileri için aktif mağaza görünümü (store view) dilleri | Sütunlar / Yasal sheet açılınca |
 
 ## Ön koşullar ve bağımlılıklar
-- **Marka Ayarları (Branding)**: aktif marka yoksa sarı "Kurulum Gerekli / Setup Required" banner'ı çıkar, "Marka Ayarları / Brand Settings" satırında **Yapılandır / Configure** butonu `/branding`'e götürür. Logo header/footer'da **düzenlenmez**; branding'den gelir (header Logo sheet'i sadece bilgilendirir; footer Logo satırında "Marka Ayarları / Brand Settings" linki `/branding`'e gider).
+- **Marka Ayarları (Branding)**: aktif marka yoksa sarı "Kurulum Gerekli / Setup Required" banner'ı çıkar, "Marka Ayarları / Brand Settings" satırında **Yapılandır / Configure** butonu `/branding`'e götürür. Ana logo header/footer'da **düzenlenmez**; branding'den gelir (header Logo sheet'i sadece bilgilendirir; footer Logo satırında "Marka Ayarları / Brand Settings" linki `/branding`'e gider). Tek istisna: footer'da yalnız **koyu zemin için ayrı logo** seçilebilir (aşağıda).
 - **Mağaza URL'si (Storefront URL)**: tanımlı değilse canlı önizleme gösterilmez ve banner'da "Mağaza URL'si / Storefront URL (Canlı önizleme için gerekli / Required for live preview)" satırı `/settings/general`'a link verir.
 - **Menü öğeleri** bu ekranda değil, `/design/navigation` (Navigation Designer) ekranında yönetilir; header'daki "Menü / Navigation Menu" satırındaki **Menüyü Düzenle / Edit Menu** butonu oraya gider. Bkz. [navigation.md](navigation.md).
 - **Footer İletişim**: adres/telefon/e-posta burada girilmez; `Ayarlar > Genel` (`/settings/general`) mağaza iletişim bilgisinden okunur, sheet'te salt-okunur gösterilir + "Ayarlarda Yönet / Manage in Settings" butonu.
@@ -71,6 +71,8 @@ Her satır `data-testid="section-row-<id>"`, sağda Switch (`id="toggle-<id>"`, 
 | Satır | Yerleşim Düzeni / Layout Style | `layout.type` | Select | – | seçenekler `standard` Standart / Standard, `centered` Ortalanmış / Centered | `[data-testid="select-layout-type"]`, `#header-layout-type` | |
 | Alan | Masaüstü Yüksekliği / Desktop Height | `layout.heightDesktop` | Input `#header-height-desktop` | – | placeholder "örn. 80px / e.g. 80px"; serbest CSS değeri | `#header-height-desktop` | |
 | Alan | Mobil Yüksekliği / Mobile Height | `layout.heightMobile` | Input `#header-height-mobile` | – | placeholder "örn. 60px" | `#header-height-mobile` | |
+| Satır | Dil Seçici / Language Toggle | `actions.showLanguageToggle` | Switch | – | kapalı; açıklama "En az iki mağaza görünümü varken başlıkta görünür" | `section-row-language-toggle`, `#toggle-language-toggle` | Mağazada tek dil varsa açık olsa da vitrinde görünmez |
+| Alt alan | Dil Seçici Konumu / Language Toggle Position | `actions.languageTogglePosition` | Select | – | yalnız Dil Seçici açıkken görünür; varsayılan "Sağda, ikonların yanında / Right, beside the icons"; diğer: "Solda, logodan önce / Left, before the logo" | `[data-testid="select-language-toggle-position"]`, `#language-toggle-position` | Masaüstü başlık satırındaki yeri; mobilde seçici menünün içinde kalır |
 
 ### Header Sheet'leri (sağdan Sheet; kendi Kaydet butonu YOK — her tuş vuruşu yerel yapılandırmayı değiştirir ve 3 sn sonra otomatik kayıt tetiklenir; kapatmak için Esc / X / dışarı tıkla)
 
@@ -95,14 +97,16 @@ Her satır `data-testid="section-row-<id>"`, sağda Switch (`id="toggle-<id>"`, 
 | 〃 | Hesap Sayfası Adresi / Account Page URL | `account.accountUrl` | Input | placeholder `/hesabim` | `#account-url` |
 | Sepet / Cart | Ürün Sayısını Göster / Show Item Count | `cart.showItemCount` | Switch | açık | `#cart-count` |
 | 〃 | Ara Toplamı Göster / Show Subtotal | `cart.showSubtotal` | Switch | kapalı | `#cart-subtotal` |
+| 〃 (alt başlık "Sepet çekmecesi / Cart drawer") | Popüler ürünleri göster / Show popular products | `cart.showPopularProducts` | Switch | açık | `#cart-popular-products` |
+| 〃 | Sepete git butonunu göster / Show the Go to cart button | `cart.showGoToCartButton` | Switch | açık | `#cart-go-to-cart` |
 
-Header'da **bu ekrandan ayarlanamayanlar**: header arka plan/metin rengi (marka renklerinden gelir), menü konumu ve mobil menü stili, sepet/hesap ikon stili, banner renkleri ve bitiş tarihi, birden fazla duyuru banner'ı (yalnız ilki düzenlenir). Bunlar preset ile gelir.
+Header'da **bu ekrandan ayarlanamayanlar**: header arka plan/metin rengi (marka renklerinden gelir), menü konumu ve mobil menü stili, sepet/hesap ikon stili, banner renkleri ve bitiş tarihi, birden fazla duyuru banner'ı (yalnız ilki düzenlenir), başlık satırının sağındaki telefon / WhatsApp / giriş bağlantısı / vurgulu buton grubu ve koyu zeminde gösterilecek header logosu. Bunlar preset ile gelir ya da hiç ayarlanamaz.
 
 ### Footer sekmesi — bölüm satırları
 
 | Bölüm/Tab | Label (tr / en) | Form key | Kontrol tipi | Zorunlu | Validasyon/varsayılan | Locator ipucu | Not |
 |---|---|---|---|---|---|---|---|
-| Satır | Logo / Logo | `logo` (salt okunur) | her zaman açık + link **Marka Ayarları / Brand Settings** | – | özet "Logo yapılandırıldı / Logo configured" veya "Ayarlanmadı / Not set" | `section-row-footer-logo` | `/branding`'e gider |
+| Satır | Logo / Logo | `logo.isEnabled` | Switch (varsayılan açık) + Düzenle + link **Marka Ayarları / Brand Settings** | – | özet "Koyu zemin logosu ayarlandı" veya "Ayarlanmadı / Not set" (özet yalnız koyu zemin logosunu sayar) | `section-row-footer-logo`, `#toggle-footer-logo` | Ana logo `/branding`'den gelir; Düzenle koyu zemin logosu sheet'ini açar |
 | Satır | ETBİS Güven Damgası / ETBIS Trust Mark | `etbis.isEnabled` | Switch + Düzenle | – | kapalı | `section-row-etbis` | |
 | Satır | Alt Bilgi Sütunları / Footer Columns | `sections[]` | her zaman açık + Düzenle | – | özet "N columns, M links" | `section-row-sections` | |
 | Satır | Sosyal Medya / Social Media | `socialMedia[]` | Switch (sheet açar) + Düzenle | – | Switch durumu = listede öğe var mı | `section-row-social-media` | Switch'e tıklamak kapatmaz, sheet açar |
@@ -120,6 +124,7 @@ Liste tipi bölümleri (sosyal/ödeme/kargo/güven) "kapatmak" için sheet için
 
 | Sheet (tr / en) | Label (tr / en) | Form key | Kontrol tipi | Validasyon/varsayılan | Not / Locator |
 |---|---|---|---|---|---|
+| Alt bilgi logosu / Footer logo | Koyu zeminler için logo / Logo for dark backgrounds | `logo.darkModeUrl` | Medya seçici alanı (klasör "branding") | — | Ana logo Marka Ayarları'ndan gelir. Footer zemin rengi koyuysa vitrinde ana logo yerine bu logo gösterilir; boşsa ana logo kullanılır ("Ana logoyu kullanmak için kaldırın") |
 | Alt Bilgi Sütunları / Footer Columns | Görünüm / View (dil kapsamı) | – | İçerik dili seçici (Varsayılan / Default + aktif store view dilleri, çeviri doluluk göstergesi) | varsayılan = Varsayılan | Dil seçiliyken sadece başlık/link etiketi çevirisi düzenlenir; ekleme/silme/URL/sütun genişliği/görünürlük **disabled** |
 | 〃 | Sütun accordion başlığı (sütun adı + "N bağlantı"), Yukarı taşı / Move up, Aşağı taşı / Move down | `sections[i].sortOrder` | ikon butonlar (aria-label) | – | Sürükle-bırak YOK; sıralama ok butonlarıyla |
 | 〃 | Sütun Başlığı / Column Title | `sections[i].title` | Çevrilebilir input | yeni sütun varsayılanı "Yeni Sütun / New Column" | |
@@ -199,7 +204,9 @@ Silme: header/footer yapılandırması bu ekrandan **silinemez**; ekranda silme 
 ## Yan etkiler
 - Her kayıt bir versiyon kaydı oluşturur (son 10 tutulur); bu ekranda versiyon geçmişi / geri yükleme yoktur.
 - Yayınlama, aynı kapsamdaki diğer yayınlanmış yapılandırmayı yayından alır; hedef yapılandırma yayında + aktif olur.
-- Vitrine yansıma: değişiklik kaydedildikten sonra vitrinde **en geç ~30 dk** içinde görünür (arada CDN varsa daha uzun sürebilir).
+- Vitrine yansıma: değişiklik kaydedildikten sonra vitrinde **en geç ~3 dk** içinde görünür.
+- Footer'daki **Ödeme Yöntemleri** rozetlerinden "Görünür" olanlar vitrinde footer'da gösterilir; iyzico etkin mağazalarda ayrıca iyzico'nun resmî logo bandı ("iyzico ile Öde", Visa, Mastercard) eklenir — footer'a kendi iyzico girişini eklediysen bant eklenmez.
+- Vitrinde footer'ın ve ödeme sayfasının altında "Powered by Leancart {yıl}" kredisi görünür; bu ekrandan ayarlanamaz.
 - Canlı önizleme kaydedilmemiş yerel değişiklikleri anında gösterir; mağaza 10 sn içinde yanıt vermezse "Önizleme kullanılamıyor — mağazanın çalıştığından emin olun." mesajı çıkar.
 - Vitrin davranışı: sticky açıkken header sayfa üstünde sabit kalır; şeffaf header yalnız hero (tam genişlik görsel) üstünde ve sayfa kaydırılmadan önce şeffaftır. Header veya footer yayında değilse "Coming Soon" sayfası görünür.
 
@@ -224,5 +231,5 @@ Silme: header/footer yapılandırması bu ekrandan **silinemez**; ekranda silme 
 1. Admin'de: durum çubuğu metni "Draft saved" → yayınladıktan sonra "Published"; butonlar disabled olur. Network'te kayıt ve yayın istekleri 200 dönmeli.
 2. Sayfayı **Yenile / Refresh** ile yeniden yükle; değiştirilen alanın yeni değerde kaldığını ve aktif stil kartının doğru olduğunu kontrol et.
 3. Canlı önizlemede (mağaza URL'si varsa) değişiklik anında görünür (yerel durum).
-4. Vitrin: `{STOREFRONT_URL}/{locale}` sayfasında header/footer değişikliği en geç ~30 dk içinde görünür; hızlı kontrol için public uç nokta `GET /layout/header/public/active` (veya `/layout/footer/public/active`, auth gerektirmez). Gecikme varsa kullanıcıya "kaydedildi, vitrin ≤30 dk içinde güncellenecek" bilgisini verin.
+4. Vitrin: `{STOREFRONT_URL}/{locale}` sayfasında header/footer değişikliği en geç ~3 dk içinde görünür; hızlı kontrol için public uç nokta `GET /layout/header/public/active` (veya `/layout/footer/public/active`, auth gerektirmez). Gecikme varsa kullanıcıya "kaydedildi, vitrin ≤3 dk içinde güncellenecek" bilgisini verin.
 5. Header/footer'dan biri yayında değilse vitrin "Coming Soon" gösterir — preset seçiminden sonra ikisinin de var olduğunu doğrulayın.

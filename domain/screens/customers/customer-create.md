@@ -55,7 +55,7 @@ götüren bağlantıdır.
 | Adres | Adres Satırı 2 / Address Line 2 | Input | hayır | ≤200 | placeholder "Daire 4B" | |
 | Adres | Ülke / Country | arama kutulu combobox | adres varsa evet | — | placeholder "Ülke seçin" | Ülke değişince il/ilçe sıfırlanır |
 | Adres | İl/Bölge / State/Province | combobox (TR) / Input (diğer) | adres varsa evet | ≤100 | placeholder "İstanbul" | Listeden seç |
-| Adres | İlçe / District | combobox | TR'de adres varsa evet | — | placeholder "İlçe seçin" | İl seçilmeden pasif |
+| Adres | İlçe / District | combobox; kargo hesabı yoksa ve il için ilçe listesi boşsa **serbest metin** (placeholder "İlçe adını yazın", baştaki/sondaki boşluklar kırpılır) | ülke ilçe istiyorsa (TR) ve liste doluysa ya da kargo hesabı olup liste gelmiyorsa **evet** (boşsa "İlçe zorunlu"); serbest metin modunda hayır | — | placeholder "İlçe seçin" | İl seçilmeden pasif. Kargo hesabı **var** ama o il için liste gelmiyorsa ya da yükleme hata verirse kutu pasif kalır, altında "Kargo firmanızın bu şehir için ilçe listesi henüz yok. Tekrar deneyin veya başka bir şehir seçin." / "İlçeler yüklenemedi." uyarısı + "Tekrar dene" butonu çıkar; kayıt için ilçe gerekir. Gereksinim sayfa her açıldığında yeniden okunur (kargo hesabı açılıp kapatılırsa sayfayı yeniden aç) |
 | Adres | Şehir / City | Input | ülkeye göre | ≤100 | placeholder "İstanbul" | TR'de görünmez; il ile aynı kabul edilir (doğrulanmadı) |
 | Adres | Posta Kodu / Postal Code | Input | adres varsa evet | ≤20 | placeholder "34000" | |
 Adres kaydının ad/soyadı müşterinin adından alınır. Adres Satırı 1 dolu ama il/posta kodu boşsa kayıt sunucuda

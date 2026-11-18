@@ -56,13 +56,13 @@ Seçim çubuğunda "Toplu İşlemler" butonu; menü etiketi "{count} ürün seç
 Başlık "Durumu Değiştir / Change Status", açıklama "{count} seçili ürünün durumunu güncelle".
 | Label (tr / en) | Payload key | Kontrol | Zorunlu | Varsayılan / seçenekler | Locator |
 |---|---|---|---|---|---|
-| Yeni Durum / New Status | `statusData.status` | Select | evet | `published` (Yayında). Seçenekler: Taslak/Draft, Yayında/Published, Arşivlendi/Archived | dialog içindeki tek combobox |
+| Yeni Durum / New Status | `statusData.status` | Select | evet | `published` (Yayında). Seçenekler: Taslak/Draft, Yayında/Published ("Arşivlendi" seçeneği yok; arşiv için Arşivle/Sil kullanılır) | dialog içindeki tek combobox |
 Buton: "İptal", "Durumu Değiştir" (yüklenirken "Güncelleniyor...").
 Etki: Yayında dışına geçişte ürünün varyantları pasifleşir; kategori ürün sayaçları güncellenir; vitrin araması güncellenir.
 
 ### B2. Arşivle onayı ve Sil onayı
 - Arşivle: başlık "{count} Ürün Arşivlensin mi? / Archive {count} Products?", açıklama "Arşivlenen ürünler mağazadan gizlenir ancak daha sonra geri yüklenebilir."; butonlar "İptal", "Arşivle" ("Arşivleniyor...").
-- Sil: başlık "{count} Ürün Arşivlensin mi?", açıklama "Seçilen ürünler mağazadan gizlenir ve aktif katalogdan çıkarılır. Kalıcı olarak silinmez..."; butonlar "İptal", "Sil / Delete" (yüklenirken "Arşivleniyor..."). "Sil" ve "Arşivle" aynı sonucu verir: ürünler ve varyantları arşivlenir.
+- Sil: başlık "{count} Ürün Arşivlensin mi?", açıklama "Seçilen ürünler mağazadan gizlenir ve aktif katalogdan çıkarılır. Kalıcı olarak silinmez..."; butonlar "İptal", "Sil / Delete" (yüklenirken "Arşivleniyor..."). "Sil" ve "Arşivle" aynı sonucu verir: ürünler ve varyantları arşivlenir. Sil onayında, seçili ürünlerin depodaki toplam stoğunu belirten bir not çıkar ("…arşivlemek onları mağazadan gizler ama stoğa dokunmaz…"). Zaten arşivli olan ürünler atlanır ve sayıya girmez. Arşivle/Sil menü öğeleri `products:delete` yetkisi olmayan kullanıcıda **hiç görünmez** (yetkisiz denemede "Ürünleri arşivleme veya silme yetkiniz yok.").
 
 ### B3. Fiyatı Güncelle dialog'u
 Başlık "Fiyatı Güncelle / Update Price", açıklama "{count} seçili ürünün fiyatını ayarla".
@@ -72,7 +72,7 @@ Başlık "Fiyatı Güncelle / Update Price", açıklama "{count} seçili ürün�
 | Değer / Value (placeholder "Tutar girin" veya "Yüzde girin") | `priceData.value` | number (min 0, adım 0.01) | evet | boşsa buton pasif; geçersiz/negatifse toast "Lütfen geçerli bir fiyat değeri girin" | dialog içindeki number input |
 | % | `priceData.isPercent` | switch | hayır | false | `#percent` |
 | Varyantları dahil et / Include variants | `options.includeVariants` | switch | hayır | true | `#variants` |
-Buton "Fiyatı Güncelle" ("Güncelleniyor..."). Sonuç fiyat negatif olamaz.
+Buton "Fiyatı Güncelle" ("Güncelleniyor..."). Sonuç fiyat negatif olamaz. Stok işlemleri (artır/azalt/ayarla) "Fiyat sorunuz" ürünleri atlamaz; yalnız fiyat işlemleri onları atlar. "Fiyat sorunuz" işaretli ürünler (ve varyantları) fiyat güncellemesinde **atlanır**: sonuçta başarısız listesinde "Skipped: {sku} is price on request" satırı olarak görünür, işlemin geri kalanı sürer.
 
 ### B4. Kategorileri Yönet dialog'u
 Başlık "Kategorileri Yönet / Manage Categories", açıklama "{count} seçili ürünün kategorilerini güncelle".
@@ -157,8 +157,8 @@ Canlı sayaç "Eşleşen ürünler: {count}" (yazmayı bıraktıktan ~0,5 sn son
 | Seçili-mod tam başarı | "Başarılı / Success" | "{count} ürün güncellendi / Updated {count} product(s)" | liste yenilenir, seçim temizlenir, dialog sıfırlanır |
 | Kısmi başarı | "Kısmi başarı" (hiç güncellenmediyse "Hata") — kırmızı | "{modified} güncellendi, {failed} başarısız" veya "{count} ürün güncellenemedi" + ": " + en fazla 3 neden | liste yenilenir, **seçim korunur** (tekrar denemek için) |
 | İstek hatası | "Hata" | sunucu mesajı / "Toplu işlem başarısız oldu"; kategorisiz yayın → "Yayındaki bir ürünün en az bir kategorisi olmalı. Kategori ekleyin ya da taslak olarak kaydedin." | — |
-| Toplu sil başarı | "Başarılı" | "{count} ürün arşivlendi / Archived {count} product(s)" | yenile + seçim temizlenir |
-| Toplu sil hata | "Hata" | hata mesajı / "Ürünler silinemedi" | |
+| Toplu sil başarı | "Başarılı" | "{count} ürün arşivlendi / Archived {count} product(s)" — sayı gerçekten arşivlenenlerdir (zaten arşivli olanlar sayılmaz); tek ürün arşivi ile aynı sonucu verir | yenile + seçim temizlenir |
+| Toplu sil hata | "Hata" | "Seçtiğiniz ürünlerden bazıları artık yok. Listeyi yenileyip tekrar deneyin." (seçilen ürün silinmişse) / "Ürünleri arşivleme veya silme yetkiniz yok." / genel hata | |
 | Toplu kalıcı sil başarı | "İşlem başarıyla tamamlandı" | "{count} ürün kalıcı olarak silindi" | yenile, seçim temizlenir |
 | Toplu kalıcı sil kısmi | "Kısmi başarı" | "{total} üründen {deleted} tanesi kalıcı olarak silindi: SKU: neden; …" | seçim korunur |
 | Para birimleri yüklenemedi | "Hata" | hata mesajı / "Failed to load currencies" | |

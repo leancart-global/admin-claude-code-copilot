@@ -37,7 +37,8 @@
 | `attributeSetId` | `attributeSetId` | id | Yayın için **Evet** | – | Opsiyonel |
 | `customAttributes.{code}` | `attributes` | kod → değer | set'te zorunlu olanlar | **Evet** (zorunlu attribute'lar) | – |
 | `currency` | `currency` | ISO-4217 | 3 harf | – | Opsiyonel; yoksa tenant varsayılan fiyat para birimi, o da yoksa `TENANT_PRICING_CURRENCY_NOT_CONFIGURED` |
-| `basePrice` | `price` | number | ≥0, 2 hane | – | **Zorunlu** ≥0 |
+| `basePrice` | `price` | number | ≥0, 2 hane | – | **Zorunlu** ≥0 ("Fiyat sorunuz" açıksa zorunlu değil) |
+| `priceOnRequest` | `priceOnRequest` | bool | formda yalnız basit/varyantlı/sanal tipte (ya da işaretli yüklenen üründe) görünür | – | Açıkken vitrinde fiyat yerine "Fiyat sorunuz" görünür, fiyat 0 gönderilemez (`ERR_PRICE_ON_REQUEST`); toplu fiyat güncellemesi bu ürünleri (varyantlarıyla) atlar. Kapatınca kayıtlı fiyatlar geri gelir |
 | `compareAtPrice` | `compareAtPrice` | number | > temel fiyat | – | ≥0 |
 | `cost` | `costPrice` | number | ≤2×temel fiyat | – | ≥0. Yalnız admin'de görünür (vitrinde/public API'de yok) |
 | `specialPrice` | `specialPrice` | number | < temel fiyat (0=temizle) | – | ≥0 |
@@ -48,6 +49,7 @@
 | `qty` | `quantity` | tam sayı | ≥0 | – | **Zorunlu** ≥0 (oluşturma). Varyantlıda 0 |
 | `warehouseId` | `warehouseId` | id | – | – | Ürüne kaydedilmez; stoğun yazılacağı depo. Oluşturma: yoksa varsayılan depo; o da yoksa `WAREHOUSE_NOT_CONFIGURED`. Güncellemede stok değişiyorsa **zorunlu** (`WAREHOUSE_ID_REQUIRED`) |
 | `trackInventory` / `allowBackorder` / `lowStockThreshold` | aynı | bool/bool/tam sayı | – | – | – |
+| `notifyStockQty`, `maxQty` | `stock{notifyStockQty,maxQty}` | tam sayı | ≥0 | – | Stok uyarı seviyesi ve tek siparişte en yüksek adet; varyantsız tiplerin Stok sekmesinde; boş bırakılırsa mevcut değer korunur |
 | `weight` (+`weightUnit`) | `weight`, `dimensions.weight/weightUnit` | number | ≥0 | – | ≥0; boş = temizle |
 | `length/width/height`, `dimensionUnit` | `dimensions{...,unit}` | number | ≥0 | – | – |
 | `requiresShipping` | `isShippable` | bool | virtual/downloadable/gift_card'da `false` | – | – |
@@ -58,8 +60,10 @@
 | `barcode` | `barcode` | string\|boş | 8/12/13/14 hane | – | aynı kural |
 | `ean` | `ean` | string\|boş | 13 hane | – | aynı |
 | `countryOfManufacture` | aynı | ISO-3166 alpha-2 | 2 harf | – | 2 büyük harf |
-| – | `upc`, `mpn`, `gtin` | string | formda yok | – | opsiyonel |
-| – | `brandId` | id | **formda yok** | – | opsiyonel (yalnız CSV içe aktarma ile atanır) |
+| `upc`, `mpn`, `gtin` | aynı | string | upc/gtin 8-12-13-14 hane, mpn ≤100 | – | opsiyonel; Kimlik sekmesinde; edit'te boşaltılırsa silinir |
+| `brandId` | `brandId` | id | – | – | opsiyonel; Kimlik sekmesinde "Marka" listesi; edit'te "-- Marka yok --" markayı kaldırır |
+| `publishedAt` | `publishedAt` | tarih (gün) | – | – | Kimlik sekmesinde "Yayın Tarihi"; edit'te boş bırakılırsa mevcut tarih korunur |
+| `adsExcluded` | `adsExcluded` | bool | – | – | Kimlik sekmesinde "Alışveriş reklamlarından çıkar"; ürün Google/Meta alışveriş reklamlarına girmez |
 | `isFeatured`, `isNew`, `isBestseller` | `isFeatured`, `isNewProduct`, `isBestseller` | bool | – | – | – |
 | `allowReviews`, `giftMessageAvailable`, `canBeGiftWrapped`, `isReturnable`, `isComparable` | aynı | bool | – | – | – |
 | `relatedProducts/upsellProducts/crossSellProducts` | `relations[]{type,productId,sortOrder}` | – | – | – | ürün kendisiyle ilişkilendirilemez (`PRODUCT_RELATION_SELF_REFERENCE`) |
@@ -72,13 +76,14 @@
 | `groupedProducts[]` | gruplu ürün öğeleri | {productId, defaultQty} | ≥2 | – | – |
 | `translations[]` | (ayrı kayıt) | bkz. Translation | – | – | – |
 
-API'de olup admin formunda olmayanlar (bilgi): `minOrderQty`, `maxOrderQty`, `qtyIncrements`, `condition`, `msrp`, `adsExcluded`, `newFrom/newTo`, `publishedAt`, `isActive`, `sortOrder`.
+API'de olup admin formunda olmayanlar (bilgi): `minOrderQty`, `maxOrderQty`, `qtyIncrements`, `condition`, `msrp`, `newFrom/newTo`, `isActive`, `sortOrder`.
 
 ## Variant
 - İşlemler: toplu ve atomik oluşturma (ürün oluşturulduktan sonra), değişiklik bazlı toplu güncelleme (edit), listeleme. Yetki `products:write` / `products:read`.
 - Varyant alanları: `sku` (≥2, zorunlu), eksen değer kombinasyonu (`attributeValues`: eksen kodu, değer, etiket), stok miktarı, varsayılan mı, opsiyonel `barcode`, `ean`, `price` (boşsa ana ürün fiyatı), `compareAtPrice`, `weight`, görseller, depo.
 - Kural: stok miktarı > 0 ⇒ depo zorunlu (formda kayıttan önce engellenir; `WAREHOUSE_ID_REQUIRED`).
 - Yan etki: her varyant için depoda stok satırı oluşur. Varyantlı ana ürünün stoğu varyant toplamıdır; ana ürüne doğrudan stok yazılamaz (`PRODUCT_STOCK_NOT_EDITABLE_FOR_CONFIGURABLE`).
+- Detay sayfasında her varyant satırı vitrinde ödenen etkin fiyatı gösterir; varyantın kendi fiyatı yoksa ürünün varsayılan fiyatı kullanılır ve satırda "Varsayılan fiyat" notu çıkar.
 - Varyant eksenleri ürün içinde serbest metindir (global Attribute kaydına bağlanmaz). Eksen kodu attribute set'teki bir attribute koduyla aynıysa o attribute ürün seviyesinde düzenlenemez ("varyant bazında").
 
 ## Translation
@@ -90,9 +95,9 @@ API'de olup admin formunda olmayanlar (bilgi): `minOrderQty`, `maxOrderQty`, `qt
 | İlişki | Alan | Hedef entity | Zorunluluk | Oluşturan ekran |
 |---|---|---|---|---|
 | Kategori | `categoryIds[]` | Category | Yayında ⇒ ≥1 | ../screens/categories/category-create.md |
-| Attribute set | `attributeSetId` | AttributeSet (+ Attribute'lar) | formda yayın için evet | ../screens/attributes/attribute-set-create.md |
+| Attribute set | `attributeSetId` | AttributeSet (+ Attribute'lar) | formda yayın için evet; bir setten diğerine geçilince eski setin yeni sette olmayan attribute değerleri silinir (ortak ve hiçbir sette olmayan kodlar korunur) | ../screens/attributes/attribute-set-create.md |
 | Attribute değerleri | `attributes{code: value}` | Attribute (select/multiselect seçenek değerleri) | set'te zorunlu olanlar | ../screens/attributes/attribute-create.md |
-| Marka | `brandId` | Brand | opsiyonel; formda alan henüz yok (geliştiriliyor) | ../screens/brands/brand-create.md |
+| Marka | `brandId` | Brand | opsiyonel; formda "Kimlik" sekmesinde seçilir | ../screens/brands/brand-create.md |
 | Vergi sınıfı | `taxClassId` | TaxClass | opsiyonel (varsayılan atanır) | ../screens/settings/tax-classes.md |
 | Para birimi | `currency` | Currency (aktif) | ürün veya tenant varsayılanı | ../screens/settings/currencies.md |
 | Müşteri grubu | `tierPrices[].customerGroupId` | Müşteri fiyat grubu | opsiyonel | ../screens/customers/customer-groups.md |

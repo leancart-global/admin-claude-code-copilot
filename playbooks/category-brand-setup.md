@@ -13,8 +13,8 @@ entity'ler [category](../domain/entities/category.md), [brand](../domain/entitie
 - Ağaç **yukarıdan aşağı** kurulur: önce ebeveyn kaydedilir, sonra çocuk `?parentId=` ile. Maks 5 seviye.
 - Slug mağazada benzersiz; arşivlenmiş (silinmiş) kategoriyle aynı slug yeni kayıt yerine **eskisini geri getirir**.
 - Sıralama sürükle-bırak değil, "Sıralama" sayısıyla (küçük önce). Taşıma = "Üst Kategori"yi değiştirmek.
-- Silme: alt kategorisi ya da ürünü olan kategori silinemez.
-- Marka: ad benzersiz (büyük/küçük harf, noktalama, boşluk farkı yok sayılarak benzer ad reddedilir); ürün formunda marka alanı henüz yok (geliştiriliyor) — "ürüne marka ata" isteğinde bunu söyle.
+- Silme: alt kategorisi ya da ürünü olan kategori silinemez; toplu silmede ebeveyn ile alt kategorilerini birlikte seçersen önce alt kategoriler silinir.
+- Marka: ad benzersiz (büyük/küçük harf, noktalama, boşluk farkı yok sayılarak benzer ad reddedilir); ürüne marka atamak ayrı bir iştir: ürün formunda Kimlik sekmesi → "Marka" (bkz. [product-create](product-create.md)). Ürüne bağlı marka silinemez; önce ürünlerden çıkarılmalı.
 
 ## Adım 1 — Anla ve öner
 - Kategori yolu(ları)nı ağaç olarak çıkar (ör. `Elektronik › Telefonlar › Akıllı Telefonlar`). Her düğüm için: ad, slug önerisi (Türkçe transliterasyon: `akilli-telefonlar`), durum (Aktif), sıralama, öne çıkan, açıklama/görsel/SEO (kullanıcı verdiyse).

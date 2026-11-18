@@ -30,14 +30,14 @@
 | Temel Bilgiler | Özet / Excerpt | `excerpt` | Textarea | hayır | ≤500 | | |
 | Temel Bilgiler › Tip ve Durum | Sayfa Tipi / Page Type | `type` | Select | — | `page`; seçenekler Standart Sayfa `page`, Ana Sayfa `homepage`, Özel Şablon `custom` | combobox | "Ana Sayfa" seçme — ana sayfa `/design/homepage`'den yönetilir |
 | Temel Bilgiler | Durum / Status | `status` | Select | — | `draft`; Taslak/Yayında/Zamanlanmış/Arşivlendi | combobox | **"Yayında" seçip Oluştur → sayfa anında canlı** |
-| Temel Bilgiler | Şablon / Template | `template` | Input (placeholder "varsayılan") | — | ≤100 | | boş bırak |
+| Temel Bilgiler | Şablon / Template | `template` | Input (placeholder "varsayılan") | — | ≤100 | | boş bırak. `design:write` yetkisi yoksa alan disabled ve açıklama yerine "Şablonu veya ana sayfa ayarını değiştirmek için sayfa düzeni yetkisi gerekir…" notu görünür |
 | Temel Bilgiler | Sıralama / Sort Order | `sortOrder` | number Input | — | 0 | | |
 | İçerik | Sayfa İçeriği (Eski) / Page Content (Legacy) | `content` | Textarea (HTML/Markdown) | — | — | | Bloklar varken yedek; genelde boş bırak |
 | İçerik | İçerik Blokları / Content Blocks — sekme "Görsel / Visual" | `contentBlocks` | Blok editörü (sayfa bağlamı) | — | [] | bkz. homepage-builder.md "BlockEditor" | |
 | İçerik | sekme "JSON" | `contentBlocks` | Textarea (JSON) | — | — | | Gelişmiş; tarayıcı otomasyonunda kullanma |
 | SEO | SEO Başlığı, Meta Açıklama, Anahtar Kelimeler, Odak Anahtar Kelime, Kanonik URL, OG Başlığı/Açıklaması/Görsel URL, Twitter Başlığı/Açıklaması/Görsel URL, İndekslemeye İzin Ver, Bağlantı Takibine İzin Ver | `seoTitle`, `seoDescription`, `seoKeywords`, `focusKeyword`, `canonicalUrl`, `ogTitle`, `ogDescription`, `ogImage`, `twitterTitle`, `twitterDescription`, `twitterImage`, `indexable`, `followable` | Input/Textarea/medya seçici alanı/Switch | — | ≤100 / ≤300 / ≤500 | label ile | |
 | Ayarlar › Sayfa Hiyerarşisi | Üst Sayfa / Parent Page | `parentId` | Açılır arama listesi (arama "Sayfa ara...", ilk seçenek "Yok (kök düzey)") | — | null | combobox butonu | ?parentId ile önceden dolu |
-| Ayarlar | Ana Sayfa Olarak Ayarla / Set as Homepage | `isHomepage` | Switch | — | false | | **Açma**: mevcut ana sayfanın ana sayfa işaretini kaldırır |
+| Ayarlar | Ana Sayfa Olarak Ayarla / Set as Homepage | `isHomepage` | Switch | — | false | | **Açma**: mevcut ana sayfanın ana sayfa işaretini kaldırır. `design:write` yetkisi yoksa switch disabled + aynı yetki notu (tip "Ana Sayfa" seçip kaydetmek de bu yetkiyi ister; reddedilirse toast "Sayfa düzenini (şablon veya ana sayfa ayarı) değiştirme yetkiniz yok…") |
 | Ayarlar › Erişim Kontrolü | Kimlik Doğrulama Gerekli / Require Authentication | `requiresAuth` | Switch | — | false | | |
 | Ayarlar | İzin Verilen Roller / Allowed Roles | `allowedRoles` | etiket input (yaz + Enter) | — | [] | | |
 | Ayarlar › Zamanlama | Zamanlanmış Yayın Tarihi / Scheduled Publish Date | `scheduledAt` | `input[type=datetime-local]` | — | null | | Tarih girmek durumu "Zamanlanmış" yapar |

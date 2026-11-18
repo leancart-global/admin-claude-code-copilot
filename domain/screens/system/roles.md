@@ -16,6 +16,9 @@
 - Yetki: ekran yalnız `admin`, `super_admin`, `security_admin` rollerine açık; diğerlerinde "Erişim Reddedildi / Access
   Denied" kartı (gerekli: "Yöneticiler ve güvenlik yöneticileri / Administrators and security administrators").
   Rol oluştur / düzenle / sil: yalnız `super_admin`.
+- Rol, kişiye [system-users.md](system-users.md) ekranında **adıyla** görünür (liste ve çekmece); kişiye rolünden ayrı doğrudan izin vermek için aynı
+  ekrandaki "İzinleri Yönet" diyaloğu kullanılır (yalnız `admin` / `super_admin`).
+- Özel rol taşıyan personel admin panele giriş yapabilir; gördüğü menüler ve yapabildikleri rolün izinlerine bağlıdır.
 
 ## Ön koşullar ve bağımlılıklar
 - İzin listesi (yetki matrisi) mağazada tanımlı olmalı; boşsa rol formunda izin grubu görünmez.
@@ -64,7 +67,7 @@ Butonlar: "İptal / Cancel", "Rol Oluştur / Create Role" ya da "Rolü Düzenle 
 |---|---|---|
 | Rol Oluştur → panel → Rol Oluştur | Yeni (sistem dışı) rol oluşur | "Rol oluşturuldu" + `"ad"` / "Role created"; hata: genel "Hata" toast'ı |
 | ⋯ → Düzenle → Rolü Düzenle | Ad/açıklama/kapsam/izinler güncellenir; rolü taşıyan kullanıcıların yetkisi değişir | "Rol güncellendi" / "Role updated" |
-| ⋯ → Sil → onay "Bu rolü silmek istediğinizden emin misiniz? Bu işlem geri alınamaz." → "Sil" | Rol kalıcı silinir | Başarıda toast **yok** (satır kaybolur); hata: genel "Hata" toast'ı. Başka rol bu rolden türetilmişse `ROLE_HAS_DEPENDENTS` |
+| ⋯ → Sil → onay "Bu rolü silmek istediğinizden emin misiniz? Bu işlem geri alınamaz." → "Sil" | Rol kalıcı silinir | Başarıda toast **yok** (satır kaybolur); hata: genel "Hata" toast'ı. Başka rol bu rolden türetilmişse `ROLE_HAS_DEPENDENTS`; rolü hâlâ taşıyan kullanıcı varsa `ROLE_HAS_USERS` (409) — önce kullanıcıların rolünü değiştir (doğrulanmadı: ekranda ayrı mesaj gösterilmeyebilir) |
 
 ## Onay zamanlaması (kural 2/5/6)
 - **Oluştur / Düzenle:** özet tablosu: rol adı, kapsam, eklenen ve çıkarılan izinler ayrı listeler halinde (kaynak:eylem).

@@ -42,7 +42,7 @@ entity'ler [attribute](../domain/entities/attribute.md), [attribute-set](../doma
 | Genel | Garanti Süresi | `garanti_suresi` | select | 1 Yıl, 2 Yıl | hayır | hayır | hayır | evet | hayır | |
 
 Notlar:
-- **Marka** attribute olarak açılmaz → Brand entity ([category-brand-setup](category-brand-setup.md)). Ürün formunda marka alanı henüz yok (geliştiriliyor) — kullanıcıya belirt.
+- **Marka** attribute olarak açılmaz → Brand entity ([category-brand-setup](category-brand-setup.md)). Ürüne marka, ürün formunun Kimlik sekmesindeki "Marka" listesinden atanır.
 - Tüm attribute'larda Kapsam/Apply To boş (tüm ürün tipleri) bırakılır; varyant eksenleri için `configurable` kapsanmış olur.
 - Bayrak eşlemesi (form label → key): Aramada Kullan=`isSearchable`, Katmanlı Navigasyonda Kullan=`isFilterable` (vitrin filtresi, global), Katalog Sayfalarında Görünür=`isVisibleOnFront` (varsayılan açık), Mağazada Karşılaştırılabilir=`isComparable`, Zorunlu=`isRequired`.
 - Kullanıcıdan öneri listesine ekleme/çıkarma, Türkçe/İngilizce etiket tercihi ve set adı/kodu (öneri: "Cep Telefonu" / `cep_telefonu`) için tek seferde onay/düzeltme iste.

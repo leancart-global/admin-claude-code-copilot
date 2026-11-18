@@ -42,6 +42,7 @@
 | İzinler | Inventory › Read / Write / Admin | `permissions` | Checkbox | | | | |
 | İzinler | Analytics › Read / Admin | `permissions` | Checkbox | | | | |
 | İzinler | Webhooks › Read / Write / Delete | `permissions` | Checkbox | | | | |
+| İzinler | Marketing › View | `permissions` | Checkbox | | checkbox id'si `#marketing\:view` | Yalnız **okuma**: yorum istatistikleri, Meta uyarıları ve özetleri, deneyler, huniler ve şablonları, optimizasyon kuralları ve kayıtları, Meta piksel ayarları / kurulum ve olay izleme kodları, eşleşme kalitesi ve istatistikler. **Müşteri ve potansiyel müşteri verisi (teklif talepleri, terk edilen sepetler vb.) kapsamda değildir** |
 | Hız Limiti / Rate Limit | İstekler / Requests | `rateLimit.requests` | number Input | — | 1000, min 1 | `#rate-requests` | |
 | Hız Limiti | Pencere (saniye) / Window (seconds) | `rateLimit.window` | number Input | — | 3600, min 1 | `#rate-window` | |
 | IP Beyaz Listesi (İsteğe bağlı) / IP Whitelist (Optional) | placeholder "192.168.1.1 veya 10.0.0.0/8" | `ipWhitelist` | Input + "Ekle / Add" butonu (Enter da ekler) | — | boş = her IP'ye izin; IPv4 veya CIDR | placeholder ile | Eklenen IP rozet olur, "×" ile kaldırılır. Biçime uymayan değer listeye eklenmez (rozet çıkmaz) — ekledikten sonra rozeti doğrula |

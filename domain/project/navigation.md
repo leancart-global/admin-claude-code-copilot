@@ -69,10 +69,13 @@ Sütun "İzin" = öğeyi görmek için gereken yetki ("—" = herkes görür; `r
 | | | Kuponlar / Coupons | `/marketing/coupons` | `marketing:view` |
 | | | Değerlendirmeler / Reviews | `/marketing/reviews` | `marketing:view` |
 | | | Meta Reklamlar / Meta Ads | `/marketing/meta-ads` | `marketing:view` |
+| | | Terk edilen sepetler / Abandoned carts | `/marketing/abandoned-carts` | `marketing:view` |
+| | | Teklif talepleri / Quote requests | `/marketing/quote-requests` | `marketing:view` |
 | 11 | **İçerik / Content** (`/content`, `content:read`) | Sayfalar / Pages | `/content/pages` | `content:read` |
 | | | Blog / Blog | `/content/blog` | `content:read` |
 | | | Formlar / Forms | `/content/forms` | `content:read` |
 | | | Beden Kılavuzları / Size Guides | `/content/size-guides` | `content:read` |
+| | | SSS / FAQ | `/content/faq` | `content:read` |
 | | | Medya / Media | `/content/media` | `content:read` |
 | | | Yönlendirmeler / Redirects | `/seo/redirects` | `content:read` |
 | 12 | **Mağaza Tasarımı / Store Design** (`/design`, `content:read`) | Ana Sayfa / Homepage | `/design/homepage` | `content:read` |

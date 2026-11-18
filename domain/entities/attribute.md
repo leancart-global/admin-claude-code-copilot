@@ -28,7 +28,7 @@
 | `isVisibleInAdvancedSearch` | bool | hayır | false | |
 | `isUsedInProductListing` | bool | hayır | false | |
 | `isUsedInGrid` | bool | hayır | false | Admin ürün tablosunda sütun. |
-| `isUsedForSortBy` | bool | hayır | false | |
+| `isUsedForSortBy` | bool | hayır | false | Açıksa vitrin ürün listelerinde "{Etiket} ↑/↓" sıralama seçenekleri çıkar |
 | `isComparable` | bool | hayır | false | |
 | `isVisibleOnFront` | bool | hayır | **true** | Ürün sayfasında "özellikler" listesinde görünme. |
 | `isHtmlAllowedOnFront` | bool | hayır | false | |

@@ -3,13 +3,15 @@
 - Menü yolu: "Ayarlar / Settings" → "Kargo / Shipping".
 - Başlık: "Kargo Taşıyıcıları / Shipping Carriers" (yanında taşıyıcı sayısı rozeti) — açıklama "Mağazanız için kargo taşıyıcı
   entegrasyonlarını yapılandırın".
+- `/settings/shipping` bu sayfaya yönlenir (kurulum listesi bağlantısı). Sayfa iki yolu da kapsar: kargo firması olmayan mağazalar için kendi
+  sabit ücretli **"Kargo yöntemleri"**, firması olanlar için aşağıdaki taşıyıcı entegrasyonu.
 - Amaç: Mağazanın kargo firması entegrasyonunu (şu an **Geliver**; Aras, Yurtiçi, MNG, PTT, HepsiJet… firmalarını tek
   hesaptan sunar) bağlamak ve **ödeme adımında müşterinin göreceği kargo seçeneklerini ve ücretlerini** belirleyen kargo
   motorunu ayarlamak: firma seçim stratejisi, öncelik sırası, ücretsiz kargo / ağırlık / bölge ücret kuralları, kapıda ödeme,
   varsayılan paket ölçüsü, müşteri görünümü.
 - Yetki: sayfa `settings:read`; taşıyıcı ve kargo motoru okuma `shipping:read`, kaydetme `shipping:write`.
 - Hassas: **evet** — taşıyıcı API kimlik bilgileri (bkz. "Gizli alanlar").
-- Anında kaydeden kontroller: taşıyıcı satır menüsündeki **Etkinleştir / Devre Dışı Bırak**, **Varsayılan Yap**, **Kaldır**;
+- Anında kaydeden kontroller: Kargo yöntemleri kartındaki Aktif switch'i ve her yöntem panelinin Kaydet'i (canlıya yazar), Sil onayı; taşıyıcı satır menüsündeki **Etkinleştir / Devre Dışı Bırak**, **Varsayılan Yap**, **Kaldır**;
   fiyat kuralı satırındaki **Aktif** switch'i; kural silme; "Öncelik Sırasını Kaydet"; "Varsayılan Öncelikleri Yükle";
   varsayılan paket "Kaydet" / "Varsayılanı kaldır". Onay tıklamadan **önce** alınır.
 - Dış etkili butonlar: **Bağlantı Testi** (taşıyıcı API'sine istek), **Kontrol Et** (örnek fiyat sorgusu) ve bakiye
@@ -20,21 +22,24 @@
 - Geliver hesabı (kullanıcının): API anahtarı/token ve Organizasyon ID kullanıcıdan gelir.
 - Kargo fiyatı alınabilmesi için gönderici (depo) adresi tanımlı olmalı — sağlık kartı hata verirse "taşıyıcı ayarlarınızı
   ve depo adresinizi kontrol edin" der (depo ekranı faz dışı).
-- Ürünlerde ağırlık/ölçü girilmemişse ücret "Varsayılan Paket Ölçüsü"ne göre hesaplanır; o da yoksa en düşük tarife.
-- Kargo motoru kartları (aşağıda 2–8) **yalnız Geliver yapılandırılmışsa** görünür.
+- Ürünlerde ağırlık/ölçü girilmemişse ücret "Varsayılan Paket Ölçüsü"ne göre hesaplanır; o da yoksa platformun standart paketi
+  (30 × 20 × 10 cm, 1 kg) kullanılır — ağır/büyük ürünlerde eksik ücret alınabilir.
+- Kargo yöntemleri kartı (yerleşim 2) Geliver olsun olmasın her mağazada görünür; kargo motoru kartları (3–9) **yalnız Geliver yapılandırılmışsa** görünür.
+- Kargo firması olmayan mağazada ödeme adımında müşteriye yalnızca bu kartta tanımlı **aktif** yöntemler sunulur; hiç yöntem yoksa müşteri sipariş tamamlayamaz.
 
 ## Yerleşim
 1. **Taşıyıcı kartı**: başlık + "Taşıyıcı Ekle / Add Carrier" (eklenebilecek taşıyıcı kalmadıysa pasif). Taşıyıcı satırları
    veya boş durum "Yapılandırılmış taşıyıcı yok" + "İlk Taşıyıcınızı Ekleyin". Altta güvenlik notu ve "Taşıyıcı
    ayarlarındaki değişiklikler aktif kargo hesaplamalarını etkileyebilir…" uyarısı.
-2. "Kargo Fiyatlandırma Durumu / Shipping Rate Status" (sağlık kontrolü)
-3. "Hesap Bakiyesi / Account Balance"
-4. "Varsayılan Paket Ölçüsü / Default Parcel Size" (kendi Kaydet butonu)
-5. "Kargo Fiyatlandırma Kuralları / Shipping Pricing Rules" (kendi ekle/düzenle/sil akışı)
-6. "Kargo Seçimi / Carrier Selection" (strateji; "Öncelik Sıram" seçiliyse içinde "Kargo Öncelik Sırası" listesi)
-7. "Kapıda Ödeme / Cash on Delivery"
-8. "Müşteri Görünümü / Customer Display"
-- Kartlar 6–7–8 için sayfanın altında **yapışkan çubuk**: değişiklik varsa "kaydedilmemiş değişiklik" yazısı, "İptal /
+2. **"Kargo yöntemleri / Shipping methods"** (`data-testid=manual-shipping-methods-card`) — aşağıdaki ayrı bölüm
+3. "Kargo Fiyatlandırma Durumu / Shipping Rate Status" (sağlık kontrolü)
+4. "Hesap Bakiyesi / Account Balance"
+5. "Varsayılan Paket Ölçüsü / Default Parcel Size" (kendi Kaydet butonu)
+6. "Kargo Fiyatlandırma Kuralları / Shipping Pricing Rules" (kendi ekle/düzenle/sil akışı)
+7. "Kargo Seçimi / Carrier Selection" (strateji; "Öncelik Sıram" seçiliyse içinde "Kargo Öncelik Sırası" listesi)
+8. "Kapıda Ödeme / Cash on Delivery"
+9. "Müşteri Görünümü / Customer Display"
+- Kartlar 7–8–9 için sayfanın altında **yapışkan çubuk**: değişiklik varsa "kaydedilmemiş değişiklik" yazısı, "İptal /
   Cancel" (sayfayı yeniler, değişiklikleri atar) ve "Kaydet / Save".
 
 ## Taşıyıcı satırı
@@ -66,6 +71,28 @@ Butonlar: "İptal / Cancel"; "Yapılandırmayı Kaydet / Save Configuration" (ek
 Configuration" (düzenleme). Hata panelin içinde kırmızı kutu + toast olarak görünür (ör. "Lütfen tüm zorunlu alanları
 doldurun", "Girdiğiniz bilgilerde bir hata var, lütfen alanları kontrol edin.").
 
+### Kargo yöntemleri (kendi sabit ücretin)
+Açıklama: "Kendi sabit kargo ücretinizi, teslim süresini ve ücretsiz kargo limitini belirleyin. Kargo firması hesabı gerekmez."
+Yetki: kartı görmek `shipping:read`; "Kargo yöntemi ekle", Aktif switch'i, düzenle ve sil yalnız `shipping:write` olana görünür.
+Boşsa "Henüz kargo yöntemi yok". Satır: ad + "Aktif / Pasif" rozeti, altında "{fiyat} · {N} gün" ve limit varsa "{tutar} üzeri ücretsiz";
+sağda Aktif switch'i (aria-label "{ad} yöntemini ödemede sun"), düzenle ("{ad} yöntemini düzenle") ve sil ("{ad} yöntemini sil") ikonları.
+
+"Kargo yöntemi ekle / düzenle" paneli (sağdan açılan; Kaydet'e basmadan kapanırsa hiçbir şey yazılmaz):
+| Label | Kontrol | Zorunlu | Validasyon / varsayılan | Locator |
+|---|---|---|---|---|
+| Ad | Input (placeholder "Standart Kargo") | evet | en çok 100 karakter; mağazada **benzersiz** ("Bu adda bir kargo yönteminiz zaten var. Farklı bir ad seçin.") | `#manual-method-name` |
+| Fiyat ({para birimi}) | Metin, ondalık | evet | "49,90" veya "49.90"; 0 olabilir; hata "Bir fiyat girin, örneğin 49,90" | `#manual-method-price` |
+| Teslim süresi (gün) | Metin, tam sayı | evet | varsayılan **2**; 1–365; hata "En az 1 gün olacak şekilde teslim süresi girin" | `#manual-method-days` |
+| Açıklama (isteğe bağlı) | Textarea | hayır | en çok 500 karakter | `#manual-method-description` |
+| Ücretsiz kargo limiti ({para birimi}) | Metin, ondalık | hayır | boş = her zaman yukarıdaki fiyat; sipariş tutarı limite ulaşınca/aşınca kargo ücretsiz | `#manual-method-threshold` |
+| Ödemede sun | Switch | — | açık | `#manual-method-active` |
+Butonlar: "Vazgeç", "Kaydet" ("Kaydediliyor"). Para birimi mağazanın temel para birimidir. Müşteri adı, fiyatı ve teslim süresini ödeme adımında görür.
+- Toast: "Kargo yöntemi eklendi" / "Kargo yöntemi kaydedildi" / "Kargo yöntemi artık ödemede sunuluyor" · "…sunulmuyor" /
+  "Kargo yöntemi silindi"; hatalar "Kargo yöntemi kaydedilemedi / silinemedi. Lütfen tekrar deneyin."
+- **Sil**: onay dialogu "Bu kargo yöntemi silinsin mi?" ("\"{ad}\" artık ödemede sunulmayacak. Bu işlem geri alınamaz.") → "Sil". Mevcut gönderilerde
+  kullanılan yöntem silinemez ("…mevcut gönderilerde kullanıldığı için silinemez. Ödemede sunulmasını durdurmak için pasife alın."); pasife al.
+- Kaydet, Aktif switch'i ve Sil **doğrudan canlıya yazar** (taslak yok) ve ödeme adımını anında etkiler.
+
 ### Kargo Fiyatlandırma Durumu
 "Kontrol Et / Run check" → 1 kg'lık örnek paket için fiyat sorgular. Sonuç: "Kargo fiyatları çalışıyor — {N} kargo seçeneği
 bulundu." veya "Kargo fiyatı alınamıyor — Müşterileriniz ödeme adımında kargo seçeneği göremiyor ve sipariş tamamlayamıyor."
@@ -85,7 +112,8 @@ yapılandırın".
 | Ağırlık (kg) / Weight (kg) | number | `[data-testid=default-parcel-weight]` | |
 - "Kaydet" (`default-parcel-save`) yalnız dört alan da >0 iken aktif; "Varsayılanı kaldır" (`default-parcel-clear`) tanımlıysa
   görünür; "Ağırlığı eksik ürünleri görüntüle" → ürün listesi (ağırlığı eksik filtresiyle).
-- Tanımsızsa uyarı: "Şu anda varsayılan bir paket tanımlı değil… ağır ürünlerde eksik ücret alınmasına yol açar."
+- Tanımsızsa uyarı: "Şu anda varsayılan bir paket tanımlı değil. Ağırlığı veya ölçüsü girilmemiş ürünler standart bir paket olarak fiyatlanır; ağır veya büyük ürünlerde eksik ücret alınabilir."
+- **Ana sayfa uyarısı**: Geliver kurulu mağazada varsayılan paket yoksa ya da eksik/tamamlanmamışsa ana sayfada "Varsayılan paket ölçüsünü belirleyin" kartı çıkar (düğme "Paket ölçüsü ekle" → bu sayfa); yalnız `shipping:read` yetkisi olana görünür. Ürün formunda ağırlık veya ölçü eksikse uyarı, mağazanın varsayılan paketi tanımlıysa onun ölçülerini ("…mağazanızın varsayılan paketiyle hesaplanacak: U × G × Y cm ve N kg"), tanımlı değilse platform paketini gösterir.
 - Ücret desi ((En × Boy × Yükseklik) / 3000) ile ağırlıktan **büyük olanına** göre hesaplanır.
 - Toast: "Varsayılan paket ölçüsü kaydedildi" / "…kaldırıldı" / "…kaydedilemedi".
 
@@ -159,10 +187,12 @@ Toast (6–7–8): "Kargo motoru ayarları kaydedildi" / "Ayarlar kaydedilemedi.
 | Kural ekle/düzenle → Kaydet; satır Aktif switch'i; sil | Kural kaydı (switch ve sil anında) | yukarıda | Her biri ayrı |
 | Öncelik Sırasını Kaydet / Varsayılan Öncelikleri Yükle | Öncelik listesini yazar | yukarıda | Önce |
 | Varsayılan paket Kaydet / Varsayılanı kaldır | Anında | yukarıda | Önce |
+| Kargo yöntemi ekle/düzenle → Kaydet; Aktif switch'i; Sil | Yöntemi **anında canlıya** yazar / ödemeden kaldırır (switch diyalogsuz; Sil onay dialoglu) | yukarıda | Her biri ayrı; Sil tek tek |
 | Yapışkan çubuk Kaydet | Kargo Seçimi + Kapıda Ödeme + Müşteri Görünümü değişikliklerini birlikte kaydeder | "Kargo motoru ayarları kaydedildi" | Önce (üç kartın değişikliklerini tek özette) |
 | Yapışkan çubuk İptal | Sayfayı yeniler; kaydedilmemiş tüm değişiklikler gider | — | — |
 
 ## Yan etkiler (vitrin / sipariş)
+- **Kargo yöntemleri (kendi sabit ücret)**: aktif yöntemler ödeme adımında ad, fiyat ve teslim süresiyle listelenir; sipariş tutarı ücretsiz kargo limitine ulaştıysa "Ücretsiz". Pasif yöntem sunulmaz.
 - **Ödeme adımı (checkout)**: müşteri adres girince aktif taşıyıcının sunduğu kargo seçenekleri fiyatlarıyla listelenir.
   Seçenekler ve fiyatlar strateji, öncelik/hariç tutulan firmalar, fiyat kuralları ve paket ölçüsüne göre hesaplanır.
   - Fiyat alınamazsa müşteri "Kargo seçeneği bulunamadı" görür ve **sipariş tamamlayamaz**.
@@ -182,12 +212,13 @@ Toast (6–7–8): "Kargo motoru ayarları kaydedildi" / "Ayarlar kaydedilemedi.
 ## Tuzaklar
 - Yeni eklemede **Test Ortamı Modu açık** gelir: prod mağazada kullanıcı gerçek gönderi istiyorsa kapatılması gerekir —
   her zaman özette "Mod: Test/Canlı" satırı göster, varsayılanı kullanıyorsan "varsayılan" diye işaretle.
+- Kargo yöntemleri kartı yapışkan çubuğa bağlı değildir; her yöntem kendi panelinden kaydolur.
 - Kargo Seçimi, Kapıda Ödeme ve Müşteri Görünümü kartlarının kendi kaydet butonu yok; **yapışkan çubuktaki Kaydet** üçünü
   birden kaydeder. Öncelik listesi, varsayılan paket ve fiyat kuralları ise kendi butonlarıyla **ayrı** kaydolur.
 - Yapışkan çubukta "İptal" sayfayı yeniler — kaydedilmemiş başka kart değişikliklerini de siler.
 - Varsayılan taşıyıcı kaldırılamaz; önce başka birini varsayılan yap.
 - Kural Aktif switch'i ve silme anında uygulanır.
-- Tutar alanları TL cinsindendir (ondalık ayırıcı nokta).
+- Fiyatlandırma kuralı ve kapıda ödeme tutar alanları TL cinsindendir (ondalık ayırıcı nokta); Kargo yöntemleri alanları mağazanın temel para biriminde, virgül veya nokta kabul eder.
 - Otomatik Kargo'yu açmak gerçek maliyet doğurur — kullanıcı açıkça istemedikçe açma.
 
 ## Doğrulama
@@ -196,4 +227,5 @@ Toast (6–7–8): "Kargo motoru ayarları kaydedildi" / "Ayarlar kaydedilemedi.
 3. "Kontrol Et" → "Kargo fiyatları çalışıyor — N kargo seçeneği bulundu."
 4. Kural: listede ad, tip, tarih rozeti, Aktif switch durumu.
 5. Motor ayarları: toast "Kargo motoru ayarları kaydedildi" → sayfayı yenile, seçimler korunmuş.
-6. Gerekirse vitrinde sepete ürün ekleyip ödeme adımında kargo seçeneklerini gözlemle (sipariş tamamlama yok).
+6. Kargo yöntemi: listede ad, fiyat/süre/limit satırı ve Aktif rozeti beklenen değerde.
+7. Gerekirse vitrinde sepete ürün ekleyip ödeme adımında kargo seçeneklerini gözlemle (sipariş tamamlama yok).

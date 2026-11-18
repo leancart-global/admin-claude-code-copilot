@@ -11,7 +11,7 @@
 2. Ürün gerekleri (Trendyol hazırlık kuralları; diğer kanallar için de pratikte geçerli):
    - **Barkod** dolu ve ≤40 karakter (ürün formu "Kimlik" sekmesi, [../products/product-edit.md](../products/product-edit.md)).
    - En az bir **kategori** ve birincil kategorinin **kanal eşlemesi** ([channel-categories.md](channel-categories.md)).
-   - **Marka** ve markanın kanal eşlemesi (Trendyol). Ürün formunda marka alanı henüz yok (geliştiriliyor) → Trendyol'da "Marka yok" hatası beklenir; kullanıcıya bildir.
+   - **Marka** ve markanın kanal eşlemesi (Trendyol). Markası olmayan ürünler Trendyol'da "Marka yok" hatası alır; ürün formunun Kimlik sekmesinde marka seçilebilir (opsiyonel), gönderimden önce eksik markaları kullanıcıya bildir.
    - Fiyat > 0; karşılaştırma (liste) fiyatı varsa satış fiyatından düşük olamaz.
    - Uyarı (engellemez): görsel yok; başlık 100 karakterden uzun.
    - Kategorinin zorunlu kanal özellikleri ürünün özel niteliklerinde dolu (bkz. [channel-categories.md](channel-categories.md) §Kurallar).

@@ -83,6 +83,10 @@ Kartta ayrıca sertifika özeti: "{issuer} tarafından verildi" (otomatikte "Let
 - Etkiler: vitrinin erişildiği adres(ler), SSL; mağaza görünümü yönlendirmesi (`/settings/store-views` alan adı eşlemesi — doğrulanmadı).
 
 ## Yan etkiler
+- **Elle yüklenen sertifika için süre uyarısı**: yüklediğin (otomatik olmayan) sertifikanın bitişine **14 gün**, **3 gün** kala ve **süre dolunca**
+  mağazanın doğrulanmış yöneticilerine (yoksa mağaza destek adresine) e-posta gider; her sertifika, aşama ve alan adı listesi için bir kez. E-postada
+  alan adları, sertifika bitiş tarihi ve "Alan Adları sayfasından yenilenmiş sertifikanızı yükleyin" yönlendirmesi bulunur. E-posta alan adını
+  vitrinden kaldırmaz; sertifikayı yenileyene kadar ziyaretçiler süre dolunca tarayıcı uyarısı görebilir. Otomatik sertifikada bu e-posta gelmez (yenileme kendiliğinden).
 - Sahiplik doğrulama + sertifika tamamlanıp trafik yönlendirildiğinde vitrin yeni alan adından yayında olur.
 - Kaldırma, yöntem değişimi ve sertifika yenileme o alan adındaki vitrin erişimini/güvenlik sertifikasını anında etkiler.
 

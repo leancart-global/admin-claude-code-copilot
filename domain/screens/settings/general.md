@@ -2,7 +2,7 @@
 - URL: {ADMIN_URL}/settings/general — sekme seçimi URL'ye yazılmaz; sayfa her açılışta "Mağaza ve Bölge" sekmesiyle açılır.
 - Menü yolu: Sol menü "Ayarlar / Settings" → "Genel / General"; ya da `/settings` hub → "Mağaza / Store" bölümü → "Genel / General" kartı.
 - Sayfa başlığı: "Genel Ayarlar / General Settings"; açıklama "Panel tercihlerinizi ve kurulum seçeneklerini yönetin / Manage your dashboard preferences and onboarding options".
-- Amaç: Mağazanın temel yapılandırması — vitrin/admin/medya URL'leri, bölgesel biçim (tarih biçimi + saat dilimi), stokta olmayan varyant davranışı, iletişim bilgileri ve adres, bot/spam koruması, Google Analytics ve Google doğrulaması, ürün değerlendirme kuralları, kurulum sihirbazı tercihleri. Plan ve dahil özellikler burada **görüntülenir**.
+- Amaç: Mağazanın temel yapılandırması — vitrin/admin/medya URL'leri, bölgesel biçim (tarih biçimi + saat dilimi), stokta olmayan varyant davranışı, iletişim bilgileri ve adres, bot/spam koruması, Google Analytics, Google Tag Manager ve Google doğrulaması, ürün değerlendirme kuralları, kurulum sihirbazı tercihleri. Plan ve dahil özellikler burada **görüntülenir**.
 - Mağaza adı bu ekranda **yoktur**. Resmi firma unvanı salt okunurdur; marka/mağaza görünen adı için bkz. [../design/branding.md](../design/branding.md) (doğrulanmadı).
 - Yetki: ekran `settings:read`; kaydetme `settings:write`. "Plan ve Abonelik" kartı yalnız **admin / super_admin** rolüne görünür. "Ürün görünümü" kartında `settings:write` yoksa seçim ve Kaydet devre dışıdır.
 - Her kart **kendi Kaydet butonuyla ayrı** kaydeder; sayfa genelinde tek bir Kaydet yoktur. İstisna: "Çerezsiz ziyaretçi sayımı" anahtarı **anında** kaydeder (aşağıda).
@@ -22,12 +22,12 @@
 1. Başlık + açıklama.
 2. Kurulum tamamlanmadıysa uyarı kutusu: "Mağaza kurulumunuz %{n} tamamlandı / Your store setup is {n}% complete", "Kalanlar: / Still need:" + eksik maddeler, buton "Kurulum listesini görüntüle / View setup checklist" (Kurulum sekmesine geçer).
 3. Özet şeridi (3 tıklanabilir kutu, ilgili sekmeye geçer): "Mağaza ve Bölge / Store & Regional" ("{total} URL'den {count} tanesi ayarlandı" / "Tümü tamam"), "Şirket Bilgileri / Company Info" ("{total} alandan {count} tanesi dolduruldu" / "Tamamlandı"), "Değerlendirmeler / Reviews" ("{total} ayardan {count} tanesi etkin").
-4. Sekmeler (`role=tab`, bu sırayla): "Plan ve Abonelik / Plan & Subscription", "Mağaza ve Bölge / Store & Regional" (**varsayılan açık**), "Şirket Bilgileri / Company Info", "Güvenlik / Security", "Analitik / Analytics", "Değerlendirmeler / Reviews", "Kurulum / Onboarding".
+4. Sekmeler (`role=tab`, bu sırayla): "Plan ve Abonelik / Plan & Subscription", "Mağaza ve Bölge / Store & Regional" (**varsayılan açık**), "Şirket Bilgileri / Company Info", "Güvenlik / Security", "Analitik / Analytics", "Değerlendirmeler / Reviews", "Destek butonu / Support button" (bkz. [support-widget.md](support-widget.md)), "Kurulum / Onboarding".
 
 ## Alanlar
 
 ### Plan ve Abonelik (salt okunur)
-- Kart "Plan ve Abonelik / Plan & Subscription": "Mevcut Plan / Current Plan" rozeti — Launch / Rise / Lead / "Özel / Custom"; plan açıklaması; "{total} özellikten {count} tanesi dahil / {count} of {total} features included".
+- Kart "Plan ve Abonelik / Plan & Subscription": "Mevcut Plan / Current Plan" rozeti — Launch / Rise / Lead / "Özel / Custom"; plan açıklaması; "{total} özellikten {count} tanesi dahil / {count} of {total} features included". Plan toplamları: Launch 9, Rise 24, **Lead 34** (Lead'e "Hikaye anlatımı / Storytelling" eklendi; sayaç yalnız o planın özelliklerini sayar). Lead planında ayrıca vitrinde tek tıkla satın alma bağlantısı (`/s/<ürün SKU>`) açılır; admin'de ayar ekranı yok, plan kartı listesinde ayrı satırı olup olmadığı doğrulanmadı.
 - Özellik grupları "Temel / Core", "Büyüme / Growth", "Kurumsal / Enterprise"; her özellik dahil/değil işaretli (ör. "Çoklu Para Birimi / Multi-Currency", "Çoklu Dil / Multi-Language", "Özel Alan Adı / Custom Domain", "API Erişimi / API Access", "Denetim Günlüğü / Audit Log").
 - Launch ve Rise planlarında "Yükseltme Talep Et / Request Upgrade" butonu (aşağıda Aksiyonlar). Plan bu ekrandan değiştirilemez.
 
@@ -47,6 +47,12 @@ Kart "Ürün görünümü / Product display" (`data-testid="product-display-card
 | Label | Kontrol | Seçenekler | Locator | Not |
 |---|---|---|---|---|
 | Müşteri stokta olmayan bir seçeneği açtığında / When a shopper opens a sold-out option | Select | "Stokta olmayan seçeneği göster / Show the sold-out option" (sayfa o seçenekle açılır, satın al pasif) · "Stokta olan bir seçeneği göster / Show an option that is in stock" (varsayılan ya da stoktaki ilk seçenekle açılır) | `#outOfStockRequestedVariant` | Seçim altındaki yardım metni seçime göre değişir |
+
+Kart "Ödeme deneyimi / Checkout experience" (`data-testid` ile kart; "Ürün görünümü"nün altında), **ayrı** Kaydet (değişiklik yoksa pasif, `settings:write` yoksa seçim disabled):
+
+| Label | Kontrol | Seçenekler | Locator | Not |
+|---|---|---|---|---|
+| Ödeme sayfası düzeni / Checkout page layout | Select | "Klasik / Classic" (varsayılan: müşteri adres, kargo ve ödeme bölümlerini tek sayfada birlikte görür) · "Sadeleştirilmiş / Simplified" (müşteri adres, kargo ve ödeme adımlarını sırayla tamamlar) | `#checkoutExperience` | Kaydettikten sonra vitrinin yeni düzene geçmesi **5 dakikayı** bulabilir. Toast "Ödeme deneyimi kaydedildi" / "Ödeme deneyimi kaydedilemedi. Lütfen tekrar deneyin." **Müşterilerin ödeme akışını değiştirir** — onay butondan önce |
 
 ### Şirket Bilgileri
 Kart "Resmi Firma Bilgileri / Official Company Information" — **salt okunur** (Lean Cart tanımlar; bilgi kutusu "Resmi firma bilgilerinizi değiştirmek için lütfen bizimle iletişime geçin."): "Firma Unvanı / Company Name", "Vergi Kimlik No / Tax ID", "Vergi Dairesi / Tax Office", "MERSIS Numarası / MERSIS Number", "Ticaret Sicil No / Trade Register No". Kullanıcı bunları değiştirmek isterse: panelden yapılamaz, Lean Cart desteğine yönlendir.
@@ -83,11 +89,12 @@ Kart "Form Spam Koruması / Form Spam Protection" (`data-testid="forms-turnstile
 - Kurulu değilse: "Henüz ayarlanmadı — spam koruması açık olan formlar buraya bir kimlik bilgisi ekleyene kadar yayınlanamaz." (`data-testid="forms-turnstile-not-configured"`).
 
 ### Analitik
-Kart "Analitik / Analytics" (`data-testid="analytics-config-card"`), üç ayrı bölüm, her biri kendi butonuyla:
+Kart "Analitik / Analytics" (`data-testid="analytics-config-card"`); açıklama: "…Google Analytics 4'ü bağlayın, Google Tag Manager kapsayıcınızı yükleyin ve mağazanızı Google ile doğrulayın." Bölümler (GA4 → Google Tag Manager → Arama motoru doğrulaması → …), her biri kendi butonuyla:
 
 | Bölüm | Label | Kontrol | Locator | Kayıt | Not |
 |---|---|---|---|---|---|
 | GA4 | GA4 Ölçüm Kimliği / GA4 Measurement ID | Input + "Temizle / Clear" + "Kaydet / Save" | `#ga4-measurement-id` | Kaydet | Kimlik bilgisi değil, kullanıcının verdiği değer onayla girilebilir. Geçersizse alan altında hata |
+| Google Tag Manager (`data-testid="gtm-container-section"`) | Google Tag Manager kapsayıcı kimliği / Google Tag Manager container ID | Input (placeholder "GTM-XXXXXXX") + "Kapsayıcıyı kaydet" + "Kapsayıcıyı kaldır" | `#gtm-container-id` | Kaydet / onaylı kaldır | Kimlik (`GTM-` ile başlar) ya da Tag Manager'ın verdiği kurulum kodunun tamamı yapıştırılabilir; yapıştırılan kod kimliğe indirgenir. Geçersizse "'GTM-' ile başlayan bir kimlik girin veya kurulum kodunu yapıştırın." Kaldırma onayı: "Google Tag Manager kapsayıcısı kaldırılsın mı?" (Kaldır / Vazgeç) — mağaza kapsayıcıyı yüklemeyi bırakır, içindeki etiketler çalışmaz. Toast "Google Tag Manager kapsayıcısı kaydedildi." / "…kaydedilemedi. Lütfen tekrar deneyin." Kapsayıcı yalnız müşteri **pazarlama çerezlerini kabul ettikten sonra** vitrinde yüklenir (satın alma / ödemeye başlama olaylarına dayanan Ads dönüşümleri için analitik çerez onayı da gerekir); özel JavaScript değişkenleri, Önizleme Modu ve Google dışı alan adlarında barındırılan etiketler desteklenmez; kapsayıcıdaki etiketler ödeme sayfalarında da çalışır (sorumluluk mağazada). GA4 yukarıdaki Ölçüm Kimliği ile kurulmalı; kapsayıcıya ayrıca GA4 etiketi eklenirse sayfa görüntülemeleri iki kez sayılır (hem kimlik hem kapsayıcı doluysa alanın altında bu uyarı çıkar). **Canlı vitrini etkiler** |
 | Arama motoru doğrulaması / Search engine verification | Google doğrulama etiketi / Google verification tag | Input + "Doğrulamayı kaydet / Save verification" + "Doğrulamayı temizle / Clear verification" | `#google-site-verification` | Kaydet / onaylı temizle | Etiketin tamamı veya yalnız `content` değeri yapıştırılabilir. Temizleme onay diyaloğu: "Arama motoru doğrulaması kaldırılsın mı?" — kaldırılırsa Search Console / Merchant Center verisi kesilebilir |
 | Çerezsiz ziyaretçi sayımı / Cookieless visitor counts | Onay vermeyen ziyaretçileri say / Count visitors without consent | Switch | `data-testid="cookieless-aggregate-section"` içindeki switch | **ANINDA** | Açarken onay diyaloğu "Çerezsiz ziyaretçi sayımı açılsın mı?" → "Aç / Turn on"; **kapatma diyalogsuz, anında**. Uyarı: KVKK/GDPR uyumu sağlamaz, hukuki danışman önerilir |
 | Sunucu taraflı dönüşümler / Server-side conversions | Measurement Protocol API gizli anahtarı / Measurement Protocol API secret | Input + "Kaydet / Save" + "Kaldır / Remove" | `#ga4-api-secret` | Kaydet | **Gizli alan**. Kayıtlıysa "Gizli anahtar {date} tarihinde ayarlandı." Kaldırma onayı: satışlar sunucudan GA'ya bildirilmez olur |
@@ -106,6 +113,7 @@ Kart "Kurulum ve Başlangıç / Onboarding & Setup":
 - "Kurulum kontrol listesini göster / Show setup checklist" — Switch `#show-checklist` (panelde kurulum listesi).
 - "Kurulum sihirbazını göster / Show setup wizard" — Switch `#show-wizard` (bir sonraki sayfa yenilemesinde ilk kurulum sihirbazı açılır).
 - "Kurulumu sıfırla / Reset onboarding" — buton + onay diyaloğu.
+- Sihirbazın oluşturduğu başlangıç içeriği mağazanın **dilini izler**: öneri kategori adları mağazanın birincil ülkesinin dilinde gelir (TR için Türkçe, diğerlerinde İngilizce; kategori adresleri hep aynı İngilizce slug'dır); başlangıç logosu yer tutucudur. Başlangıç menüsü, alt bilgi (footer) ve blok varsayılanlarındaki bağlantılar yalnızca vitrinde gerçekten açılan sayfalara gider (ürünler, müşteri hizmetleri, gizlilik politikası, şartlar…); "#" ya da giriş gerektiren sayfa bağlantısı kalmaz.
 - "Kaydet / Save" ve "Kurulum ilerlemesi: %{n} tamamlandı" satırı.
 
 ## Gizli alanlar — Claude dokunmaz
@@ -125,6 +133,7 @@ Kart "Kurulum ve Başlangıç / Onboarding & Setup":
 | Kaydet / Save | Bot Koruması | Aç/kapa + anahtarlar kaydedilir; yazılan gizli anahtar alanı boşalır | "Bot koruması ayarları kaydedildi." |
 | Kaydet / Save · Kaldır / Remove | Form Spam Koruması | Kaydet; Kaldır → onay diyaloğu "Spam koruması kimlik bilgisi kaldırılsın mı?" → "Kaldır" | "Spam koruması kimlik bilgisi kaydedildi/kaldırıldı." Kullanımdaysa: "Kaldırılamıyor — önce şu formlarda spam korumasını kapatın: {forms}" |
 | Kaydet / Save · Temizle / Clear | GA4 | Kimlik kaydedilir / alan boşaltılır (boşaltma da Kaydet ister) | "Analitik ayarları kaydedildi." |
+| Kapsayıcıyı kaydet · Kapsayıcıyı kaldır | Google Tag Manager | Kimlik kaydedilir (vitrin kapsayıcıyı onay sonrası yüklemeye başlar) / onaylı kaldırılır | "Google Tag Manager kapsayıcısı kaydedildi." |
 | Doğrulamayı kaydet · Doğrulamayı temizle | Arama motoru doğrulaması | Kaydet / onaylı kaldır | "Arama motoru doğrulaması kaydedildi." |
 | Switch | Çerezsiz sayım | **Anında** kaydeder | "Çerezsiz ziyaretçi sayımı açıldı/kapatıldı." |
 | Kaydet · Kaldır | Sunucu taraflı dönüşümler | Gizli anahtar kaydı/kaldırma (onaylı) | "…gizli anahtarı kaydedildi/kaldırıldı." |
@@ -136,7 +145,7 @@ Kart "Kurulum ve Başlangıç / Onboarding & Setup":
 ## Onay zamanlaması (kural 2/5/6)
 - **Anında kayıt:** "Onay vermeyen ziyaretçileri say" anahtarı. Kullanıcı onayı anahtara dokunmadan **önce** alınır (hem açma hem kapatma).
 - **Dış etkili:** "Yükseltme Talep Et → Talep Gönder" (Lean Cart'a talep gider) — yalnız kullanıcı açıkça isterse, onayla. "Doğrula" yalnız erişim kontrolüdür, kayıt yapmaz; kullanıcının verdiği URL için özet öncesi kullanılabilir.
-- **Geri alınamaz / silme:** "Kurulumu sıfırla", Turnstile "Kaldır", sunucu dönüşüm gizli anahtarı "Kaldır", "Doğrulamayı temizle" → her biri ayrı onay.
+- **Geri alınamaz / silme:** "Kurulumu sıfırla", Turnstile "Kaldır", sunucu dönüşüm gizli anahtarı "Kaldır", "Doğrulamayı temizle", GTM "Kapsayıcıyı kaldır" → her biri ayrı onay.
 - Diğer kartlar kendi Kaydet'iyle: özet → onay → Kaydet. Aynı anda birden çok kart değişiyorsa her kartın Kaydet'i ayrı basılır; özet kart bazında yazılır.
 
 ## Yan etkiler

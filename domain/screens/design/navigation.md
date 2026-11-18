@@ -61,6 +61,7 @@
 - **Öğe ekle:** "Öğe Ekle" → tip seç → yeni öğe kök seviyede listenin sonuna eklenir; ardından satırdaki kalem/"Düzenle" ile Sheet'i aç, Etiket + URL doldur, Sheet'i kapat (Uygula butonu yok, değişiklik anında forma yansır).
 - **Alt öğe ekle:** dropdown/mega-menu satırının "…" menüsü → "Bağlantı Ekle" vb.
 - **Sırala:** tutamaçla sürükle-bırak; bırakılan öğe hedefin **hemen sonrasına, hedefle aynı seviyeye** yerleşir. Yukarı/aşağı butonu yok. Çeviri kapsamında sürükleme kapalı.
+- **Vitrin sırası:** menü, ağaçta göründüğü sırayla vitrine çıkar; eklenen, çoğaltılan, taşınan ve kategorilerden eklenen öğeler her seviyede ağaçtaki yerinde kalır (kayıtta sıra otomatik yeniden numaralanır).
 - **Kategorilerden menü:** "Kategorilerden menü oluştur" (boşken) / "Kategorilerden ekle" → dialog → "Seçilenleri ekle".
 - **Kaydet / Save**: toast "Navigasyon başarıyla kaydedildi." / "{name} için navigasyon etiketleri kaydedildi."; hata "Navigasyon kaydedilemedi."
 - **Yayınla / Publish**: kaydedilmemiş değişiklik varsa önce kaydeder, sonra yayınlar → toast "Navigasyon mağazanızda yayınlandı."; hata "Navigasyon yayınlanamadı. Lütfen tekrar deneyin."

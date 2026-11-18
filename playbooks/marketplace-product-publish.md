@@ -40,7 +40,7 @@ Harita: ../domain/screens/marketplace/channel-products.md (gönderim, hazırlık
    | Barkod yok / çok uzun | Ürün düzenle → Kimlik → Barkod (kullanıcıdan değer al; uydurma) |
    | Kategori yok | Ürün düzenle → Kategoriler |
    | Kategori eşleşmemiş | Kategori eşleme (§4) |
-   | Marka yok / eşleşmemiş | Ürün formunda marka alanı henüz yok → kullanıcıya bildir; bu ürünleri göndermeden önce kullanıcıya sor |
+   | Marka yok / eşleşmemiş | Ürün formunun Kimlik sekmesinde marka seçilebilir → kullanıcıya bildir; marka seçilmeden bu ürünleri göndermeden önce kullanıcıya sor |
    | Fiyat hatalı / liste fiyatı düşük | Ürün düzenle → Fiyatlandırma |
    | Resim yok, başlık uzun (uyarı) | Kullanıcıya bildir; gönderim engellenmez ama kanal reddedebilir |
 5. Zorunlu kanal özellikleri: ürünün attribute set'inde, kanalın istediği özellik adlarıyla (Renk, Beden…) değer var mı?
@@ -49,7 +49,7 @@ Harita: ../domain/screens/marketplace/channel-products.md (gönderim, hazırlık
 ## 3. Plan + eksik bilgi (tek mesaj)
 Örnek:
 > Ortam: **prod**, Trendyol modu **Canlı**. Plan: (1) 2 ürüne barkod eklenecek [ayrı onay]. (2) 5 ürün Trendyol'a
-> gönderilecek: 3 yeni ilan, 2 güncelleme. Eksik: "Kupa 300ml" barkodu? 1 üründe marka eksik (alan geliştiriliyor) —
+> gönderilecek: 3 yeni ilan, 2 güncelleme. Eksik: "Kupa 300ml" barkodu? 1 üründe marka eksik (ürün formunun Kimlik sekmesinden seçilebilir) —
 > bu ürünü gönderelim mi?
 
 ## 4. Kategori eşlemesi ("Trendyol kategori eşlemesini yap")

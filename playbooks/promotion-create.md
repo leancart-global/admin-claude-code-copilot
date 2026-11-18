@@ -15,8 +15,9 @@ URL'ler locale öneksizdir: `{ADMIN_URL}/marketing/promotions/new`.
 - Prod'da test promosyonu açma.
 
 ## 1. İsteği çözümle → ekran neyi destekliyor?
-Admin promosyon formu yalnız **sepet geneli** üç tür kurar ve indirim **kupon koduyla** tetiklenir. Kapsam (ürün,
-kategori, marka, segment, store view), otomatik (kodsuz) tetikleme, adet koşulu, Al-Kazan, kademe ekranda yok.
+Admin promosyon formu altı tür kurar: Yüzde, Tutar, Ücretsiz Kargo (hep **kupon koduyla**), Kademeli, Paket, Al-Kazan
+(varsayılan **ödemede otomatik**, istenirse kuponla). Yüzde / Tutar / Kademeli / Al-Kazan için **ürün kapsamı** seçilebilir.
+Kategori, marka, segment, store view kısıtı, en az ürün adedi, farklı ürünler arası "A al B indirimli" ekranda yok.
 
 | İstek | Ekranda karşılığı | Ne yapılır |
 |---|---|---|
@@ -24,8 +25,10 @@ kategori, marka, segment, store view), otomatik (kodsuz) tetikleme, adet koşulu
 | "200 TL indirim" / "1000 TL üzeri 100 TL indirim" | Tutar İndirimi + (En az sepet tutarı) | Promosyon + kupon |
 | "%15, en fazla 300 TL" | Yüzde 15 + En fazla indirim tutarı 300 | Promosyon + kupon |
 | "500 TL üzeri kargo bedava" | (a) **Kodsuz, herkese:** kargo ayarındaki "Ücretsiz Kargo" kuralı, Minimum Sipariş Tutarı 500 → ../domain/screens/settings/shipping-carriers.md. (b) **Kodla:** Ücretsiz Kargo + En az sepet tutarı 500 + kupon | Kullanıcıya iki yolu sor; "herkese otomatik" dediyse (a) |
-| "Tüm tişörtlerde %20" | **Kategori kısıtı yok.** Sepet geneli kupon tişört dışı ürünlere de indirim verir | Kullanıcıya söyle ve seçenek sun: (1) tişört ürünlerinde **İndirimli Fiyat** + tarih aralığı (ürün başına, ../domain/screens/products/product-edit.md; kodsuz, vitrinde fiyat olarak görünür), (2) sepet geneli %20 kupon (kapsam kabul edilirse). Kalıcı fiyat düşürme (toplu "Fiyatı Güncelle → Azalt %") promosyon değildir; yalnız kullanıcı açıkça isterse |
-| "3 al 2 öde" / "2. ürüne %50" | **Al-Kazan türü ekranda yok** | Kullanıcıya söyle. Yakın seçenek: ilgili ürünlerde **kademe fiyatı** (Min Miktar 3, % İndirim 33.33 — ../domain/screens/products/product-edit.md Fiyatlandırma); bu "her üründe 3+ adette birim fiyat indirimi"dir, farklı ürünleri karıştıran "3 al 2 öde" değildir; sepette kademe fiyatının uygulanması doğrulanmadı — kullanıcı onaylarsa uygula, sonra sepette kontrol önerisi ver |
+| "Tüm tişörtlerde %20" / "şu 3 üründe %20" | **Kategori kısıtı yok, ürün kapsamı var.** Yüzde (veya Tutar) türünde "Geçerli olduğu ürünler"e ürünleri tek tek seç; kapsam boş bırakılırsa tüm sepete uygulanır | Kullanıcıdan ürün listesini al (kategori istiyorsa kategorideki ürünleri listeleyip onaylat); alternatif: ürün başına **İndirimli Fiyat** + tarih aralığı (../domain/screens/products/product-edit.md; kodsuz, vitrinde fiyat olarak görünür) |
+| "3 al 2 öde" / "2. ürüne %50" | **Al-Kazan** türü: Müşteri alır 2 / Müşteri kazanır 1 / Kazanılan ürünlerde indirim 100 ("3 al 2 öde"); "2. ürüne %50" = alır 1 / kazanır 1 / %50 | Yalnız **aynı ürün** için çalışır; "A al B bedava" (farklı ürün) formda yok — söyle. İstenirse ürün kapsamı seç. Varsayılan tetikleme "Ödemede otomatik" → herkese açıldığını özette belirt |
+| "1000 TL'ye %10, 2000 TL'ye %15" / "5 adet al %20" | **Kademeli** türü: ölçüt Sepet tutarı ya da Ürün adedi, her kademe eşik + indirim | Ölçütü karıştırma (hepsi aynı); eşik tekrarı olmaz; ulaşılan en yüksek kademe geçerli. İndirim yalnız kapsamdaki ürünlere, eşik tüm sepete bakar |
+| "Bu 3 ürünü birlikte alana 999 TL" | **Paket** türü: en az 2 farklı ürün, paket fiyatı, her üründen adet | Paket fiyatı ürünlerin toplamından düşük olmalı; siparişte bir kez uygulanır |
 | "VIP müşterilere / şu segmente %10" | Segment kısıtı ekranda yok | Kullanıcıya söyle; kuponu yalnız o kitleye dağıtmak (kampanya e-postası) bir yol olabilir — dağıtım ayrı iş, ayrı onay |
 | "Hafta sonu / 11.11 için" | Başlangıç–Bitiş | Saatleri mağaza saat dilimiyle netleştir |
 
@@ -37,7 +40,9 @@ Ekranın desteklemediği bir kısıtı API ile kurmaya çalışma (kural 3). Des
 | Ad (iç) | Promosyon adı | evet | Öner: "{Dönem} {değer} {tür}" (ör. "Kasım %20 Sepet İndirimi") → onaylat |
 | Açıklama | Açıklama | hayır | boş |
 | Tür | İndirim türü | evet | — (cümleden çıkar) |
-| Değer | İndirim yüzdesi / tutarı | yayın için evet | — (sor) |
+| Değer / kural | İndirim yüzdesi / tutarı; kademeler; paket ürünleri + fiyat + adet; al / kazan adedi + indirim % | yayın için evet | — (sor) |
+| Ürün kapsamı | Geçerli olduğu ürünler (Yüzde, Tutar, Kademeli, Al-Kazan) | hayır | boş = tüm sepet ("varsayılan") |
+| Tetikleme | Müşteri nasıl yararlanır (Kademeli, Paket, Al-Kazan) | — | Ödemede otomatik uygulanır ("varsayılan"); kullanıcı kod istiyorsa "Müşteri kupon kodu girer" |
 | Üst sınır | En fazla indirim tutarı | hayır | boş = sınırsız ("varsayılan") |
 | Alt sınır | En az sepet tutarı | hayır | boş ("varsayılan") |
 | Başlangıç | Başlangıç tarihi | evet | Kullanıcı "hemen" dediyse şimdiki saat (yuvarla, ör. bir sonraki tam saat) → onaylat |
@@ -45,7 +50,7 @@ Ekranın desteklemediği bir kısıtı API ile kurmaya çalışma (kural 3). Des
 | Toplam sınır | Toplam kullanım sınırı | hayır | boş = sınırsız ("varsayılan") |
 | Müşteri başı | Müşteri başına sınır | hayır | boş = sınırsız; tek kullanımlık kampanyalarda 1 öner |
 | Durum | Taslak Kaydet / Yayınla | — | **Taslak**; kullanıcı "yayına al / başlat" dediyse Yayınla |
-| Kupon kodu | — (kupon ekranı) | indirim için evet | Kullanıcıya sor: tek ortak kod mu (ör. `KASIM20`), toplu tekil kodlar mı? |
+| Kupon kodu | — (kupon ekranı) | kuponlu türlerde indirim için evet | Kullanıcıya sor: tek ortak kod mu (ör. `KASIM20`), toplu tekil kodlar mı? Otomatik tetiklemede kupon gerekmez |
 
 ## 3. Bağımlılıklar (salt okuma)
 a. `{ADMIN_URL}/marketing/promotions` listesinde aynı adlı/aynı dönemli promosyon var mı ara (arama kutusu + Durum
@@ -59,15 +64,20 @@ c. Kupon kodu benzersizliği kupon ekranında kontrol edilir (../domain/screens/
 Örnek:
 > Plan: (1) Promosyon "Kasım %20 Sepet İndirimi" — Yüzde 20, en az sepet 500 TL, 1 Kas 00:00 → 30 Kas 23:59
 > (Europe/Istanbul), Taslak. (2) Kupon `KASIM20` bu promosyona bağlı [ayrı onay]. (3) Yayına alma [ayrı onay].
-> Not: Bu indirim tüm sepete uygulanır; yalnız tişörtlere kısıtlanamaz.
+> Not: Ürün kapsamı seçilmedi, indirim tüm sepete uygulanır (yalnız belirli ürünlere istiyorsan ürünleri seçeriz).
 > Eksik: Bitiş tarihi? Müşteri başı sınır olsun mu (öneri 1)?
 
 ## 5. Formu doldur
 1. `{ADMIN_URL}/marketing/promotions/new` → `browser_snapshot`.
 2. `#promotion-name` → ad; `#promotion-description` → (varsa).
-3. Tür radyosu: `#promotion-type-percentage` / `#promotion-type-fixed_amount` / `#promotion-type-free_shipping` (tıkla).
+3. Tür radyosu: `#promotion-type-percentage` / `#promotion-type-fixed_amount` / `#promotion-type-free_shipping` /
+   `#promotion-type-tiered` / `#promotion-type-bundle` / `#promotion-type-buy_x_get_y` (tıkla).
 4. Değer: `#promotion-discount-percentage` (ör. `20`) ve gerekirse `#promotion-max-discount`; ya da
-   `#promotion-discount-amount` (nokta ondalık: `149.90`). Ücretsiz kargoda değer yok.
+   `#promotion-discount-amount` (nokta ondalık: `149.90`). Ücretsiz kargoda değer yok. Kademeli: "Kademe ekle" ile satırlar,
+   her satırda Ölçüt / eşik / İndirim türü / değer. Paket: `#promotion-bundle-products-search` ile ürünler, `#promotion-bundle-price`,
+   `#promotion-bundle-quantity`. Al-Kazan: `#promotion-bogo-buy`, `#promotion-bogo-get`, `#promotion-bogo-percentage`.
+   Ürün kapsamı: `#promotion-scope-search` (yaz, sonuç gelince seç). Tetikleme: `#promotion-trigger-automatic` /
+   `#promotion-trigger-coupon`. "Kural:" özet satırını (`promotion-rule-summary`) kullanıcının isteğiyle karşılaştır.
 5. `#promotion-min-purchase` (varsa).
 6. `#promotion-start-date`, `#promotion-end-date` → `fill('2026-11-01T00:00')` biçimi.
 7. `#promotion-usage-limit`, `#promotion-usage-limit-per-customer` (varsa; 0 değil, boş = sınırsız).
@@ -83,8 +93,8 @@ c. Kupon kodu benzersizliği kupon ekranında kontrol edilir (../domain/screens/
 | Tarih aralığı | 01.11.2026 00:00 → 30.11.2026 23:59 (Europe/Istanbul) | kullanıcı |
 | Kullanım sınırı | Toplam sınırsız, müşteri başı 1 | varsayılan / kullanıcı |
 | Durum | Taslak (müşteriye etkisi yok) — ya da Yayında | |
-| Kapsam | Tüm sepet (ekranda kısıt yok) | |
-| Yan etkiler | Kupon bağlanıp promosyon Yayında olana ve tarih başlayana kadar kimse indirim almaz. Yayındaysa bağlı mevcut kuponlar hemen bu değeri kullanır | |
+| Kapsam / tetikleme | Tüm sepet ya da seçilen ürünler (listele); kuponlu / ödemede otomatik | varsayılan / kullanıcı |
+| Yan etkiler | Kuponlu promosyonda kupon bağlanıp promosyon Yayında olana ve tarih başlayana kadar kimse indirim almaz; yayındaysa bağlı mevcut kuponlar hemen bu değeri kullanır. **Otomatik** promosyon Yayında + tarih başlayınca kodsuz herkesin sepetine girer | |
 | Etkileşim | İndirimli fiyatlı ürünlerde indirim, indirimli fiyatın üstüne uygulanır | |
 
 Açık "evet" → alt çubukta **"Taslak Kaydet"** (`promotion-save-draft`) ya da **"Yayınla"** (`promotion-publish`).
@@ -105,4 +115,4 @@ Enter kullanma.
 
 ## 9. Rapor
 Promosyon linki, durumu, tarih aralığı, bağlı kupon(lar) ya da "kupon yok — indirim henüz uygulanmıyor", ekranda
-yapılamayanlar (kapsam, Al-Kazan, otomatik tetikleme) ve önerilen alternatifler.
+yapılamayanlar (kategori / segment kısıtı, farklı ürünler arası "A al B indirimli", en az ürün adedi) ve önerilen alternatifler.

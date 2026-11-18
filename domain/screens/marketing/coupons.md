@@ -90,7 +90,8 @@ errors in the form.".
 | Minimum sepet tutarı | Promosyon — "En az sepet tutarı" |
 | Müşteri başı kullanım | Promosyon — "Müşteri başına sınır" (promosyondaki **tüm kodlar** için ortak sayılır) |
 | Promosyon geneli toplam kullanım | Promosyon — "Toplam kullanım sınırı" (tüm kodlar toplamı) |
-| Ürün / kategori / marka kısıtı, müşteri grubu / segment, ilk sipariş, birleştirilebilirlik | Admin ekranlarında **ayarlanamaz** (bu sürüm; promosyon haritasına bak). Kullanıcıya söyle, geçici yol önerme |
+| Ürün kısıtı | Promosyon — "Geçerli olduğu ürünler" (Yüzde, Tutar, Kademeli, Al-Kazan; [promotions.md](promotions.md)) |
+| Kategori / marka kısıtı, müşteri grubu / segment, ilk sipariş, birleştirilebilirlik | Admin ekranlarında **ayarlanamaz** (bu sürüm; promosyon haritasına bak). Kullanıcıya söyle, geçici yol önerme |
 | Belirli müşteriye bağlı kupon | Admin formunda yok; sadakat/tavsiye/sepet kurtarma gibi otomasyonların ürettiği kuponlar müşteriye bağlı olabilir |
 
 ## Durumlar
@@ -143,6 +144,9 @@ errors in the form.".
   İndirim kuponda girilmez.
 - Kupon tarihleri ile promosyon tarihleri ayrı; ikisi de geçerli olmalı. Kupon aralığını promosyon aralığının içinde tut.
 - Bağlı promosyon "Taslak/Planlandı/Duraklatıldı" ise kupon "Aktif" olsa da vitrinde çalışmaz.
+- Kademeli / Paket / Al-Kazan promosyonunda "Ödemede otomatik uygulanır" seçiliyse indirim kodsuz da uygulanır; kodlu
+  kullanım istiyorsan o promosyonda "Müşteri kupon kodu girer"i seçtir. Çapraz satış (A al, B indirimli) promosyonuna
+  kupon bağlanamaz ([../../entities/promotion.md](../../entities/promotion.md#çapraz-satış-a-al-b-indirimli--yalnız-api-ile-kurulur)).
 - "Tek Kullanımlık" kupon toplamda **bir** siparişte kullanılır (kim kullanırsa); her müşteriye bir kez kullandırmak
   için "Çoklu Kullanım" + promosyonda "Müşteri başına sınır = 1"; her müşteriye ayrı kod için [coupon-bulk.md](coupon-bulk.md).
 - Kod sonradan değişmez; büyük harfe çevrilir — özette büyük harfli halini göster. Türkçe karakter (İ, Ş, Ğ…) yerine

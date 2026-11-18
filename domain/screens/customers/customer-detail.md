@@ -78,7 +78,7 @@ Bu müşteri için yeni sipariş → [../orders/order-create.md](../orders/order
 | Adres Satırı 1 * / Adres Satırı 2 | Input | 1 evet | |
 | Ülke / Country * | combobox | evet | Yalnız **Türkiye** seçilebilir (varsayılan) |
 | İl / Province * | combobox (placeholder "İl seçin") | evet | |
-| İlçe / District * | combobox (placeholder "İlçe seçin") | evet | il seçilmeden pasif |
+| İlçe / District * | combobox (placeholder "İlçe seçin"); kargo hesabı yoksa ve il için liste boşsa serbest metin ("İlçe adını yazın") | evet | il seçilmeden pasif. Kargo hesabı varken liste gelmezse / yükleme hata verirse pasif kalır; altında uyarı + "Tekrar dene" butonu |
 | Posta kodu / Postal code * | Input | evet | "Lütfen geçerli bir posta kodu girin" |
 | Telefon / Phone | telefon girişi | hayır (doğrulanmadı) | |
 Butonlar: "İptal", "Adres Ekle" / "Değişiklikleri Kaydet". Toast: "Adres başarıyla eklendi / güncellendi / silindi".

@@ -2,10 +2,12 @@
 - URL: {ADMIN_URL}/design/homepage
 - Menü yolu: Sol menü "Mağaza Tasarımı / Store Design" → "Ana Sayfa / Homepage", veya `/design` hub'ında "Anasayfa / Homepage" kartı.
 - Sayfa başlığı: "Ana Sayfa Tasarımcisi / Homepage Designer", açıklama "Vitrin ana sayfanızı tasarlayın ve yönetin / Design and manage your storefront homepage". Geri ok → `/design`.
-- Amaç: Vitrin ana sayfasının içerik bloklarını (hero, slider, banner, ürün/kategori vitrinleri…) ekleme, düzenleme, sıralama, gizleme; SEO; şablon uygulama; taslak kaydetme ve yayınlama. Blok kataloğu: `domain/entities/homepage-components.md`.
+- Amaç: Vitrin ana sayfasının içerik bloklarını (hero, slider, banner, ürün/kategori vitrinleri, hikâye anlatımı…) ekleme, düzenleme, sıralama, gizleme; SEO; şablon uygulama; taslak kaydetme, müşteri gözüyle önizleme, yayınlama ve sürüm geçmişinden geri yükleme. Blok kataloğu: `domain/entities/homepage-components.md`.
 - Yetki (permission):
   - Menü ve görüntüleme: `content:read`.
   - "Kaydet / Güncelle ve Yayınla" ve "Yayınla" butonları `content:write` ister. Yetki yoksa butonlar **hiç görünmez**.
+  - **Sayfa düzeni yetkisi (`design:write`)**: şablon uygulamak (Şablonlar ve Bölümler sekmesi ve ilk şablon galerisi) ve sayfanın şablonunu değiştiren her yazma (yayınlama ve sürüm geri yükleme dahil) `content:write`'a ek olarak bu yetkiyi ister; varsayılan rollerde yalnız Admin ve Süper Admin'dedir. Yetkisiz kullanıcıda "Şablonu Kullan" butonları disabled olur ve "Şablonu değiştirmek için sayfa düzeni yetkisi gerekir. Bunu sizin yerinize yapması için bir yöneticiye başvurun." notu görünür; engellenen yazmada toast "Sayfa düzenini (şablon veya ana sayfa ayarı) değiştirme yetkiniz yok…". Blok ekleme/düzenleme ve SEO bu yetkiyi istemez.
+  - "Sürüm geçmişi" listesi `content:read`, sürüm geri yükleme `content:write` ister. "Müşteri gözüyle önizle" `content:read` ister.
 - API (yetki ve amaç; ayrıntı `../../entities/homepage.md`):
   | İşlem | Yetki | Not |
   |---|---|---|
@@ -13,9 +15,11 @@
   | Store view'lar | — | dil seçici için |
   | Marka renkleri | — | şablonlara renk uygulamak için |
   | İlk oluşturma | `content:write` | İlk Kaydet/Yayınla ana sayfa kaydını oluşturur (başlık "Homepage", slug `homepage`) |
-  | Kaydet (taslak) | `content:write` | Bloklar, çeviriler, SEO kaydedilir; durum değişmez |
-  | Yayınla (varsayılan dil) | `content:write` | Kaydet + yayınla |
-  | Yayınla (çeviri dili) | `content:write` | Kaydet + yalnız o çeviriyi yayınla |
+  | Kaydet | `content:write` | Sayfa yayındaysa **taslağa** yazar (canlı ana sayfa değişmez); sayfa taslaktaysa sayfanın kendisine yazar. Bloklar, çeviriler, SEO ve şablon bu yoldan gider |
+  | Yayınla (varsayılan dil) | `content:write` | Kayıtlı taslağı canlıya alır ve bir sürüm saklar (son 5 sürüm tutulur); taslak yoksa taslaktaki sayfayı yayınlar |
+  | Sürüm listesi / sürüm geri yükle | `content:read` / `content:write` | Son 5 yayın listelenir; geri yüklenen sürüm **taslak** olur, canlı değişmez |
+  | Önizleme bağlantısı | `content:read` | 30 dakikalık özel önizleme adresi (vitrinde taslak ana sayfayı gösterir) |
+  | Yayınla (çeviri dili) | `content:write` | Kaydet + o çeviriyi yayınla; bu işlem sayfadaki **kayıtlı tüm taslak değişikliklerini** de yayınlar |
   | Yayından kaldır | `content:write` | Bu ekranda tetikleyen buton yok |
 
 ## Ön koşullar ve bağımlılıklar
@@ -27,8 +31,8 @@
 ## Yerleşim
 1. **İlk ziyaret (ana sayfa kaydı yok)** → tam ekran şablon galerisi: başlık "Ana Sayfanızı Tasarlayın / Design Your Homepage", kartlar: Klasik E-Ticaret, Kategori Odakli, Kampanya / İndirim, Minimal, Boş Sayfa; her kartta "Şablonu Kullan / Use Template". Seçince editöre geçer (henüz kayıt yok; ilk Kaydet/Yayınla kaydı oluşturur).
 2. **Normal durum:**
-   - Sabit başlık + sağda aksiyonlar: "Mağazayı Önizle / Preview Store" (vitrin URL'si biliniyorsa, yeni sekme), "Kaydet / Save" veya "Güncelle ve Yayınla / Update & Publish", "Yayınla / Go Live" (yalnız taslakta).
-   - Durum çubuğu: solda kayıt durumu metni ("Kaydediliyor... / Saving...", "{time} önce kaydedildi / Saved {time}", "Kaydetme başarısız oldu: …"), dil seçici (çoklu dilde), durum rozeti, "{name} için içerik düzenleniyor / Editing content for {name}", "Senkronize et... / Sync from..." dropdown.
+   - Sabit başlık + sağda aksiyonlar: "Mağazayı Önizle / Preview Store" (vitrin URL'si biliniyorsa, yeni sekme), "Müşteri gözüyle önizle / Preview as shopper" (taslağı vitrin içinde gösterir), "Sürüm geçmişi / Version history" (yalnız ana sayfa kaydı varsa), "Kaydet / Save", "Yayınla / Publish" (yayındaki sayfada kayıtlı taslak varken) veya "Yayınla / Go Live" (taslak sayfada). Yayınlanmış bir **dil** seçiliyken tek buton "Güncelle ve Yayınla / Update & Publish"dir (kaydeder ve o dili hemen yayınlar).
+   - Durum çubuğu: solda kayıt durumu metni ("Kaydediliyor... / Saving...", "{time} önce kaydedildi / Saved {time}", "Kaydetme başarısız oldu: …"), dil seçici (çoklu dilde), durum rozeti ("Taslak", "Yayında", "Yayınlanmamış değişiklikler / Unpublished changes" — yayındaki sayfada kayıtlı ama yayınlanmamış taslak varken, "Kaydedilmemiş Değişiklikler" — ekrandaki kaydedilmemiş düzenleme), "{name} için içerik düzenleniyor / Editing content for {name}", "Senkronize et... / Sync from..." dropdown.
    - Kart içinde sekmeler: "Düzenleyici / Editor" (varsayılan), "SEO", "Şablonlar ve Bölümler / Templates & Sections"; sekme satırının sağında "Bölüm Ekle / Add Section" dropdown (her sekmede görünür).
    - Editor sekmesi = blok düzenleyici (bkz. aşağı).
 3. **Blok düzenleyici:**
@@ -76,28 +80,50 @@ Aynı tipte birden fazla blok varsa aria-label'lar aynıdır → `nth()` veya ka
 ## Aksiyonlar
 | Buton (tr / en) | Görünürlük | Etki | Onay/Toast |
 |---|---|---|---|
-| Kaydet / Save | durum **taslak** iken; değişiklik yoksa disabled | (kayıt yoksa oluşturur) bloklar, çeviriler ve SEO kaydedilir; durum taslak kalır | toast "Değişiklikleriniz kaydedildi." / "{name} için değişiklikler kaydedildi." |
-| Güncelle ve Yayınla / Update & Publish | durum **yayında** iken (aynı buton); değişiklik yoksa disabled | kaydet + yayınla → **anında canlı** | toast "Ana sayfanız artık yayında." / "{name} görünümü için değişiklikler kaydedildi ve yayınlandı." |
-| Yayınla / Go Live | yalnız taslakta; değişiklik şartı yok | kaydet + yayınla | aynı başarı toast'ı |
-| Mağazayı Önizle / Preview Store | vitrin URL'si varsa | vitrini yeni sekmede açar (yayınlanmış hâli gösterir, taslağı değil) | — |
+| Kaydet / Save | varsayılan dilde veya yayınlanmamış dilde; değişiklik yoksa disabled | (kayıt yoksa oluşturur) bloklar, çeviriler, SEO ve şablon kaydedilir. Sayfa **yayındaysa taslağa** yazılır, **canlı ana sayfa değişmez**; rozet "Yayınlanmamış değişiklikler" olur. Sayfa taslaktaysa durum taslak kalır | yayındaysa toast "Değişiklikleriniz taslak olarak kaydedildi. Mağazanızda göstermek için hazır olduğunuzda yayınlayın."; taslaktaysa "Değişiklikleriniz kaydedildi." |
+| Yayınla / Publish | yayındaki sayfada kayıtlı taslak varken | kayıtlı taslağı **canlıya alır** (bir sürüm saklanır). Kaydedilmemiş ekran değişikliği varsa önce o da kaydedilir | toast "Ana sayfanız artık yayında." |
+| Yayınla / Go Live | taslak sayfada; değişiklik şartı yok | kaydet + yayınla → canlı | aynı başarı toast'ı |
+| Güncelle ve Yayınla / Update & Publish | **yayınlanmış bir dil** seçiliyken (varsayılan dilde bu buton yoktur) | o dilin değişikliklerini kaydeder ve **hemen canlıya** alır; sayfadaki diğer kayıtlı taslak değişiklikleri de yayınlanır → taslak varsa önce diyalog (aşağıda) | toast "{name} görünümü için değişiklikler kaydedildi ve yayınlandı." |
+| Diyalog "Kaydedilen tüm değişiklikler yayınlansın mı? / Publish all your saved changes?" | bir **dil** seçiliyken yayınlarken sayfada kayıtlı taslak varsa | "{dil} dilini yayınlamak, ana sayfanızdaki kaydedilmiş diğer tüm değişiklikleri de yayınlar; yalnızca bu dili değil. Hepsi mağazanızda yayına girer." Butonlar: "İptal / Cancel", "Hepsini yayınla / Publish everything" | — |
+| Müşteri gözüyle önizle / Preview as shopper | `content:read`; vitrin adresi tanımlıysa | sağdan panel: "Telefon / Phone" ve "Masaüstü / Desktop" seçici; içinde gerçek vitrin **kayıtlı taslak** ana sayfayı gösterir (indekslenmez, 30 dk geçerli bağlantı otomatik yenilenir). Kaydedilmemiş ekran değişikliği görünmez: "Önizlemeyi güncellemek için kaydedin. Kaydedilmemiş değişiklikler görünmez." Dil seçiliyken o dilin ana sayfası açılır. Hata: "Önizleme yüklenemedi. Lütfen tekrar deneyin." | — |
+| Sürüm geçmişi / Version history | ana sayfa kaydı varsa | diyalog "Sürüm geçmişi": "Son yayınladığınız sürümler. Birini geri yüklediğinizde taslağınız olur. Siz yayınlayana kadar mağazanızda hiçbir şey değişmez." Satırlar "{n}. sürüm" + "Geri yükle / Restore" (`content:write`); boşken "Henüz yayınlanmış sürüm yok…" | — |
+| Sürümü geri yükle → "Bu sürümü geri yükle / Restore this version" | sürüm diyaloğunda | onay metni "Ekrandaki değişikliklerin yerine bu sürüm taslağınız olur. Siz yayınlayana kadar canlı ana sayfanız olduğu gibi kalır." Ekrandaki kaydedilmemiş düzenlemeler **kaybolur**; canlı değişmez, "Yayınlanmamış değişiklikler" rozeti çıkar. Sürümün şablonu farklıysa `design:write` gerekir | toast "{n}. sürüm artık taslağınız. Mağazanızda göstermek için hazır olduğunuzda yayınlayın." Hata: "Bu sürüm geri yüklenemedi…" / "Bu sürüm artık kullanılamıyor. Sürüm listesini yeniden açıp başka bir sürüm seçin." |
+| Mağazayı Önizle / Preview Store | vitrin URL'si varsa | vitrini yeni sekmede açar (**yayınlanmış** hâli gösterir, taslağı değil; taslak için "Müşteri gözüyle önizle") | — |
 | Önizleme / Preview (editör içi) | her zaman | admin içi basit önizleme (gizli bloklar hariç); vitrin görünümü değildir | — |
 | Geri Al / İleri Al | — | editör geçmişi | — |
-| Şablonu Kullan → Değiştir | | tüm blokları şablonla değiştirir (kaydedilene kadar yalnız editörde) | "Şablon ana sayfaniza uygulandi." |
+| Şablonu Kullan → Değiştir | `design:write` | tüm blokları şablonla değiştirir (kaydedilene kadar yalnız editörde; sayfanın şablonu da kaydedilince değişir) | "Şablon ana sayfaniza uygulandi." |
 | Bölüm Ekle / Sayfaya Ekle | | preset bloklarını sona ekler | "Bölüm ana sayfaniza eklendi." |
 | Senkronize et → kaynak | çoklu dil | blok yapısını senkronize eder | "Blok yapısı {source} kaynağından senkronize edildi." (+ "{added} yeni blok eklendi — toplamda {total} blok.") |
 
-Hata toast'ları: sunucu/ağ hatası veya çok sık istek → "Kaydedilemedi. Lütfen bir dakika sonra tekrar deneyin."; oturum düştü → "Oturumunuz sona erdi…"; yetki yok → "Bunu yapmaya yetkiniz yok."; sayfa bulunamadı → "Bu sayfa artık mevcut değil…"; OG/Twitter/öne çıkan görsel → ilgili özel mesaj; diğer doğrulama hataları → "Kaydedilemedi. Lütfen sayfa içeriğini ve SEO ayarlarını geçersiz veya eksik bir değer için kontrol edin." Blok kuralı hataları (features/package-comparison) da bu genel mesajla görünür.
+Hata toast'ları: sunucu/ağ hatası veya çok sık istek → "Kaydedilemedi. Lütfen bir dakika sonra tekrar deneyin."; oturum düştü → "Oturumunuz sona erdi…"; yetki yok → "Bunu yapmaya yetkiniz yok."; sayfa bulunamadı → "Bu sayfa artık mevcut değil…"; siz çalışırken başkası sayfayı değiştirdiyse → "Siz çalışırken bu sayfa başka biri tarafından değiştirildi. Sayfayı yenileyip tekrar deneyin."; OG/Twitter/öne çıkan görsel → ilgili özel mesaj; diğer doğrulama hataları → "Kaydedilemedi. Lütfen sayfa içeriğini ve SEO ayarlarını geçersiz veya eksik bir değer için kontrol edin." Blok kuralı hataları (features/package-comparison) da bu genel mesajla görünür.
+
+## Onay zamanlaması (kural 2/5/6)
+| Adım | Kalıcı mı? | Canlıya çıkar mı? | Onay ne zaman |
+|---|---|---|---|
+| Editörde blok ekle/düzenle/sırala, şablon seç | hayır (yalnız açık editör) | hayır | gerekmez; ama özet hazırlanır |
+| Medya yükleme (blok görsel seçicisi) | evet (anında) | hayır | yüklemeden önce |
+| **Kaydet** (yayındaki sayfa) | evet (taslak) | **hayır** | butondan önce (hook yakalar) |
+| **Kaydet** (taslak sayfa) | evet | hayır (sayfa zaten vitrinde yok) | butondan önce |
+| **Yayınla / Go Live** | evet | **evet** | butondan önce; özette "canlıya çıkacak" ve taslaktaki tüm değişiklikler listelenir |
+| **Güncelle ve Yayınla** (yayınlanmış dil) | evet | **evet** (o dil + sayfadaki tüm kayıtlı taslak) | butondan önce; taslak varsa diyalogdaki "Hepsini yayınla" ayrı onaydır |
+| Sürüm **geri yükle** | evet (taslağı değiştirir) | hayır | butondan önce; ekrandaki kaydedilmemiş düzenleme silinir |
+| Şablon **Değiştir** (tüm blokları değiştirir) | hayır, kaydedilene kadar | hayır | kural 5: mevcut blok listesi özete yazılır, ayrı onay |
 
 ## Yan etkiler
-- Blok yapısı ve metin değişiklikleri vitrine en geç ~1-1.5 dk içinde yansır.
+- **Kaydet** (yayındaki sayfada) vitrine hiçbir şey yansıtmaz; yalnız taslağı günceller. Değişiklik **Yayınla** ile (veya yayınlanmış bir dilde "Güncelle ve Yayınla" ile) canlıya çıkar; bundan sonra blok yapısı ve metin değişiklikleri vitrine en geç ~1-1.5 dk içinde yansır.
+- Her yayınlama bir sürüm saklar; yalnız son 5 sürüm tutulur, eskileri geri yüklenemez.
 - Ürün/kategori bloklarının kaynak/adet/seçim değişiklikleri ve ürün verisi değişiklikleri vitrine **en geç ~5 dk** içinde yansır. Sekmeli birincil öne çıkanlar bölümü anında güncellenir (ayrıntı `../../entities/homepage.md`).
 - Yayınlanmış çeviri, o dilde vitrinde kendi bloklarını gösterir; yayınlanmamış çeviri → birincil bloklar gösterilir.
 
 ## Tuzaklar
-- Bir çeviri dili seçiliyken "Yayınla" yalnız o çeviriyi yayınlar; sayfanın kendi durumu değişmez (`../../entities/homepage.md`).
+- Bir çeviri dili seçiliyken "Yayınla" o çevirinin durumunu yayına alır; sayfanın kendi durumu (taslak/yayında) değişmez. Ancak sayfadaki kayıtlı taslak değişiklikler de canlıya çıkar (aşağıdaki "Dil yayını tüm taslağı yayınlar"; `../../entities/homepage.md`).
 - Herhangi bir CMS sayfasında "Ana Sayfa Olarak Ayarla" açılıp kaydedilirse mevcut ana sayfa **sessizce** ana sayfa olmaktan çıkar.
 - Ana sayfa kaydı Sayfalar listesinden silinir veya yayından kaldırılırsa vitrin ana sayfası hata ekranı gösterir. Bunlar ayrı onaylı, geri alınamaz işlemlerdir.
-- **Yayındaki ana sayfada "taslak kaydet" yok.** Durum yayında ise tek kaydet butonu "Güncelle ve Yayınla"dır ve basıldığı an değişiklik canlıya çıkar. Kullanıcı onayı **bu butona basmadan önce** alınmalı. Taslak çalışma alanı yoktur; editörde yapılan değişiklikler kaydedilene kadar yalnız açık editördedir (sayfayı yenilemek/çıkmak değişiklikleri kaybettirir).
+- **Yayındaki ana sayfada "Kaydet" taslağa yazar, canlıya çıkmaz.** Canlıya çıkaran buton "Yayınla"dır (ve yayınlanmış bir dilde "Güncelle ve Yayınla" ile dil "Yayınla" butonu — ikisi de sayfadaki **tüm** kayıtlı taslağı yayınlar). Kullanıcı onayı canlıya çıkaran butondan **önce** alınır; "Kaydet" de kalıcı bir yazmadır, ayrı özet ister. Kaydedilmemiş ekran değişiklikleri hâlâ yalnız açık editördedir (yenilemek/çıkmak kaybettirir); taslak ise sunucuda saklanır ve sonraki oturumda da yüklenir.
+- **Önizleme taslağı gösterir, ama yalnız kayıtlıyı.** "Müşteri gözüyle önizle" kaydedilmemiş düzenlemeleri göstermez; önce "Kaydet".
+- **Sürüm geri yükleme ekrandaki kaydedilmemiş düzenlemeyi siler** (taslak olarak sürümün kendisi gelir). Geri yüklemeden önce bekleyen düzenleme varsa kullanıcıya söyle.
+- **Dil yayını tüm taslağı yayınlar.** Bir dili yayınlamak "yalnız o dili" yayınlamaz; sayfadaki kayıtlı diğer değişiklikler de canlıya çıkar (ekran önceden diyalogla uyarır).
+- Şablon uygulamak tek başına yeterli değildir: şablon kaydedilene kadar yalnız editördedir; kaydedilince sayfanın şablonu da değişir ve `design:write` ister.
 - "Kaydet" butonu değişiklik yokken disabled; preset/şablon eklemek ve blok ayar panelinde değişiklik yapmak butonu etkinleştirir.
 - Ayar paneli açıkken arka plandaki kaydet butonuna basılamaz — önce paneli kapat (Esc).
 - Ayar panelinde "Uygula" yoktur; alanı doldurmak yeterli (Playwright `fill` yeterli).
@@ -113,8 +139,8 @@ Hata toast'ları: sunucu/ağ hatası veya çok sık istek → "Kaydedilemedi. L�
 - İlk yüklemede iskelet (skeleton) görünür → "Düzenleyici" sekmesinin görünmesini bekle.
 
 ## Doğrulama
-1. Kayıttan sonra toast metnini oku; durum çubuğunda "Saved just now / az önce kaydedildi" ve rozet "Yayında / Published" (yayınladıysan) görülmeli; "Kaydedilmemiş Değişiklikler" rozeti kalkmalı.
+1. Kayıttan sonra toast metnini oku; durum çubuğunda "Saved just now / az önce kaydedildi" görülmeli. Yayındaki sayfada Kaydet sonrası rozet "Yayınlanmamış değişiklikler" olmalı ve vitrin eski hâliyle kalmalı; Yayınla sonrası rozet "Yayında / Published" olmalı. "Kaydedilmemiş Değişiklikler" rozeti kalkmalı. Taslağı yayınlamadan görmek için "Müşteri gözüyle önizle" kullan.
 2. Sayfayı yenile (`/design/homepage`) → blok listesi aynı sırada, eklenen blok mevcut ve ayar panelinde değerler kalıcı.
-3. Ağ (salt okunur): kaydet ve (yayınladıysan) yayınla isteklerinin başarılı (200) döndüğünü kontrol et.
+3. Ağ (salt okunur): kaydet ve (yayınladıysan) yayınla isteklerinin başarılı (200) döndüğünü kontrol et. Sürüm geçmişinde yeni yayınlanan sürüm en üstte görünmeli.
 4. Vitrin: `{STOREFRONT_URL}/{locale}` (veya "Mağazayı Önizle") → yeni bölüm beklenen konumda, başlığı/görseli/butonuyla görünmeli (carousel ilk bloksa sayfanın en üstünde, header altında manşet olarak). Ürün/kategori bloklarında en geç ~5 dk gecikmeyi hesaba kat; görünmüyorsa kaynakta ürün olup olmadığını kontrol et.
 5. Çoklu dilde `{STOREFRONT_URL}/{dilPrefix}` ile ilgili dili kontrol et.

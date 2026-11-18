@@ -36,6 +36,7 @@
    otomatik işaretlenir.
 3. **Boş menü uyarısı** (yayınlanmış, dolu bir ana menü yoksa): "Mağazanızın üst menüsü boş" + "Menü oluştur / Create
    menu" → `/design/navigation` ([../design/navigation.md](../design/navigation.md)).
+   3a. **Varsayılan paket uyarısı** (yalnız kargo yetkisi olan kullanıcıda, kargo firması bağlıysa ve varsayılan paket ölçüsü tanımlı değilse): "Varsayılan paket ölçüsünü belirleyin" — "Ağırlığı veya ölçüsü olmayan ürünlerde hazır bir paket ölçüsü kullanılır; müşterileriniz yanlış kargo ücreti görebilir…" + "Paket ölçüsü ekle" → `/settings/shipping/carriers`.
 4. **Mağaza aktivitesi / Store activity** şeridi (bugün, canlı): "Çevrimiçi Ziyaretçi", "Aktif Sepet", "Bugünün Geliri",
    "Bugünün Siparişleri", "Bekleyen / Pending", "İşleniyor / Processing" + "{time} itibarıyla". Okunamayan değer "—"
    gösterir; üzerine gelince "Kullanılamıyor: …" açıklaması (aria-label).

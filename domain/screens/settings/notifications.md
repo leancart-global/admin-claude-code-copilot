@@ -111,8 +111,10 @@ mevcut değeri korur.
 
 **5) Gönderen adresi kartı (yalnız LeanCart yöntemi)** — "Mağaza adresi / Store address" (otomatik adres, "Kullanılıyor"
 rozeti) ve "Kendi alan adınız / Your own domain" (`#sender-own-domain`) + "Alan adı ekle / Add domain". Eklenince
-eklenecek **3 DNS kaydı** (Ad + Değer, kopyala butonları), doğrulama rozeti (Kontrol ediliyor / Doğrulandı / Doğrulanmadı),
-son tarih uyarısı, DMARC önerisi; butonlar "Tekrar kontrol et", "Bu alan adını kullan / Use this domain", "Mağaza adresini
+eklenecek **DNS kayıtları**: 3 DKIM CNAME kaydı **ve** alan adının bu mağazaya ait olduğunu kanıtlayan 1 TXT kaydı (adı `_leancart-verify.<alan adı>`; her
+ekleme için ayrı değer) — Ad + Değer, kopyala butonlarıyla. Doğrulama rozeti (Kontrol ediliyor / Doğrulandı / Doğrulanmadı),
+son tarih uyarısı, DMARC önerisi; **TXT kaydı yayınlanmadıkça DKIM kayıtları doğrulansa bile alan adı "Doğrulanmadı" kalır ve "Bu alan adını kullan" pasiftir**; DNS şu an okunamıyorsa
+"DNS kayıtlarınızı şu anda kontrol edemedik. Bir dakika sonra tekrar deneyin." çıkar (kayıt eksik demek değil); butonlar "Tekrar kontrol et", "Bu alan adını kullan / Use this domain", "Mağaza adresini
 kullan / Use store address instead", "Kaldır / Remove" (onay dialogu "Bu alan adı kaldırılsın mı?"). Tek alan adı
 eklenebilir; kaldırılan alan adı 7 gün sonra tekrar eklenebilir.
 
@@ -143,7 +145,7 @@ eklenebilir; kaldırılan alan adı 7 gün sonra tekrar eklenebilir.
 | E-posta Gönderim Ayarları radyo | **Anında kaydeder** (yukarıda) | — | Tıklamadan önce |
 | Gönderim yöntemi + alanlar → **Kaydet / Save** | Sağlayıcı ayarını kaydeder. Eksik alan → alanlar kırmızı + toast "Devam etmek için işaretli alanları doldurun." Kaydedilmemiş değişiklik varsa butonun solunda "kaydedilmemiş değişiklik" yazısı | "E-posta gönderimi kaydedildi." / "E-posta gönderimi kaydedilemedi. Lütfen tekrar deneyin." | Kaydet'ten önce |
 | Test gönder (sağlayıcı paneli) | Kayıtlı sağlayıcıyla gerçek test e-postası yollar | "Test e-postası {email} adresine gönderildi." / "Test e-postası gönderilemedi." veya sebep metni | **Dış etkili** — onay |
-| Alan adı ekle / Bu alan adını kullan / Mağaza adresini kullan / Kaldır | Anında uygular | "Alan adı eklendi. Doğrulamak için 3 kaydı ekleyin." / "Artık kendi alan adınızdan gönderiyorsunuz." / "Artık mağaza adresinizden gönderiyorsunuz." / "Alan adı kaldırıldı." | Her biri tıklamadan önce; Kaldır ayrıca tek tek |
+| Alan adı ekle / Bu alan adını kullan / Mağaza adresini kullan / Kaldır | Anında uygular | "Alan adı eklendi. Doğrulamak için gösterilen kayıtları ekleyin." / "Artık kendi alan adınızdan gönderiyorsunuz." / "Artık mağaza adresinizden gönderiyorsunuz." / "Alan adı kaldırıldı." | Her biri tıklamadan önce; Kaldır ayrıca tek tek |
 
 ## Yan etkiler
 - Şablon kapatılırsa ilgili olayda (ör. sipariş onayı) müşteriye/satıcıya o mesaj **gönderilmez**; açılınca sonraki
@@ -152,7 +154,10 @@ eklenebilir; kaldırılan alan adı 7 gün sonra tekrar eklenebilir.
 - Gönderim yöntemi/gönderen değişikliği tüm mağaza e-postalarının gönderen adresini ve teslim edilebilirliğini etkiler;
   yanlış ayar müşterilere hiç e-posta gitmemesine yol açar (sipariş onayı, şifre sıfırlama dahil).
 - LeanCart yöntemini açmak birkaç dakika sürebilir ("hazırlanıyor" durumu).
-- Kendi alan adının DNS kayıtlarının yayılması birkaç saat sürebilir.
+- Kendi alan adının DNS kayıtlarının (3 CNAME + 1 TXT) yayılması birkaç saat sürebilir.
+- Müşteriye giden e-posta şablonu dili sırayla: olayın dili → mağaza görünümünün dili → mağazanın varsayılan dili; bu dillerde şablon yoksa
+  ve mağazanın tek mevcut şablonu varsa o şablon olduğu gibi gider (kapsam ve admin ekranına yansıması doğrulanmadı).
+- Elle yüklenmiş SSL sertifikasının bitişine yaklaşıldığında mağaza yöneticilerine sistem e-postası gider ([domains.md](domains.md)); bu ekranda şablonu yoktur.
 
 ## Tuzaklar
 - Durum switch'i ve "E-posta Gönderim Ayarları" radyo seçimi Kaydet beklemez; yanlış tıklama canlıyı değiştirir.

@@ -138,6 +138,8 @@
 ## Yan etkiler
 - Aktif akış, tetikleyici olayı yaşayan her müşteri için ayrı bir çalışma başlatır; "Çalışma" ve "Son çalışma"
   güncellenir. Bekleme adımları saat/gün sürebilir; e-postalar ilgili müşteriye gider.
+- Sepet terki otomasyonlarının sonucunu sepet bazında (hangi hatırlatma gitti, hangi durumda) görmek için
+  [abandoned-carts.md](abandoned-carts.md) listesine bak; o ekran yalnız izler, otomasyonu yönetmez.
 - Gönderimler pazarlama mesajı olarak sıklık limitlerine ve sessiz saatlere tabidir
   ([../settings/notification-rules.md](../settings/notification-rules.md)).
 - Tetikleyici değiştirildiğinde mevcut eşik ayarları korunur; yeni tetikleyicinin varsayılanı ipucunda yazandır

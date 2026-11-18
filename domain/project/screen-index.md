@@ -6,7 +6,7 @@ Admin panelindeki tüm ekranlar, alana göre gruplu.
 - **Ekran adı**: sayfa başlığı (`h1`) / menü etiketi. Menüde olmayan detay/oluşturma ekranlarının adları yaklaşıktır — canlıda `h1` ile doğrula.
 - **İzin**: menü öğesinin ve sayfa içi aksiyonların gerektirdiği yetki. `—` = arayüzde yetkiye göre gizleme yok; işlemin yapılıp yapılamayacağına sunucu karar verir ([permissions.md](./permissions.md)).
 - **Detay doküman**: Faz 1 (ürün, özellik, kategori, marka, tasarım, içerik sayfaları/medya), Faz 2 (blog, formlar, beden rehberi, ayarlar), Faz 3 (envanter, sipariş, müşteri/CRM, admin kullanıcıları) ve Faz 4 (panel/arama, pazarlama — kampanya, promosyon, kupon, değerlendirme, otomasyon, Meta —, pazar yeri kanalları, SEO yönlendirmeleri, analitik, mali raporlar) `../screens/<alan>/…`. Haritası olmayanlar `— (sonraki faz)`; bilinçli olarak haritalanmayanlar `— (kapsam dışı)`.
-- Yönlendirmeler: `/products/categories` → `/categories`, `/settings/sessions` → `/profile/sessions`; `/marketing/promotions/[id]/edit` → `/marketing/promotions/[id]`; birçok oluşturma/düzenleme sayfası kaydettikten sonra listeye döner.
+- Yönlendirmeler: `/products/categories` → `/categories`, `/settings/sessions` → `/profile/sessions`; `/marketing/promotions/[id]/edit` → `/marketing/promotions/[id]`; `/settings/shipping` → `/settings/shipping/carriers`; birçok oluşturma/düzenleme sayfası kaydettikten sonra listeye döner.
 
 ### auth
 
@@ -171,6 +171,7 @@ Admin panelindeki tüm ekranlar, alana göre gruplu.
 | URL | Ekran (tr / en) | Amaç | Ana varlık | İzin | Detay doküman |
 |---|---|---|---|---|---|
 | `/marketing` | Pazarlama (hub) / Marketing (hub) | Pazarlama kartları | — | marketing:view | [marketing-overview.md](../screens/marketing/marketing-overview.md) |
+| `/marketing/abandoned-carts` | Terk edilen sepetler / Abandoned carts | Sepetler ve ödeme adaylarının birleşik listesi, hatırlatma geçmişi, "Ulaşıldı" takibi | — | marketing:view; Ulaşıldı/not marketing:update | [abandoned-carts.md](../screens/marketing/abandoned-carts.md) |
 | `/marketing/campaigns` | Kampanyalar / Campaigns | Kampanya listesi | Campaign | marketing:view | [campaigns.md](../screens/marketing/campaigns.md) |
 | `/marketing/campaigns/[id]` | Kampanya detayı / Campaign detail | Kampanya istatistik/aksiyon | Campaign | marketing:view | [campaigns.md](../screens/marketing/campaigns.md) |
 | `/marketing/campaigns/[id]/edit` | Kampanyayı düzenle / Edit campaign | Kampanya düzenle | Campaign | marketing:update | [campaigns.md](../screens/marketing/campaigns.md) |
@@ -203,6 +204,7 @@ Admin panelindeki tüm ekranlar, alana göre gruplu.
 | `/marketing/promotions/[id]` | Promosyon detayı / Promotion detail | Promosyon görüntüle/düzenle | Promotion | marketing:update (yalnız view yetmez → listeye döner) | [promotions.md](../screens/marketing/promotions.md) |
 | `/marketing/promotions/[id]/edit` | Promosyonu düzenle / Edit promotion | Detaya yönlendirir | Promotion | marketing:update | [promotions.md](../screens/marketing/promotions.md) |
 | `/marketing/promotions/new` | Yeni promosyon / New promotion | Promosyon oluştur (yüzde / tutar / ücretsiz kargo, tarih, kullanım sınırı) | Promotion | marketing:create | [promotions.md](../screens/marketing/promotions.md) |
+| `/marketing/quote-requests` | Teklif talepleri / Quote requests | "Fiyat sorunuz" ürünlerinden gelen teklif talepleri gelen kutusu | — | marketing:view; Talebi kapat marketing:update | [quote-requests.md](../screens/marketing/quote-requests.md) |
 | `/marketing/reviews` | Değerlendirmeler / Reviews | Ürün yorum moderasyonu | Review | marketing:view; moderasyon marketing:update | [reviews.md](../screens/marketing/reviews.md) |
 | `/marketing/reviews/[id]` | Değerlendirme detayı / Review detail | Yorum onayla/reddet/yanıtla | Review | marketing:view; moderasyon marketing:update; yanıt marketing:update + marketing:create | [reviews.md](../screens/marketing/reviews.md) |
 | `/marketing/workflows` | İş akışları / Workflows | Otomasyon listesi/şablon galerisi (menüde yok, yalnız URL) | Workflow | marketing:view; yeni marketing:create | [workflows.md](../screens/marketing/workflows.md) |
@@ -218,6 +220,7 @@ Admin panelindeki tüm ekranlar, alana göre gruplu.
 | `/content/blog/[id]/edit` | Blog yazısını düzenle / Edit blog post | Blok editörüyle düzenle | BlogPost | content:write | [blog-edit.md](../screens/content/blog-edit.md) |
 | `/content/blog/comments` | Yorumlar / Comments | Blog yorum moderasyonu | BlogComment | content:write | [blog-comments.md](../screens/content/blog-comments.md) |
 | `/content/blog/new` | Yeni blog yazısı / New blog post | Blog yazısı oluştur | BlogPost | content:write | [blog-edit.md](../screens/content/blog-edit.md) |
+| `/content/faq` | SSS / FAQ | Sık sorulan sorular: liste, ekle/düzenle, yayınla, sil | FAQ | content:read; ekle/düzenle/yayınla content:write; sil content:delete | [faq.md](../screens/content/faq.md) |
 | `/content/forms` | Formlar / Forms | Form listesi | Form | content:read | [forms.md](../screens/content/forms.md) |
 | `/content/forms/[id]` | Form düzenleyici / Form builder | Form alanlarını düzenle | Form | content:read/update | [forms.md](../screens/content/forms.md) |
 | `/content/forms/[id]/submissions` | Gönderimler / Submissions | Form gönderimleri, dışa aktar, GDPR sil | FormSubmission | content:read | [form-submissions.md](../screens/content/form-submissions.md) |
@@ -242,7 +245,7 @@ Admin panelindeki tüm ekranlar, alana göre gruplu.
 | `/branding` | Marka Kimliği / Branding | Logo, renk, font, ürün rozetleri | Branding | content:read (UI); settings:write kaydet | [branding.md](../screens/design/branding.md) |
 | `/branding/ai-wizard` | AI marka sihirbazı / AI brand wizard | AI ile palet/kimlik üret | Branding | settings:write; plan özelliği | [branding-ai-wizard.md](../screens/design/branding-ai-wizard.md) |
 | `/design` | Mağaza Tasarımı (hub) / Store Design (hub) | Tasarım alt ekranlarına kartlar | — | content:read | [design-overview.md](../screens/design/design-overview.md) |
-| `/design/homepage` | Ana Sayfa / Homepage | Ana sayfa blok editörü (banner, ürün, kategori blokları) | Ana sayfa | content:read; yayın content:write | [homepage-builder.md](../screens/design/homepage-builder.md) |
+| `/design/homepage` | Ana Sayfa / Homepage | Ana sayfa blok editörü (banner, ürün, kategori, hikâye anlatımı blokları), taslak / yayın / sürüm geçmişi, müşteri gözüyle önizleme | Ana sayfa | content:read; kaydet/yayın content:write; şablon ve ana sayfa değişimi design:write | [homepage-builder.md](../screens/design/homepage-builder.md); hikâye bloğu: [storytelling-block.md](../screens/design/storytelling-block.md) |
 | `/design/navigation` | Navigasyon / Navigation | Mağaza menüsü ağacı (kategori/sayfa/blog/ürün linkleri) | NavigationMenu | content:read | [navigation.md](../screens/design/navigation.md) |
 | `/layout-settings` | Üst/Alt Bölüm (Header/Footer) / Header / Footer | Header ve footer düzeni (?tab=header|footer) | Header/Footer düzeni | content:read | [layout-settings.md](../screens/design/layout-settings.md) |
 
@@ -259,7 +262,7 @@ Admin panelindeki tüm ekranlar, alana göre gruplu.
 | `/settings/domains` | Özel Alan Adları / Custom Domains | Alan adı ekle/DNS doğrula/sertifika | CustomDomain | settings:read; domains:write | [domains.md](../screens/settings/domains.md) |
 | `/settings/einvoice` | e-Fatura Ayarları / E-Invoice Settings | Sağlayıcı, fatura modu | EInvoiceConfig | settings:read | [einvoice.md](../screens/settings/einvoice.md) |
 | `/settings/einvoice/[id]` | e-Fatura sağlayıcı yapılandırması / Configure e-invoice provider | Sağlayıcı ayarı/test | EInvoiceConfig | settings:write | [einvoice.md](../screens/settings/einvoice.md) |
-| `/settings/general` | Genel Ayarlar / General Settings | Mağaza yapılandırma, iletişim, plan, captcha, analitik | Mağaza ayarları | settings:read; kaydet settings:write | [general.md](../screens/settings/general.md) |
+| `/settings/general` | Genel Ayarlar / General Settings | Mağaza yapılandırma, iletişim, plan, captcha, analitik (Google Tag Manager), ödeme deneyimi, Destek butonu sekmesi ([support-widget.md](../screens/settings/support-widget.md)) | Mağaza ayarları | settings:read; kaydet settings:write | [general.md](../screens/settings/general.md) |
 | `/settings/marketplace` | Pazar yeri ayarları / Marketplace settings | Kanal bağlantıları | MarketplaceConfig | settings:read | [marketplace.md](../screens/settings/marketplace.md) |
 | `/settings/marketplace/[id]` | Pazar yeri bağlantısı / Marketplace connection | Kanal kimlik bilgileri/test | MarketplaceConfig | settings:write | [marketplace.md](../screens/settings/marketplace.md) |
 | `/settings/notifications` | Bildirim Ayarları / Notification Settings | E-posta şablonları (zengin metin), gönderici | EmailTemplate | settings:read | [notifications.md](../screens/settings/notifications.md) |
@@ -268,7 +271,7 @@ Admin panelindeki tüm ekranlar, alana göre gruplu.
 | `/settings/payments/[id]` | Sağlayıcıyı yapılandır / Configure provider | Sağlayıcı kimlik bilgileri, taksit | PaymentConfig | settings:write | [payments.md](../screens/settings/payments.md) |
 | `/settings/search-index` | Arama Dizini / Search Index | Dizin durumu, yeniden oluştur | — | settings:read; search:write | [search-index.md](../screens/settings/search-index.md) |
 | `/settings/sessions` | (yönlendirme) / (redirect) | /profile/sessions adresine yönlendirir | — | — | [settings-overview.md](../screens/settings/settings-overview.md) |
-| `/settings/shipping/carriers` | Kargo Taşıyıcıları / Shipping Carriers | Taşıyıcı yapılandırma, kısıtlar, öncelik | ShippingCarrier | settings:read | [shipping-carriers.md](../screens/settings/shipping-carriers.md) |
+| `/settings/shipping/carriers` | Kargo Taşıyıcıları / Shipping Carriers | Taşıyıcı yapılandırma, kısıtlar, öncelik; Kargo yöntemleri (kargo firması olmayan mağaza için sabit ücretli yöntem) | ShippingCarrier | settings:read | [shipping-carriers.md](../screens/settings/shipping-carriers.md) |
 | `/settings/social-login` | Giriş / Sosyal Sağlayıcılar / Login / Social Providers | Google/Facebook giriş ayarı | SocialLoginConfig | settings:read | [social-login.md](../screens/settings/social-login.md) |
 | `/settings/store-views` | Mağaza Görünümleri / Store Views | Store view listesi/ekle (Sheet) | StoreView | settings:read | [store-views.md](../screens/settings/store-views.md) |
 | `/settings/store-views/[code]` | Mağaza görünümünü düzenle / Edit store view | Görünüm, routing, çerez politikası sayfası | StoreView | settings:read; content:write | [store-views.md](../screens/settings/store-views.md) |

@@ -51,7 +51,8 @@ bir işlemin yapılıp yapılamayacağına her zaman sunucu karar verir.
 | `users:read` / `users:create` / `users:update` / `users:delete` | Admin kullanıcıları (ekranda pratikte `admin` veya `super_admin` rolü gerekir) |
 | `content:read` | İçerik ve mağaza tasarımı ekranları |
 | `content:write` | İçerik oluşturma/düzenleme; yayınlama butonları da bunu ister. URL yönlendirmelerinde sunucu tarafı yazma yetkisi; ekran ayrıca oluşturma için `content:create`, düzenleme ve aktif/pasif için `content:update` ister (silme `content:delete`) |
-| `content:delete` | İçerik silme |
+| `content:delete` | İçerik silme (SSS dahil) |
+| `design:write` | Sayfa şablonunu değiştirme, şablon uygulama, bir sayfayı ana sayfa yapma; ana sayfa şablonu/bayrağı değişen yayın ve sürüm geri yükleme. Varsayılan rollerde yalnız Admin ve Super Admin; yetkisiz kullanıcıda ilgili alanlar pasif |
 | `api-keys:read` / `:create` / `:delete` / `:update` | API anahtarları |
 | `payment:subscription:read` / `:manage` | Abonelikler |
 | `email:manage` | `/email-management` |
@@ -69,8 +70,12 @@ bir işlemin yapılıp yapılamayacağına her zaman sunucu karar verir.
 | Kuponlar | liste, detay, "Paylaş" | Yeni Kupon, Toplu üret, Kopyala | Düzenle | Sil |
 | Değerlendirmeler | liste, detay (yoksa "erişim reddedildi") | yanıt yazmak (sunucu; `update` ile birlikte) | Onayla / Reddet / Bayrak, yanıt formu | — (silme yok) |
 | Otomasyonlar | liste, düzenleyiciyi görüntüle | Yeni otomasyon (boş / şablondan) | kaydet, yayına al, duraklat, test | — (silme yok) |
+| Terk edilen sepetler | liste, detay, hatırlatma geçmişi | — | "Ulaşıldı" işaretle, not kaydet | — |
+| Teklif talepleri | liste, çekmece | — | Talebi kapat | — |
 | Meta (genel bakış, ayarlar, pixel) | görüntüle | — | bağla, kimlik bilgisi, reklam hesabı, pixel kaydı, test olayı | "Bağlantıyı Kes" butonu |
 | Meta kitle / huni / deney / uyarı | liste, detay | oluştur, (huni) çoğalt | düzenle, yenile/senkronla, yayınla/duraklat/devam, başlat/durdur, etkin anahtarı | sil |
+
+`customers:read` yoksa terk edilen sepetler ve teklif talepleri ekranlarında ad, e-posta, telefon ve not maskelenir, iletişim bağlantıları çıkmaz. API anahtarı izin ızgarasında "Marketing › View" satırı vardır.
 
 Yetkisi olmayan kullanıcı oluşturma/düzenleme URL'lerinde çoğunlukla "Yönlendiriliyor... / Redirecting..." görür ve
 listeye döner.
@@ -78,6 +83,8 @@ listeye döner.
 Ekranlarda ayrıca şu yetki grupları da kullanılır (admin rolünde bulunur): `store-views:*`, `brands:*`,
 `attributes:*`, `labels:*`, `branding:*`, `currencies:*`, `customer-groups:*`, `orders:cancel|refund|...`,
 `payment:config:*`, `shipping:*`, `audit:*` (super_admin).
+
+Ek kurallar: Toplu Arşivle/Sil menü öğeleri `products:delete` ister (yetkisizde görünmez). "İzinleri Yönet" diyaloğu `users:update` **ve** admin/super_admin rolü ister. `shipping:write` kargo yöntemi ekle/düzenle/sil/aktif anahtarını da açar; `shipping:read` Dashboard ve ürün formundaki varsayılan paket uyarılarını gösterir. Destek butonu sekmesi: `settings:read` görür, `settings:write` kaydeder.
 
 ## 3. UI nasıl gizler / devre dışı bırakır?
 

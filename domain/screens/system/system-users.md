@@ -41,7 +41,7 @@
    - Aktif filtre varsa "Temizle (n) / Clear (n)".
    - Durum çipleri (tıklanınca seçilir/kalkar): "Davet Edildi / Invited", "Aktif / Active", "Askıya Alındı / Suspended",
      "Devre Dışı / Deactivated", "2FA Bekliyor / Pending 2FA".
-3. Tablo sütunları: "Kullanıcı / User" (avatar, ad, e-posta), "Tür / Type" (Human / Service rozeti), "Rol / Role",
+3. Tablo sütunları: "Kullanıcı / User" (avatar, ad, e-posta), "Tür / Type" (Human / Service rozeti), "Rol / Role" (kişinin **rol adları**, birden çoksa virgülle; ham kimlik değil),
    "Durum / Status" (rozet; değer İngilizce ham metin: `active`, `invited`, `suspended`, `deactivated`, `pending 2fa`),
    "MFA" ("Etkin / Enabled" kalkan, "Devre Dışı / Disabled" uyarı), "Risk" (`low` / `medium` / `high`),
    "Son Etkinlik / Last Active" (göreli; hiç yoksa "Hiç / Never"), "Oturumlar / Sessions" (aktif oturum sayısı),
@@ -53,18 +53,20 @@
    - "Detayları görüntüle", "Profili düzenle", "Oturumları sonlandır", "Hesabı askıya al" yalnız **çekmeceyi açar**;
      işlemin kendisi çekmecedeki butonlarla yapılır. Kişinin oturumlarını admin olarak tek tek sonlandıran bir ekran yok
      (yalnız sayı görünür) — kişi kendi oturumlarını [profile.md](profile.md) → Oturumlar'dan kapatır.
-   - "İzinleri yönet" ve "Denetim kayıtlarını görüntüle" ayrı sayfaya gider (doğrulanmadı — kullanma; denetim kaydı için
-     [../settings/audit-log.md](../settings/audit-log.md), yetki için rol değişikliği [roles.md](roles.md)).
+   - "İzinleri yönet" **"İzinleri Yönet" diyaloğunu** açar (aşağıda); menü öğesi ve çekmece butonu yalnız `users:update` iznine
+     **ve** `admin` / `super_admin` rolüne sahip olana görünür (yalnız izin yetmez; `security_admin` göremez).
+   - "Denetim kayıtlarını görüntüle" [../settings/audit-log.md](../settings/audit-log.md) sayfasına gider (kişiye özel filtre uygulamaz).
+   - Satır menüsünü açmak satırın çekmecesini açmaz; yalnız menü açılır.
 
 ### Detay çekmecesi
 - Başlık: avatar, ad, e-posta; rozetler: tür, durum, MFA ("MFA Etkin" / "MFA Devre Dışı"; yalnız Human).
 - Sekmeler: "Genel Bakış / Overview", "İzinler / Permissions", ("API Anahtarları / API Keys" — yalnız Service hesaplarda),
   "Oturumlar / Sessions", "Aktivite / Activity".
-  - Genel Bakış: "Profil Bilgileri / Profile Information" (E-posta, Telefon, Saat Dilimi, Dil), "Rol ve Departman /
-    Role & Department" (Rol, Unvan, Departman), "Aktivite / Activity" (Son Giriş, Son Aktivite, Davet Edildi, Aktif
+  - Genel Bakış: "Profil Bilgileri / Profile Information" (E-posta, Telefon, Saat Dilimi, Dil — dil adı arayüz diliyle yazılır), "Rol ve Departman /
+    Role & Department" (Rol — rol adları virgülle, Unvan, Departman), "Aktivite / Activity" (Son Giriş, Son Aktivite, Davet Edildi, Aktif
     Oturumlar), "Güvenlik / Security" (Risk Seviyesi, Çok Faktörlü Kimlik Doğrulama, Kiracı Kimliği). Boş değer "N/A".
   - İzinler: "İzinler (n)" — kişinin rol(ler)inden gelen izin kartları (ad, kaynak • eylem, kapsam rozeti, kritikse
-    "Kritik / Critical"). Salt okunur.
+    "Kritik / Critical"). Salt okunur; değiştirmek için "İzinleri Yönet" diyaloğu.
   - Oturumlar: yalnız aktif oturum sayısı. Aktivite: yer tutucu metin.
   - API Anahtarları (Service): anahtar adı, maskeli önek, durum; değer gösterilmez. Servis hesabı anahtarları bu ekrandan
     yönetilmez — mağaza API anahtarları için [../settings/api-keys.md](../settings/api-keys.md).
@@ -75,6 +77,18 @@
     "Yeniden Etkinleştir / Reactivate".
 
 ## Alanlar
+
+### "İzinleri Yönet / Manage Permissions" diyaloğu
+Açıklama: "{ad} için izin verilen işlemleri seçin." Satır menüsünden ya da çekmecedeki "İzinleri Yönet" butonundan açılır (sayfa değişmez);
+kişiye rollerinin dışında **doğrudan** verilen izinleri düzenler.
+- Gövde: kaynağa göre gruplu (orders, products, users…) checkbox listesi; her satırda izin adı + açıklaması (checkbox id'si `manage-permission-<kaynak>:<eylem>`).
+  Liste yüklenirken iskelet görünür; yüklenemezse "Bu kullanıcının izinlerini yükleyemedik. Değişiklik yapmadan önce tekrar deneyin." + "Tekrar dene".
+  Seçilebilir izin yoksa "Seçilebilecek izin henüz yok."
+- Butonlar: "İptal", "Kaydet" ("Kaydediliyor...") — değişiklik yoksa pasif. Kaydetmeden kapatmak değişiklikleri atar.
+- Toast: "İzinler güncellendi" ("İzinler kaydedildi.") / hata "İzinler kaydedilemedi".
+- **Eşzamanlı düzenleme**: siz düzenlerken başka bir yönetici aynı kişinin izinlerini kaydederse kaydınız reddedilir; toast "İzinleri başka biri
+  değiştirdi — … Şimdi en güncel izinler gösteriliyor; değişikliklerinizi yeniden yapıp kaydedin." Liste güncel haliyle yenilenir, sizin
+  seçimleriniz atılır → özeti yeniden çıkarıp yeniden onay al.
 
 ### "Takım Üyesi Davet Et / Invite Team Member" diyaloğu
 Açıklama: "Yeni bir takım üyesine davetiye gönderin. Hesabını kurmak için talimatları içeren bir e-posta alacaktır."
@@ -100,8 +114,8 @@ Açıklama: "{ad} kullanıcısının profil bilgilerini güncelleyin."
 | Görünen Ad / Display Name | Input | evet | ≥2, ≤100 | label "Görünen Ad" | Ad/soyad buradan türetilir (ilk kelime ad, kalanı soyad) |
 | Departman / Department | Select | hayır | — | label "Departman" | Seçenekler İngilizce: Engineering, Marketing, Sales, Customer Support, Finance, Human Resources, Operations, Product, Design, Legal |
 | Unvan / Job Title | Input | hayır | ≤100 | label "Unvan" | |
-| Saat Dilimi / Timezone | Select | hayır | — | label "Saat Dilimi" | UTC, Istanbul (TRT), London, Paris, New York … |
-| Dil / Language | Select | hayır | — | label "Dil" | English, Turkish, German, French, Spanish, Portuguese, Arabic, Chinese, Japanese |
+| Saat Dilimi / Timezone | Select | hayır | kayıtlı değer yoksa **İstanbul (TSİ)** seçili gelir | label "Saat Dilimi" | Seçenek adları arayüz diliyle (tr: UTC, Doğu Saati (ET), Merkez Saati (CT), Dağ Saati (MT), Pasifik Saati (PT), Londra (GMT), Paris (CET), İstanbul (TSİ), Dubai (GST), Singapur (SGT), Tokyo (JST), Sidney (AEST)) |
+| Dil / Language | Select | hayır | kayıtlı dil yoksa **arayüz dili** seçili gelir | label "Dil" | Seçenek adları arayüz diliyle yazılır (tr arayüzde Türkçe, İngilizce, Almanca…); kodlar en, tr, de, fr, es, pt, ar, zh, ja |
 | Telefon Numarası / Phone Number | Telefon input (ülke kodlu) | hayır | ≤20 | label "Telefon Numarası" | "İki faktörlü kimlik doğrulama ve acil bildirimler için kullanılır" — kişisel veri |
 
 - E-posta, rol ve şifre bu diyalogda **yok**. Kayıtlı kişinin rolünü değiştiren bir kontrol bu ekranda yok
@@ -112,6 +126,7 @@ Açıklama: "{ad} kullanıcısının profil bilgilerini güncelleyin."
 | Buton | Ne olur | Toast |
 |---|---|---|
 | Kullanıcı Davet Et → diyalog → Davetiye Gönder | Kişi "Davet Edildi / Invited" durumunda oluşur; seçilen roller atanır; e-posta seçiliyse kişiye davet e-postası gider. Davet bağlantısı 7 gün geçerli (doğrulanmadı) | "Davetiye gonderildi" — "{email} adresine bir davetiye gonderildi." / "Invitation sent"; hata: "Davetiye gonderilemedi" |
+| Çekmece veya satır menüsü → İzinleri Yönet → Kaydet | Kişiye doğrudan verilen izin listesini **anında** değiştirir (kişinin yetkisi); ek onay dialogu yok | "İzinler güncellendi" / çakışmada "İzinleri başka biri değiştirdi" | Kaydet'ten önce özet + onay (eklenen/çıkarılan izinler ayrı) |
 | Çekmece → Profili Düzenle → Değişiklikleri Kaydet | Görünen ad, departman, unvan, saat dilimi, dil, telefon güncellenir | "Profil güncellendi" — "Kullanıcı profili başarıyla güncellendi." / "Profile updated"; hata "Güncelleme başarısız" |
 | Çekmece → Askıya Al (Service: Devre Dışı Bırak) | **Diyalogsuz, anında**: durum "Askıya Alındı", hesap pasif; kişi panele giremez. Gerekçe otomatik "Yönetici tarafından askıya alındı" | "Kullanıcı askıya alındı" — "{ad} askıya alındı." / "User suspended"; hata "Askıya alma başarısız" |
 | Çekmece → Yeniden Etkinleştir | **Diyalogsuz, anında**: durum "Aktif" | "Kullanıcı yeniden etkinleştirildi" / "User reactivated"; hata "Yeniden etkinleştirme başarısız" |
@@ -122,6 +137,8 @@ Açıklama: "{ad} kullanıcısının profil bilgilerini güncelleyin."
 - **Davet:** özet tablosu (ortam, e-posta, görünen ad, departman, unvan, roller ve her rolün ne sağladığı, davet e-postası
   gidecek mi, MFA zorunlu mu) + açık onay. **Dış etki:** davet edilen adrese e-posta gider (geri alınamaz). Prod'da test
   adresiyle davet atma.
+- **İzinleri Yönet → Kaydet:** ek onay dialogu yok, anında kalıcı; kişinin yetkisini değiştirir. Önce özet tablosu: kişi (ad, e-posta),
+  eklenecek ve çıkarılacak izinler (kaynak:eylem) ve "bu kişi şunları yapabilecek / yapamayacak" sonucu + açık onay; silme, kullanıcı/rol yönetimi gibi kritik izinleri vurgula.
 - **Askıya Al / Devre Dışı Bırak / Yeniden Etkinleştir:** buton **diyalog sormadan anında** kaydeder → onay butona
   **dokunmadan önce** alınır; geri alınamaz işlem sınıfında (kural 5) tek tek, "etkilenen: 1 kullanıcı (ad, e-posta)" ile.
   Etki: kişi panele erişemez; kişinin açık oturumları ve yürüttüğü işler üzerindeki etki doğrulanmadı — özette belirt.
@@ -132,6 +149,8 @@ Açıklama: "{ad} kullanıcısının profil bilgilerini güncelleyin."
 - Tüm işlemler denetim günlüğüne yazılır (davet, askıya alma, yeniden etkinleştirme, rol değişikliği).
 - Davet edilen kişi şifresini davet bağlantısından kendisi belirler; "MFA gerektir" seçiliyse ilk girişte 2FA kurulumu
   ister ([../../project/environments-and-auth.md](../../project/environments-and-auth.md) §5).
+- Özel (kullanıcı tanımlı) bir rolle davet edilen personel de admin panele giriş yapabilir (menüleri rolünün izinlerine göre görür);
+  askıya alınmış veya devre dışı kullanıcının girişi reddedilir.
 - Rol, kişinin sidebar'da gördüğü menüleri ve buton görünürlüğünü belirler; değişiklik kişinin bir sonraki girişinde/
   yenilemesinde yansır (doğrulanmadı).
 
@@ -143,6 +162,7 @@ Açıklama: "{ad} kullanıcısının profil bilgilerini güncelleyin."
 - Askıya Al butonu onay sormaz; yanlış satırda çekmece açıkken tıklamak doğrudan uygulanır. Tıklamadan önce çekmece
   başlığındaki ad/e-postayı snapshot ile teyit et.
 - Askıya alma / yeniden etkinleştirme işlemini yalnız çekmecenin alt butonuyla yap; sonucu toast ve durum rozetiyle doğrula.
+- "İzinleri Yönet" diyaloğunda liste yüklenene dek checkbox'lar pasiftir; yüklenmeden işaretleme. Çakışma toast'ı çıkarsa seçtiklerin silinmiştir — yeni liste üzerinden baştan yap.
 - Davet diyaloğunda etiketleri ekranda göründüğü yazımla (snapshot'tan) kullan; gerekirse en etiketini ya da regex kullan.
 - Durum rozetleri ve risk değerleri arayüz dilinden bağımsız İngilizce ham metin olarak görünür; filtre çipleri ise çevrilidir.
 - Liste filtresi tarayıcıda çalışır; çok kullanıcılı mağazada aramayı tablo yüklendikten sonra yap.

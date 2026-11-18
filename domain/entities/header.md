@@ -50,6 +50,8 @@ Vitrin: header + footer + navigation yayındaki kayıtlardan okunur.
 | `account.showWishlist`, `wishlistUrl` | bool, string | true, `/wishlist` | İstek listesi ikonunu kontrol eder |
 | `cart.isEnabled`, `showItemCount` | bool | true, true | Sepet ikonuna tıklama sepet yan panelini açar |
 | `cart.style`, `showSubtotal`, `checkoutUrl` | | icon, true, `/checkout` | style UI'da yok |
+| `cart.showPopularProducts`, `showGoToCartButton` | bool | true, true | Sepet yan panelinde (çekmece) "popüler ürünler" şeridini ve "Sepete git" butonunu açar/kapar; Sepet sheet'inde "Sepet çekmecesi" altındadır |
+| `actions.showLanguageToggle`, `actions.languageTogglePosition` | bool, `left\|right` | false, right | Başlık satırında dil seçici (en az iki mağaza görünümü varken görünür). Konum yalnız masaüstü: `left` logodan önce, `right` ikonların yanında; mobilde menü içinde kalır. Başlık satırının sağındaki telefon / WhatsApp / giriş bağlantısı / vurgulu buton grubu da bu bölümde saklanır ama admin'de ayarı yoktur |
 | `storeLocator{isEnabled,url,label(+Tr)}` | | false, '', `Store Locator` | `url` boşsa vitrinde ikon görünmez |
 | `campaignBanners[]` | `{isEnabled,text(+Tr),linkUrl,linkText(+Tr),backgroundColor,textColor,isDismissible,expiresAt,sortOrder}` | [] | Vitrinde açık, süresi dolmamış ve metni boş olmayan **ilk** banner gösterilir. UI yalnız ilk banner'ı düzenler |
 | `topBar` | `{isEnabled,placement:above\|inline,links[{label(+Tr),url,isExternal,openInNewTab,icon,sortOrder,isVisible}],contactPhone,contactEmail,showLanguageSwitcher,showCurrencySwitcher,backgroundColor,textColor}` | isEnabled false, placement above | `inline` yalnız yerleşim düzeni `centered` iken. Üst şerit yalnız geniş ekranda görünür; mobilde menü çekmecesine taşınır |
@@ -121,7 +123,8 @@ Admin işlemleri: okuma `content:read`; oluşturma / güncelleme / yayınlama / 
   (tip, sticky, şeffaf) değerlerini belirler; diğer alanlar varsayılanla başlar. UI'daki "Bunu Kullan" yeni kayıt yaratır.
 
 ## Vitrin davranışı
-- Yansıma süresi: header değişikliği vitrinde **en geç ~30 dk** içinde, menü yayını **~3 dk** içinde (çoğunlukla hemen) görünür.
+- Yansıma süresi: header değişikliği ve menü yayını vitrinde **en geç ~3 dk** içinde (çoğunlukla hemen) görünür.
+- Koyu düz zeminli header'da vitrin açık renkli logoyu ve okunur menü metnini otomatik kullanır; üst seviye menü öğesine arka plan rengi verilmişse o öğe vurgulu buton gibi çizilir.
 - Header **veya** footer yayında değilse tüm sayfalar "Coming Soon". Navigation yayında değilse header menüsüz görünür.
 - Çeviri: vitrin dili için çeviri varsa o, yoksa taban metin gösterilir. Menü etiketinde öncelik: öğenin çevirisi → (kategori bağlıysa) kategori adının çevirisi → taban etiket.
 - Kategori linkleri: menü öğesi kategoriye canlı bağlıdır. Kategori aktifse link kategorinin güncel URL'sine (`/products/<slug>`) gider;
@@ -147,6 +150,6 @@ Admin işlemleri: okuma `content:read`; oluşturma / güncelleme / yayınlama / 
 3. İlk navigation kaydı ve preset "Bunu Kullan" (header) **anında yayına** çıkar — "önce taslak" yok.
 4. Kategori pasifleştirmek/gizlemek o menü öğesini **alt öğeleriyle** vitrinden kaldırır; kategori ağacı işlemlerinden önce uyar.
 5. Admin 3+ seviye iç içe menüye izin verir ama masaüstü açılır menü yalnız 1 alt seviye gösterir → hiyerarşi için mega menü (sütun → link) kullan.
-6. Doğrulama süresi: header ≤30 dk; menü ≤3 dk. Hızlı kontrol için public uç noktayı oku.
+6. Doğrulama süresi: header ve menü ≤3 dk. Hızlı kontrol için public uç noktayı oku.
 7. İstek listesi ikonu `account.showWishlist` ile açılıp kapanır ("İstek Listesini Göster").
 8. Ürün/sayfa/blog slug'ı değişirse veya kayıt silinirse ilgili menü linklerini kontrol et/güncelle.

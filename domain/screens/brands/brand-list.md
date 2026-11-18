@@ -30,7 +30,7 @@
 |---|---|---|---|
 | Marka Oluştur | `/brands/new` | – | |
 | ⋯ → Düzenle | `/brands/{id}/edit` | – | |
-| ⋯ → Sil | Dialog "Markayı Sil": "Bu markayı silmek istediğinizden emin misiniz?" — ürünü varsa "Bu marka {n} üründe kullanılıyor. Önce ürünlerden markayı kaldırın." ve **Sil disabled** | evet | toast "Marka başarıyla silindi"; hata başlıkta sunucu mesajı / "Ürün atanmış marka silinemez". |
+| ⋯ → Sil | Dialog "Markayı Sil": "Bu markayı silmek istediğinizden emin misiniz?" — ürünü varsa "Bu marka {n} üründe kullanılıyor. Önce ürünlerden markayı kaldırın." ve **Sil disabled** | evet | toast "Marka başarıyla silindi"; ürün bağlıyken silme **engellenir** (ürünün durumu fark etmez, arşivli ürün de sayılır): hata toast'ı "“{name}” markası hâlâ ürünlerde kullanılıyor. Ürünleri bu markadan çıkarın, sonra tekrar deneyin."; başka bir hatada "Marka silinemedi. Lütfen tekrar deneyin.". |
 | Öne Çıkan / Aktif switch | anında günceller | **uygulama sormaz** → tıklamadan önce kullanıcı onayı | Başarıda toast yok (yalnız switch değişir); hata kırmızı toast. |
 
 ## Yan etkiler

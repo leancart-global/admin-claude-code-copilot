@@ -19,7 +19,7 @@ Amaç: Bir isteği planlarken "önce ne var olmalı?" sorusunu cevaplamak. Ön k
 11. **Ödeme sağlayıcı** (`/settings/payments`), **kargo taşıyıcı** (`/settings/shipping/carriers`) — sipariş için. Fatura için ayrıca şirket VKN'si (`/settings/general`) ve fatura modu / e-Fatura sağlayıcısı (`/settings/einvoice`).
 12. **Roller → admin kullanıcıları** (`/system-users`) — ekip üyesi davet edilecekse (davet rol ister).
 13. İçerik/tasarım: sayfalar, ana sayfa blokları, navigasyon menüsü, header/footer, marka kimliği.
-14. Pazarlama: promosyon → kupon; segment (+ e-posta şablonu) → kampanya; e-posta şablonu → otomasyon; Meta bağlantısı
+14. Pazarlama: ürün (+ "Fiyat sorunuz" → teklif talepleri) → promosyon (ürün kapsamı, paket ürünleri) → kupon (yalnız kuponlu tetiklemede); segment (+ e-posta şablonu) → kampanya; e-posta şablonu → otomasyon; Meta bağlantısı
     (+ pixel) → Meta kitlesi / huni / deney / uyarı.
 15. Pazar yeri: bağlantı (`/settings/marketplace`) → kategori eşleme → (Trendyol) marka eşleme → ürün gönderimi.
 
@@ -162,7 +162,7 @@ Ayar ekranlarının tamamı ve etkileri: [settings-overview.md](../screens/setti
 | **Sipariş (admin'den)** | Sırayla: aktif para birimi → aktif ödeme sağlayıcı → aktif kargo entegrasyonu (mağazadan teslimde gerekmez) → yayında ve stoklu ürün → müşteri (ops.; yoksa misafir) ; adres (ülke/il/ilçe) | `/orders/new` | Stok rezervasyonu (iptal/silmede serbest, alacak dekontu iadesinde stoğa dönüş), fatura, iade/RMA, alacak dekontu, kargo etiketi (kargo entegrasyonu + depo gönderici adresi + tahsil edilmiş ödeme), kupon kullanımı (iptal/tam iadede geri verilir), müşteriye sipariş e-postaları | İptal/iade geri alınamaz; ayrı onay ([order-detail.md](../screens/orders/order-detail.md)) |
 | Fatura / e-Fatura | Sipariş; şirket VKN'si (`/settings/general`) → fatura modu ve e-Fatura sağlayıcı (`/settings/einvoice`) → siparişin fatura adresi ve alıcının VKN/TCKN'si | Sipariş detayı, `/invoices` | Platform modunda gönderim GİB'e gider | ([invoices.md](../screens/orders/invoices.md)) |
 | Abonelik | `subscription` tipi ürün (plan ister) | Vitrinden; admin `/subscriptions` izler ve iptal eder | Her yenileme kaynağı "Abonelik" olan bir sipariş oluşturur | ([subscriptions.md](../screens/orders/subscriptions.md)) |
-| Promosyon | — (mağaza saat dilimi tarih alanlarını yorumlar). Türler: yüzde / tutar / ücretsiz kargo; en az sepet tutarı, tarih penceresi, toplam ve müşteri başı sınır; admin ekranında ürün/kategori/segment kapsamı seçilmez | `/marketing/promotions/new` | Kupon (kupon olmadan müşteriye etkisi yok — admin'den oluşan promosyon kuponludur), sipariş indirimi (kupon + otomatik indirim toplamı ara toplamın %80'iyle sınırlı; ücretsiz kargo ayrı kargo indirimi). Kodsuz "X TL üzeri ücretsiz kargo" promosyon değil kargo kuralıdır (`/settings/shipping/carriers`) | Silme geri alınamaz; bağlı kuponlar çalışmaz → alternatif "Duraklat" (tüm kodları durdurur) ([promotions.md](../screens/marketing/promotions.md)) |
+| Promosyon | — (mağaza saat dilimi tarih alanlarını yorumlar). Türler: yüzde / tutar / ücretsiz kargo / kademeli / paket / Al-Kazan; ürün kapsamı (yüzde, tutar, kademeli, Al-Kazan), "ödemede otomatik" ya da kuponlu tetikleme; en az sepet tutarı, tarih penceresi, toplam ve müşteri başı sınır | `/marketing/promotions/new` | Kupon (kuponlu tetiklemede kupon olmadan müşteriye etkisi yok; "ödemede otomatik" promosyon kodsuz çalışır), sipariş indirimi (kupon + otomatik indirim toplamı ara toplamın %80'iyle sınırlı; ücretsiz kargo ayrı kargo indirimi). Kodsuz "X TL üzeri ücretsiz kargo" promosyon değil kargo kuralıdır (`/settings/shipping/carriers`) | Silme geri alınamaz; bağlı kuponlar çalışmaz → alternatif "Duraklat" (tüm kodları durdurur) ([promotions.md](../screens/marketing/promotions.md)) |
 | Kupon | **Promosyon** (zorunlu; indirimin tamamı promosyondan). Kodun çalışması için promosyon **Yayında** ve promosyon + kupon tarihleri geçerli olmalı; müşteri başı sınır promosyonda, promosyonun tüm kuponları için ortak | `/marketing/coupons/new`, toplu `/marketing/coupons/bulk` (en çok 10.000; üretilen kodlar **Aktif** başlar) | Sepet/checkout (sepette en fazla 3 kod), sipariş (kullanım sipariş iptali ve tam iadede geri verilir, kısmi iadede verilmez) | Kullanılmış (geri verilmemiş) kupon silinemez `ERR_COUPON_HAS_REDEMPTIONS`; kod sonradan değişmez ([coupons.md](../screens/marketing/coupons.md)) |
 | Segment | Müşteriler (kural tabanlı) | `/customers/segments/new` | Kampanya hedeflemesi (yalnız pazarlama izni olan üyelere gider), Meta özel kitlesi ([audiences.md](../screens/marketing/meta/audiences.md)); segmente kısıtlı promosyon admin ekranından kurulmaz | Oluşunca Pasif ve 0 üyeli; "Yeniden Oluştur" gerekir, üyelik son oluşturma anındaki halidir. Silme geri alınamaz, arşivleme geri alınır ([segments.md](../screens/customers/segments.md)) |
 | Kampanya (e-posta) | **Tek** segment (Aktif + yeniden oluşturulmuş) ya da "Tüm müşteriler"; ≥1 e-posta şablonu (şablon yönetimi kapsam dışı); e-posta gönderimi ayarlı (`/settings/notifications`) | `/marketing/campaigns/new` | Müşteriye e-posta; alıcılar **gönderim anında** belirlenir (segmentin son oluşturulmuş üyelerinden pazarlama izni olan + e-postası doğrulanmış olanlar) | Silme yalnız Taslak, İptal, Tamamlandı durumunda; Gönderiliyor/Tamamlandı'da buton yok ([campaigns.md](../screens/marketing/campaigns.md)) |
@@ -186,6 +186,18 @@ Ayar ekranlarının tamamı ve etkileri: [settings-overview.md](../screens/setti
 | API anahtarı / web kancası | — | `/settings/api-keys`, `/settings/webhooks` | Dış entegrasyonlar; web kancası sipariş/ürün/envanter/müşteri olaylarını iletir | Gizli değerler bir kez gösterilir — Claude okumaz/aktarmaz |
 | Bildirim şablonu | E-posta gönderimi kurulumu; mağaza adresi (test için) | `/settings/notifications` (hazır şablonlar düzenlenir) | Sipariş, kargo, stok olaylarının e-posta/SMS'i; pazarlama mesajları gönderim kurallarına tabi | Şablon silinmez, kapatılır |
 | Pazaryeri bağlantısı | Kullanıcının satıcı hesabı kimlik bilgisi | `/settings/marketplace` → `/settings/marketplace/[id]` | Kategori eşleme, ürün gönderimi, pazaryeri sipariş/stok/fiyat ([marketplace-channel.md](../entities/marketplace-channel.md)) | — |
+
+### 3.1 Ek bağımlılıklar (2026-11)
+
+- Ürün → Marka (isteğe bağlı, Kimlik sekmesi). Ürüne bağlı marka (arşivli ürün dahil) silinemez; sıra: önce ürünlerden markayı kaldır, sonra markayı sil.
+- Kategori toplu silme: alt kategoriler önce silinir.
+- İlçe listesi kargo hesabına bağlıdır: depo, müşteri adresi ve sipariş adresi formları.
+- Kargo firması olmayan mağazada ödeme için en az 1 aktif Kargo yöntemi gerekir; yoksa müşteri siparişi tamamlayamaz.
+- Hikâye anlatımı bloğu → planda özellik + medya kitaplığı (sahne görselleri, kapak) → ana sayfa. 3 MB üstü kaydedilmez.
+- SSS makalesi → en az bir aktif store view (dil seçimi).
+- Ana sayfa "Yayınla" → şablon değiştiyse `design:write`.
+- Vitrin ödeme formu → ödeme adayı → Terk edilen sepetler. Form Spam Koruması kimlik bilgisi (Ayarlar → Genel) → teklif formunda robot doğrulaması.
+- Yeni tenant başlangıç içeriği (kategori adları, menü, footer) mağaza diline bağlıdır.
 
 ## 4. Formları etkileyen tenant geneli ayarlar
 

@@ -35,12 +35,16 @@ Kullanıcının metninden çıkar ve aşağıdaki şablona yerleştir (boşları
 | Vergi sınıfı | `taxClass` | Hayır | Tenant varsayılan vergi sınıfı |
 | Ağırlık / ölçüler | `weight`, `length/width/height` | Hayır (kargo hesabı için önerilir) | Boş → platform varsayılan paketi uyarısı |
 | Barkod / EAN / menşei | `barcode` (8/12/13/14), `ean` (13), `countryOfManufacture` (ISO-2) | Hayır | — |
+| UPC / MPN / GTIN | `upc` (8/12/13/14), `mpn` (≤100), `gtin` (8/12/13/14) | Hayır | — (Kimlik sekmesi) |
+| Yayın tarihi / reklam hariç tutma | `publishedAt`, `adsExcluded` | Hayır | boş / false ("Alışveriş reklamlarından çıkar") |
+| Stok uyarı seviyesi / en yüksek sipariş adedi | `notifyStockQty`, `maxQty` | Hayır | boş (varyantsız tiplerde Stok sekmesi) |
+| "Fiyat sorunuz" | `priceOnRequest` | Hayır | kapalı. Açılırsa fiyat alanları istenmez; vitrinde fiyat yerine "Fiyat sorunuz" görünür (yalnız basit/varyantlı/sanal) |
 | Görseller | `media` | Hayır | — (dosya yolu veya kütüphanedeki ad iste) |
 | SEO başlık/açıklama | `seo.metaTitle` (≤100) / `seo.metaDescription` (≤300) | Hayır | Boş (ad kullanılır) |
 | Etiketler (tags) | `tags` | Hayır | — |
 | Varyant eksenleri ve değerleri | `configurableAttributes` | configurable'da ≥1 | — (ör. Beden: S,M,L; Renk: Kırmızı,Siyah) |
 | Varyant bazında fiyat/stok | `variants[].price/qty` | Hayır | fiyat = ana fiyat, stok 0 |
-| Marka | — | — | Formda alan henüz yok → bkz. 2.e |
+| Marka | `brandId` | Hayır | markasız → bkz. 2.e |
 
 Tip özel zorunlular: bundle ≥2 ürün; grouped ≥2 ürün; subscription: aralık + dönem (≥1) + iptal koşulları; downloadable ≥1 dosya; gift_card: önceden tanımlı tutarlar ve/veya özel tutar aralığı, geçerlilik süresi.
 
@@ -51,7 +55,7 @@ a. `{ADMIN_URL}/products/new` aç. **"Ürün Eklemeden Önce Kurulumu Tamamlayı
 b. **Kategori**: formdaki "Kategori Seç" ağacında ara (input "Kategori ara..."); alt kategoriler için ebeveynde "Expand". İstenen kategori yoksa → ../domain/screens/categories/category-create.md (ayrı onay), sonra bu sayfayı yenile (form verisi kaybolur — kategoriyi **forma başlamadan önce** çöz).
 c. **Attribute set**: Özel Nitelikler sekmesinde set listesini oku. Uygun set yoksa (ör. "Giyim") → ../domain/screens/attributes/attribute-set-create.md (+ gerekirse attribute-create). Set seçince zorunlu (`*`) attribute'ları ve select seçeneklerini oku; değer kullanıcının metninde yoksa sor; seçenek listede yoksa attribute'a seçenek eklemek gerekir (attribute ekranı, ayrı onay).
 d. **Depo** (stok > 0 ise): Stok sekmesinde Depo listesini oku; hiç depo yoksa banner çıkar → önce [warehouse-setup](warehouse-setup.md) (ayrı onayla). Birden çok depo varsa hangisi olduğunu sor.
-e. **Marka**: Ürün formunda marka alanı henüz yok (geliştiriliyor). Kullanıcıya bunu söyle ve markayı raporda "atanmadı" olarak belirt; geçici yol önerme.
+e. **Marka** (kullanıcı marka söylediyse): Kimlik sekmesindeki "Marka" listesinde ara; yoksa önce [category-brand-setup](category-brand-setup.md) ile markayı oluştur (ayrı onay), sonra formu **baştan** doldur (yeni marka listede görünsün diye sayfayı yenilemek form verisini siler). Marka söylenmediyse "-- Marka yok --" bırak ve özette "markasız" yaz.
 f. **Vergi sınıfı**: Fiyatlandırma sekmesindeki listede "{ad} ({oran}%)" seçeneklerini oku; kullanıcı belirli oran söylediyse eşleştir; yoksa varsayılanı bırak (özete "tenant varsayılanı" yaz). Yeni sınıf gerekiyorsa `/settings/tax-classes`.
 g. **SKU benzersizliği**: `{ADMIN_URL}/products` listesinde SKU ile ara (../domain/screens/products/product-list.md). Varsa kullanıcıya sor (güncelleme mi, yeni SKU mu?).
 h. **İlişkili/paket/grup ürünler**: listede ara, var olduklarını doğrula.
@@ -91,7 +95,7 @@ Her adımdan sonra `browser_snapshot` ile değerleri doğrula.
 | Varyantlar | 6 adet (S/M/L × Kırmızı/Siyah), stok toplam 60, depo Merkez | |
 | Medya | 3 görsel (ana: front.jpg) | |
 | Yan etkiler | Stok seçili depoya yazılır; yayındaysa vitrin aramasına birkaç dakika içinde eklenir; varyant stok satırları oluşur | |
-| Kalan işler | Marka atanmadı (alan geliştiriliyor) | |
+| Marka | Apple (Kimlik sekmesi) / markasız | varsayılan |
 
 "Onaylıyor musunuz?" → açık evet gelince footer'daki **"Ürün Oluştur / Create Product"** (submit) butonuna tıkla. Enter kullanma (form Enter ile gönderilmez zaten).
 
@@ -100,7 +104,7 @@ Her adımdan sonra `browser_snapshot` ile değerleri doğrula.
 2. Hata toast'ı ve sayfada kalma → mesajı oku: kategori/plan/depo/kademe/vergi sınıfı eşlemesi ../domain/screens/products/product-create.md "Aksiyonlar". Fiyatlandırma sekmesinde kırmızı uyarı kutusu olabilir. Düzelt → özet değiştiyse **yeniden onay**.
 3. Başarıda URL `{ADMIN_URL}/products/{id}` (detay). Kontrol: ad, SKU, durum/tip rozeti, fiyat kartı, kategoriler, özel nitelikler, varyant sayısı, "Satılabilir Toplam" stok, görseller.
 4. Yayındaysa vitrinde aç: `{STOREFRONT_URL}/product/{slug}` (beden/renk seçicileri, fiyat, görseller). Toplu aktarımdan sonra önce arama dizinini kontrol et ve gerekiyorsa onayla yeniden oluştur (../domain/screens/settings/search-index.md § Ne zaman çalıştırılır).
-5. Rapor: ürün linki, oluşturulan ön koşul kayıtları, yapılamayanlar (ör. marka, çeviri).
+5. Rapor: ürün linki, oluşturulan ön koşul kayıtları, yapılamayanlar (ör. çeviri).
 6. Çeviri (store view) istenmişse → ../domain/screens/products/product-edit.md (Görünüm seçici; ayrı onay).
 
 ## 7. Kısıtlar ve dikkat edilecekler

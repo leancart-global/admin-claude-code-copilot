@@ -6,6 +6,18 @@ başına tanımlıdır.
 - Ekran: [../screens/settings/shipping-carriers.md](../screens/settings/shipping-carriers.md).
 - Yetki: okuma `shipping:read`, yazma `shipping:write`.
 
+## Kargo yöntemi (kendi sabit ücret)
+Kargo firması entegrasyonu olmayan mağazanın kendi tanımladığı yöntem; taşıyıcıdan bağımsızdır, mağaza başına birden çok olabilir.
+| Alan | Tip | Zorunlu | Varsayılan | Kural / not |
+|---|---|---|---|---|
+| Ad | string | evet | — | ≤100 karakter; mağazada benzersiz |
+| Fiyat | tutar (mağaza temel para birimi) | evet | — | ≥0 |
+| Teslim süresi | gün | evet | 2 | 1–365 |
+| Açıklama | string | hayır | — | ≤500 karakter |
+| Ücretsiz kargo limiti | tutar | hayır | boş | Sipariş tutarı limite ulaşınca ücretsiz; boş = her zaman fiyat |
+| Ödemede sun (Aktif) | bool | — | true | Pasif yöntem ödeme adımında sunulmaz |
+Silme kalıcıdır; mevcut gönderilerde kullanılan yöntem silinemez (pasife alınır). Ekran: Kargo yöntemleri kartı.
+
 ## Taşıyıcı yapılandırması
 | Alan | Tip | Zorunlu | Varsayılan | Kural / not |
 |---|---|---|---|---|
@@ -51,8 +63,8 @@ Silme kalıcıdır (onay dialoglu).
 
 ## Varsayılan paket ölçüsü
 Uzunluk, Genişlik, Yükseklik (cm), Ağırlık (kg) — dördü de >0 olmalı; kaldırılabilir. Ağırlığı/ölçüsü girilmemiş ürünlerde
-kullanılır. Ücret desi ((U × G × Y) / 3000) ile gerçek ağırlıktan büyük olana göre hesaplanır. Tanımsızsa bu ürünler en
-düşük tarifeden fiyatlanır.
+kullanılır. Ücret desi ((U × G × Y) / 3000) ile gerçek ağırlıktan büyük olana göre hesaplanır. Tanımsızsa bu ürünler
+platformun standart paketiyle (30 × 20 × 10 cm, 1 kg) fiyatlanır; ana sayfada ve ürün formunda uyarı çıkar.
 
 ## İlişkiler
 - Depo (gönderici adresi) → fiyat alınabilmesi için gerekli.

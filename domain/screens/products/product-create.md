@@ -11,7 +11,7 @@
   - **Kaydet**:
     1. Ürün kaydı oluşturulur — alan eşlemesi aşağıda.
     2. Yalnızca formda varyant varsa: varyantlar toplu ve atomik olarak kaydedilir.
-  - Gönderilen alanlar (form → API): `name`, `sku`, `description` (boşsa `name` kopyalanır), `shortDescription`, `type`, `status`, `visibility`, `price`←`basePrice`, `currency`, `compareAtPrice`, `costPrice`←`cost`, `taxClassId`←`taxClass`, `specialPrice`, `specialPriceFrom/To`←`specialPriceStart/End`, `tierPrices[]`, `quantity`←`qty` (varyantlıda 0), `warehouseId` (varyantlıda ürün kaydına gitmez), `trackInventory`, `allowBackorder`, `lowStockThreshold`, `weight` + `dimensions{weight,weightUnit,length,width,height,unit}`, `isShippable`←`requiresShipping`, `freeShipping`, `shippingClass`, `categoryIds`, `tags`, `media[]{url,type,alt,title,isMain,sortOrder,variantAttributes}`, `seo{title,description,keywords[],focusKeyword,canonicalUrl,og*,twitter*,indexable,followable}`, `isFeatured`, `isNewProduct`←`isNew`, `isBestseller`, `allowReviews`, `giftMessageAvailable`, `canBeGiftWrapped`, `isReturnable`, `isComparable`, `attributes`←`customAttributes`, `attributeSetId`, `relations[]{type:'related'|'up_sell'|'cross_sell',productId,sortOrder}`, tip-özel: `configurableAttributes`, `bundleConfig`, `subscriptionPlan`, `downloadableFiles`, hediye kartı tutar ayarları, gruplu ürün öğeleri. Çeviriler create'te kaydedilmez.
+  - Gönderilen alanlar (form → API): `name`, `sku`, `description` (boşsa `name` kopyalanır), `shortDescription`, `type`, `status`, `visibility`, `price`←`basePrice` ("Fiyat sorunuz" açıkken gönderilmez; `priceOnRequest`), `currency`, `compareAtPrice`, `costPrice`←`cost`, `taxClassId`←`taxClass`, `specialPrice`, `specialPriceFrom/To`←`specialPriceStart/End`, `tierPrices[]`, `quantity`←`qty` (varyantlıda 0), `warehouseId` (varyantlıda ürün kaydına gitmez), `trackInventory`, `allowBackorder`, `lowStockThreshold`, `stock{maxQty,notifyStockQty}` (yalnız doluysa), `weight` + `dimensions{weight,weightUnit,length,width,height,unit}`, `isShippable`←`requiresShipping`, `freeShipping`, `shippingClass`, `categoryIds`, `tags`, `media[]{url,type,alt,title,isMain,sortOrder,variantAttributes}`, `seo{title,description,keywords[],focusKeyword,canonicalUrl,og*,twitter*,indexable,followable}`, `brandId`, `upc`, `mpn`, `gtin`, `publishedAt`, `adsExcluded`, `isFeatured`, `isNewProduct`←`isNew`, `isBestseller`, `allowReviews`, `giftMessageAvailable`, `canBeGiftWrapped`, `isReturnable`, `isComparable`, `attributes`←`customAttributes`, `attributeSetId`, `relations[]{type:'related'|'up_sell'|'cross_sell',productId,sortOrder}`, tip-özel: `configurableAttributes`, `bundleConfig`, `subscriptionPlan`, `downloadableFiles`, hediye kartı tutar ayarları, gruplu ürün öğeleri. Çeviriler create'te kaydedilmez.
 
 ## Ön koşullar ve bağımlılıklar
 Sayfa açıldığında ön koşul kartı eksik olanları listeler; **hepsi tamam olmadan tip seçimi ve form hiç gösterilmez**. Başlık: "Ürün Eklemeden Önce Kurulumu Tamamlayın / Complete Setup Before Adding Products".
@@ -30,7 +30,7 @@ Kayıt sırasında ihtiyaç duyulanlar (formda seçilir, yoksa önce oluşturulm
 - **Vergi sınıfı** (opsiyonel; boşsa tenant varsayılan vergi sınıfı atanır) → `/settings/tax-classes` ../settings/tax-classes.md
 - **Müşteri grubu** (yalnızca kademe fiyatta grup seçilecekse; boş = tüm gruplar) → `/customers/groups` ../customers/customer-groups.md
 - **Tenant varsayılan fiyat para birimi** — formda para birimi boş kalırsa bu kullanılır; o da yoksa kayıt `TENANT_PRICING_CURRENCY_NOT_CONFIGURED` ile reddedilir.
-- **Marka**: Ürün formunda marka alanı henüz yok (geliştiriliyor). Kullanıcı marka isterse bunu söyle; geçici yol önerme. Marka kaydı: ../brands/brand-create.md
+- **Marka** (opsiyonel): Ürün formunda "Kimlik" sekmesindeki "Marka" listesinden seçilir (ilk seçenek "-- Marka yok --"); marka önceden var olmalı, yoksa önce Markalar bölümünde oluşturulur. Marka kaydı: ../brands/brand-create.md
 - **Medya**: dosyayı kullanıcı vermeli (yol) veya medya kütüphanesinde mevcut olmalı → ../content/media-library.md
 - İlişkili/paket/grup ürünler önceden var olmalı (arama ile seçilir).
 
@@ -122,8 +122,9 @@ Varsayılan scope'ta **slug (URL) alanı yok**; slug addan otomatik üretilir ve
 ### Tab: Fiyatlandırma (`pricing`)
 | Bölüm | Label (tr / en) | Form key | Kontrol | Zorunlu | Validasyon / varsayılan | Locator | Not |
 |---|---|---|---|---|---|---|---|
-| Fiyatlandırma / Pricing | Para Birimi * / Currency * | `currency` | Select (aktif para birimleri, value=ISO kod) | Yayın için Evet | 3 harf; tenant varsayılan fiyat para birimi otomatik dolar | placeholder "Para birimi seçin" | Fiyat > 0 iken değiştirirsen "Para Birimi Değişikliği / Currency Change" dialog'u açılır (Tuzaklar) |
-| 〃 | Temel Fiyat * / Base Price * | `basePrice` | number (focus'ta tümünü seçer, blur'da 2 haneye formatlar) | Evet | ≥0, 0.01 katı; varsayılan 0 | `getByLabel('Temel Fiyat')` | Ondalık **nokta** ile yaz ("1299.90"). Yanında vergi dahil/hariç ipucu |
+| Fiyatlandırma / Pricing | Fiyat sorunuz / Price on request | `priceOnRequest` | checkbox (açıklama: "Müşteriler fiyat yerine Fiyat sorunuz ifadesini görür. Kaydettiğiniz fiyatlar, bu seçeneği kapatırsanız korunur.") | Hayır | false. Yalnız Basit, Varyantlı ve Sanal ürün tipinde görünür | `getByRole('checkbox',{name:'Fiyat sorunuz'})` | Açılınca Temel Fiyat, Karşılaştırma Fiyatı, Özel Fiyat bölümü ve Kademe Fiyatlandırma formdan **gizlenir** ve fiyat zorunluluğu kalkar; vitrinde fiyat yerine "Fiyat sorunuz" görünür (gelen teklif talepleri Pazarlama bölümündeki teklif talepleri ekranında görünür). Kapatınca fiyat alanları geri gelir ve daha önce kaydedilmiş fiyatlar korunur; kayıtlı fiyat yoksa Temel Fiyat boş başlar ve girilmesi istenir ("Bir fiyat girin veya Fiyat sorunuz seçeneğini açın"). Gizli bir alan hata veriyorsa o alan hata düzelene kadar görünür kalır. Fiyat sorunuz açıkken fiyat 0 gönderilemez |
+| 〃 | Para Birimi * / Currency * | `currency` | Select (aktif para birimleri, value=ISO kod) | Yayın için Evet | 3 harf; yeni üründe tenant varsayılan fiyat para birimi otomatik dolar (varsayılan okunamazsa boş kalır, elle seçilir) | placeholder "Para birimi seçin" | Fiyat > 0 iken değiştirirsen "Para Birimi Değişikliği / Currency Change" dialog'u açılır (Tuzaklar) |
+| 〃 | Temel Fiyat * / Base Price * | `basePrice` | number (focus'ta tümünü seçer, blur'da 2 haneye formatlar) | Evet (Fiyat sorunuz açıkken hayır) | ≥0, en fazla 2 ondalık ("Fiyat en fazla iki ondalık basamak içerebilir"); varsayılan 0 | `getByLabel('Temel Fiyat')` | Ondalık **nokta** ile yaz ("1299.90"). Yanında vergi dahil/hariç ipucu |
 | 〃 | Karşılaştırma Fiyatı / Compare At Price | `compareAtPrice` | number | Hayır | girilirse **> Temel Fiyat** olmalı | | Üstü çizili "eski fiyat" |
 | 〃 | Birim Maliyet / Cost Per Item | `cost` | number | Hayır | ≤ 2×Temel Fiyat (aksi halde "maliyet olağandışı" hatası) | | API `costPrice` |
 | Özel Fiyatlandırma / Special Pricing | Özel Fiyat / Special Price | `specialPrice` | number | Hayır | < Temel Fiyat (0 = temizlenmiş) | | Başlıkta "Aktif"/"Planlandı" rozeti ve "Temizle / Clear" butonu |
@@ -145,6 +146,8 @@ Varsayılan scope'ta **slug (URL) alanı yok**; slug addan otomatik üretilir ve
 | 〃 (simple/bundle/subscription) | Depo / Warehouse | `warehouseId` | Select (metin "{ad} ({kod})") | Stok > 0 ise pratikte Evet | tek depo varsa otomatik seçilir; SKU yazılınca mevcut stoktan tahmin edilir | placeholder "Depo seçin / Select warehouse"; ipucu "Stoğun yazılacağı depoyu seçin. Zorunlu." | |
 | 〃 | Miktar * / Quantity * | `qty` | number (tam sayı) | – | ≥0 tam sayı, varsayılan 0 | | API `quantity`; >0 ise oluşturma sırasında seçili depoya stok yazılır |
 | 〃 | Düşük Stok Eşiği / Low Stock Threshold | `lowStockThreshold` | number | Hayır | ≥0 tam sayı | | |
+| 〃 | Stok Uyarı Seviyesi / Stock Alert Level | `notifyStockQty` | number | Hayır | ≥0 tam sayı ("Stok bu sayıya veya altına düştüğünde bildirim alırsınız. Boş bırakırsanız mevcut değer korunur") | `getByLabel('Stok Uyarı Seviyesi')` | Yalnız stok miktarı alanı olan tiplerde (configurable'da yok); boş bırakmak edit'te mevcut değeri **silmez** |
+| 〃 | En Yüksek Sipariş Adedi / Maximum Order Quantity | `maxQty` | number | Hayır | ≥0 tam sayı ("Bir müşterinin tek siparişte alabileceği en fazla adet. Boş bırakırsanız mevcut değer korunur") | `getByLabel('En Yüksek Sipariş Adedi')` | Aynı: yalnız miktar alanı olan tiplerde; boş = mevcut değer korunur |
 | 〃 | Stok Takibi / Track Inventory | `trackInventory` | checkbox | – | true | | |
 | 〃 | Ön Siparişe İzin Ver / Allow Backorders | `allowBackorder` | checkbox | – | false | | |
 | 〃 (configurable) | Bilgi kutusu "Stok varyant bazında yönetilir / Stock is managed per variant" + "{n} varyant · Toplam stok: {x}" + link "Varyantları yönet" | – | – | | | | Miktar alanı YOK |
@@ -153,7 +156,7 @@ Varsayılan scope'ta **slug (URL) alanı yok**; slug addan otomatik üretilir ve
 | 〃 | Ağırlık Birimi / Weight Unit | `weightUnit` | Select kg/g/lb/oz ("Kilogram (kg)"...) | – | `kg` | | |
 | 〃 | Uzunluk / Genişlik / Yükseklik (Length/Width/Height) | `length`,`width`,`height` | number | Hayır | ≥0 | | |
 | 〃 | Birim / Unit | `dimensionUnit` | Select cm/m/in/ft | – | `cm` | | |
-| 〃 | (uyarı) "Ağırlık veya ölçülerden biri eksik; kargo fiyatı platformun varsayılan paketiyle hesaplanacak…" | – | | | | | Bilgi; kaydı engellemez |
+| 〃 | (uyarı) "Ağırlık veya ölçülerden biri eksik; kargo fiyatı … varsayılan paketiyle hesaplanacak: {u} × {g} × {y} … ve {ağırlık} …. Doğru kargo fiyatı için bunları doldurun." | – | | | | | Bilgi; kaydı engellemez. Kargo ayarlarında mağazanın varsayılan paketi tanımlıysa metin "mağazanızın varsayılan paketiyle" der ve o ölçüleri yazar (kullanıcının kargo okuma yetkisi varsa); aksi halde "platformun varsayılan paketiyle" der ve platform ölçüsünü yazar. "Kargo Gerekli" kapalıysa görünmez |
 | Kargo / Shipping | Kargo Gerekli / Requires Shipping | `requiresShipping` | checkbox | – | true (virtual/downloadable'da false) | | API `isShippable`; işaret kaldırılırsa Ücretsiz Kargo da kapanır |
 | 〃 | Ücretsiz Kargo / Free Shipping | `freeShipping` | checkbox | – | false | | Kargo Gerekli kapalıyken pasif |
 
@@ -166,7 +169,9 @@ Varsayılan scope'ta **slug (URL) alanı yok**; slug addan otomatik üretilir ve
 | Dialog footer | "Seç / Select" | – | buton | | ≥1 seçim olmadan pasif | `getByRole('button',{name:'Seç'})` | Seçilenler forma eklenir; ana görsel yoksa ilk görsel ana olur; toast "{type} başarıyla yüklendi" |
 | Medya ızgarası | filtre "Tümü / Görseller / Videolar"; kart üzerinde "Ana / Main" rozeti | – | sürükle-bırak sıralama | | | | Sıra = görüntülenme sırası |
 | Kart aksiyonları | "Ana görsel olarak ayarla / Set as main image" (title), "Alt metin ve başlığı düzenle / Edit alt text and title", "Medyayı kaldır / Remove media" | `media[i].isMain`, `alt`, `title` | ikon butonları (title attr.) | | | `getByTitle(...)` | Alt metin eksikse "Alt metin eksik" ikonu |
+| Kart aksiyonları (hover) | "Üzerine gelince göster / Show on hover" (title; kaldırmak için "Üzerine gelince göstermeyi kaldır / Stop showing on hover"); rozet "Üzerine gelince / Hover" | `media[i].isHover` | ikon butonu (title attr.) | | ürün başına **en fazla bir** hover medyası; ana görselde ve varyanta özel medyada kullanılamaz; yeni ana görsel seçilen medya hover işaretini kaybeder | `getByTitle(...)` | Müşteriler vitrinde ürün kartının üzerine gelince (klavye odağında da) ana görselin yerine bu medya gösterilir; video ise sessiz ve döngülü oynar. Dokunmatik cihazda ve "hareketi azalt" ayarında gösterilmez. Alan notu: "Müşteriler ürün kartının üzerine geldiğinde gösterilir." |
 | Düzenle dialog'u "Görsel Detaylarını Düzenle" | Alt Metin / Alt Text; Başlık / Title | `media[i].alt`, `media[i].title` | text (`#media-alt`, `#media-title`) | Hayır | | `#media-alt` | Kaydet: "Kaydet/Save" |
+| Kart aksiyonları (ek) | "Üzerine gelince göster / Show on hover" (ürün düzeyindeki görsellerde; basılıyken "Üzerine gelince göstermeyi kaldır", `aria-pressed`); rozet "Üzerine gelince" | `media[i].isHover` | ikon butonu (title/aria-label) | | | | Ürün kartının üzerine gelen müşteriye ana görselin yerine bu görsel gösterilir ("Müşteriler ürün kartının üzerine geldiğinde gösterilir."). **Ürün başına en çok 1** hover görseli; ana görselde buton yoktur ve ana görsel yapılan görselin hover işareti kalkar; yalnız ürün düzeyindeki görsel olabilir (varyant görselleri olamaz). Ana görsel silinirse sıradaki hover olmayan görsel ana olur |
 | (configurable) "{Nitelik} Bazında Görseller / Images by {attribute}" | grup başına "Kütüphaneden Seç" | `media[i].variantAttributes` | | | | | Varyant görseli; varyant satırında "Görselleri Geçersiz Kıl / Override images" ayrıca var |
 
 ### Tab: Kimlik (`identification`)
@@ -175,7 +180,15 @@ Varsayılan scope'ta **slug (URL) alanı yok**; slug addan otomatik üretilir ve
 | Barkod (İsteğe bağlı) / Barcode (Optional) | `barcode` | text | Hayır | 8/12/13/14 hane rakam | placeholder "Ürün barkodunu girin" |
 | Avrupa Ürün Numarası (EAN) (İsteğe bağlı) | `ean` | text | Hayır | tam 13 hane | placeholder "13 haneli EAN girin" |
 | Üretim Ülkesi / Country of Manufacture | `countryOfManufacture` | Select (uzun liste, value=ISO-2 ör. `TR`; ilk seçenek "-- Belirtilmedi --") | Hayır | 2 büyük harf | placeholder "Üretim ülkesini seçin" — listbox'ta harf yazarak hızlı arama çalışır |
+| UPC (İsteğe bağlı) / UPC (Optional) | `upc` | text | Hayır | 8, 12, 13 veya 14 haneli rakam ("UPC 8, 12, 13 veya 14 haneli olmalıdır") | placeholder "UPC girin" |
+| Üretici Parça Numarası (İsteğe bağlı) / Manufacturer Part Number (Optional) | `mpn` | text | Hayır | ≤100 karakter | placeholder "Üretici parça numarasını girin" |
+| GTIN (İsteğe bağlı) / GTIN (Optional) | `gtin` | text | Hayır | 8, 12, 13 veya 14 haneli rakam ("GTIN 8, 12, 13 veya 14 haneli olmalıdır") | placeholder "GTIN girin" — pazaryerleri ve alışveriş reklamlarında kullanılır |
+| Marka / Brand | `brandId` | Select (mevcut markalar; ilk seçenek "-- Marka yok --") | Hayır | boş = markasız | placeholder "Marka seçin"; ipucu "Önce Markalar bölümünden marka oluşturun, sonra burada seçin" |
+| Yayın Tarihi / Published On | `publishedAt` | date (açılır takvim, buton tetikleyici) | Hayır | ürünün satışa çıktığı gün | Yazarak girilmez; takvimden gün tıklanır. Edit'te boş bırakmak mevcut tarihi korur; gün değiştirilmedikçe kayıtlı tarih (saatiyle) aynen kalır |
+| Alışveriş reklamlarından çıkar / Exclude from shopping ads | `adsExcluded` | checkbox | Hayır | false | `getByRole('checkbox',{name:'Alışveriş reklamlarından çıkar'})`; ipucu "Bu ürünü Google ve Meta alışveriş reklamlarınızın dışında tutar" |
 | "Özet / Summary" kartı | – | salt okunur | | | |
+
+Barkod, UPC ve GTIN aynı hane kuralını kullanır (8/12/13/14).
 
 ### Tab: Özel Nitelikler (`custom-attributes`)
 | Label (tr / en) | Form key | Kontrol | Zorunlu | Validasyon | Locator | Not |
@@ -191,14 +204,14 @@ Global attribute'lardan seçilmez; eksenler **elle yazılır**. Ekseni attribute
 | Bölüm | Label (tr / en) | Form key | Kontrol | Zorunlu | Validasyon | Locator | Not |
 |---|---|---|---|---|---|---|---|
 | Yapılandırılabilir Öznitelikler | "İlk Özniteliği Ekle / Add First Attribute", sonra "Başka Öznitelik Ekle / Add Another Attribute" | `configurableAttributes[]` | buton | ≥1 (yayın) | kodlar benzersiz | `getByRole('button',{name:'İlk Özniteliği Ekle'})` | |
-| 〃 | Öznitelik Kodu / Attribute Code | `configurableAttributes[i].code` | text | Evet | otomatik küçük harf, boşluk→`_` | placeholder "ör. color, size" | Aynı kod → "Bu öznitelik kodu zaten kullanılıyor" |
+| 〃 | Öznitelik Kodu / Attribute Code | `configurableAttributes[i].code` | text | Evet | otomatik küçük harf, boşluk→`_` | placeholder "ör. renk, beden" (tr) / "e.g. color, size" (en) | Aynı kod → "Bu öznitelik kodu zaten kullanılıyor" |
 | 〃 | Öznitelik Etiketi / Attribute Label | `…label` | text | Evet | | placeholder "ör. Renk, Beden" | |
 | 〃 | Görüntüleme Türü / Display Type | `…displayType` | Select: Açılır Liste/Dropdown, Renk Örneği/Color Swatch, Buton/Button | – | `dropdown` | | swatch'ta değer başına hex input |
 | 〃 Değerler / Values | "Değer Ekle / Add Value" | `…values[]` | buton + satır | ≥1 | | | İlk değer varsayılan |
 | 〃 değer satırı | Etiket / Değer | `…values[j].label`, `…values[j].value` | text ×2 | Evet | value otomatik küçük harf | placeholder "Etiket (ör. Kırmızı)" / "Değer (ör. kirmizi)" | Değer kaldır: aria-label "Değeri kaldır" |
 | 〃 | hex (swatch) | `…values[j].hexColor` | text | Hayır | `#RRGGBB` | placeholder "#000000" | |
 | Varyant Matrisi / Variant Matrix | "Varyantları Yeniden Oluştur / Regenerate Variants" | `variants[]` | buton | ≥1 varyant (yayın) | | `getByRole('button',{name:'Varyantları Yeniden Oluştur'})` | **Otomatik üretmez — butona basılmalı.** SKU = `{ürün SKU}-{DEĞER1}-{DEĞER2}` (değerler BÜYÜK harf), fiyat = o anki Temel Fiyat, miktar 0 |
-| matris satırı | SKU / Barkod / EAN / Fiyat / Karşılaştırma Fiyatı / Miktar (seçili depo) / Ağırlık / Varsayılan | `variants[k].sku`, `.barcode`, `.ean`, `.price`, `.compareAtPrice`, `.qty`, `.weight`, `.isDefault` | text/number, radio/checkbox | SKU ≥2 karakter | barkod/EAN kuralları ürünle aynı | satır `data-variant-id` (yalnızca kayıtlı varyant) | Fiyat boş = ana ürün fiyatı |
+| matris satırı | SKU / Barkod / EAN / Fiyat / Karşılaştırma Fiyatı / Miktar (seçili depo) / Ağırlık / Varsayılan | `variants[k].sku`, `.barcode`, `.ean`, `.price`, `.compareAtPrice`, `.qty`, `.weight`, `.isDefault` | text/number, radio/checkbox | SKU ≥2 karakter | barkod/EAN kuralları ürünle aynı | satır `data-variant-id` (yalnızca kayıtlı varyant) | Fiyat boş = ana ürün fiyatı. Fiyat ve Ağırlık sütunları en yüksek değeri (ör. 999999.99) kırpmadan gösterecek genişliktedir |
 
 ### Tab: Paket Öğeleri (`bundle`)
 | Label (tr / en) | Form key | Kontrol | Zorunlu | Validasyon | Not |
@@ -211,6 +224,7 @@ Global attribute'lardan seçilmez; eksenler **elle yazılır**. Ekseni attribute
 `downloadableFiles[]` {ad, url (http/https), kaynak yükleme|URL, indirme limiti, bağlantı süresi}; yükleme veya URL ile eklenir. Yayın için ≥1 dosya.
 
 ### Tab: Sanal (`virtual`) — salt bilgi kartı, alan yok.
+Sanal ve indirilebilir ürünler depo gerektirmez (Stok sekmesi yok) ve stok durumları hiçbir zaman "Stokta yok" görünmez.
 
 ### Tab: Hediye Kartı (`giftcard`)
 | Label (tr / en) | Form key | Kontrol | Not |
@@ -248,12 +262,13 @@ Abonelik ürünü faturalama planı olmadan kaydedilemez (`PRODUCT_SUBSCRIPTION_
 Sonuç toast'ları:
 - Tam başarı: "İşlem başarıyla tamamlandı / Operation completed successfully" + "Ürün başarıyla oluşturuldu / Product created successfully".
 - Eksik taslak: başlık "Uyarı / Warning" + "Ürün taslak olarak kaydedildi, ancak bazı zorunlu alanlar eksik. / Product saved as a draft, but some required fields are still missing.".
-- Varyant kaydı başarısız: "Bir hata oluştu / An error occurred" + "Ürün oluşturuldu ancak varyantları kaydedilemedi. Ürünü açıp Varyantlar sekmesinden tekrar deneyin."
-- Bu üç durumda da **yönlendirme: `/products/{yeniId}` (detay sayfası)** — ./product-detail.md.
-- Hata (ürün oluşturulmadı, sayfada kalır): `ERR_TIER_PRICE_MIN_QTY_INVALID` ve `ERR_TAX_CLASS_NOT_FOUND` → Fiyatlandırma sekmesinde kırmızı uyarı kutusu (toast yok, sekme otomatik açılır); `WAREHOUSE_NOT_CONFIGURED` → "Stok eklemeden önce bir depo tanımlamanız gerekir…"; stok servisi geçici olarak yanıt vermezse → "Stok servisi geçici olarak kullanılamıyor…"; yayında ürün kategorisizse → "Yayındaki bir ürünün en az bir kategorisi olmalı…"; `PRODUCT_SUBSCRIPTION_PLAN_REQUIRED` → "Abonelik ürünleri için bir faturalandırma planı gerekir…"; `VALIDATION_ERROR` → "Sunucu bazı ürün bilgilerini kabul etmedi…"; SKU çakışması → genel hata metni (tam metin doğrulanmadı).
+- Varyant kaydı başarısız (istek hata verirse ya da sunucu başarısız yanıt dönerse): "Bir hata oluştu / An error occurred" + "Ürün oluşturuldu ancak varyantları kaydedilemedi. Ürünü açıp Varyantlar sekmesinden tekrar deneyin." Ürün varyantsız oluşmuştur.
+- Tam başarı ve eksik taslakta **yönlendirme: `/products/{yeniId}` (detay sayfası)** — ./product-detail.md. Varyant kaydı başarısızsa doğrudan **`/products/{yeniId}/edit?tab=variants`** (düzenleme formunun Varyantlar sekmesi) açılır; tekrar deneme oradan yapılır → ./product-edit.md.
+- Hata (ürün oluşturulmadı, sayfada kalır): `ERR_PRICE_ON_REQUEST` → "Fiyat sorunuz seçeneği açık olan bir ürünün fiyatı 0 olamaz…"; `ERR_PRICE_INVALID` → "Fiyat kabul edilmedi. Fiyatlandırma sekmesinde 0,01 veya daha yüksek bir fiyat girip tekrar kaydedin."; zorunlu bilgi eksikse "Bazı zorunlu bilgiler eksik. Sekmelerde işaretli alanları doldurup tekrar kaydedin."; `ERR_TIER_PRICE_MIN_QTY_INVALID` ve `ERR_TAX_CLASS_NOT_FOUND` → Fiyatlandırma sekmesinde kırmızı uyarı kutusu (toast yok, sekme otomatik açılır); `WAREHOUSE_NOT_CONFIGURED` → "Stok eklemeden önce bir depo tanımlamanız gerekir…"; stok servisi geçici olarak yanıt vermezse → "Stok servisi geçici olarak kullanılamıyor…"; yayında ürün kategorisizse → "Yayındaki bir ürünün en az bir kategorisi olmalı…"; `PRODUCT_SUBSCRIPTION_PLAN_REQUIRED` → "Abonelik ürünleri için bir faturalandırma planı gerekir…"; `VALIDATION_ERROR` → "Sunucu bazı ürün bilgilerini kabul etmedi…"; SKU çakışması → genel hata metni (tam metin doğrulanmadı).
 
 ## Yan etkiler
-- Ürün oluşurken: slug addan üretilir, vergi sınıfı boşsa tenant varsayılanı atanır, para birimi boşsa tenant varsayılanı kullanılır.
+- SKU: arşivlenmiş ürünün SKU'su serbest kalır; aynı SKU ile yeni ürün oluşturulabilir (arşivli ürünü sonradan geri yüklemek, SKU bu arada alınmışsa reddedilir).
+- Ürün oluşurken: slug addan üretilir, başka bir ürünün çeviri slug'ı olarak kullanılan slug'a sonek eklenir, vergi sınıfı boşsa tenant varsayılanı atanır, para birimi boşsa tenant varsayılanı kullanılır.
 - Miktar > 0 ise seçili (veya varsayılan) depoya stok yazılır; **stok yazılamazsa ürün de oluşturulmaz** ve hata döner.
 - Yayında ve görünür ürün vitrin aramasına birkaç dakika içinde eklenir; taslak veya "Görünmez" ürün aramada çıkmaz. Toplu aktarımla eklenen ürünler için arama dizini şimdilik elle yeniden oluşturulur (`../settings/search-index.md` § Ne zaman çalıştırılır).
 - Vitrin adresleri: ürün sayfası `{STOREFRONT_URL}/product/{slug}`, kategori listesi `{STOREFRONT_URL}/products/{kategori urlKey}`.
@@ -268,10 +283,10 @@ Sonuç toast'ları:
 3. **Etiketler (tags) input'u**: her tuş vuruşunda değeri bölüp `", "` ile yeniden yazar; karakter karakter yazmak (`type`) virgül ve boşlukları yutar. Değeri **tek seferde `fill`** ile ver: `"yaz, pamuk, tişört"`.
 4. **Fiyat / sayı alanları**: Türkçe ondalık virgül kabul edilmez; "1299.90" yaz. Focus tümünü seçer, blur 2 haneye formatlar.
 5. **Para birimi değiştirme** Temel Fiyat > 0 iken dialog açar: "Para Birimi Değişikliği / Currency Change" → "Fiyatları Dönüştür / Convert Prices" (kurla çevirir) veya "Sadece Para Birimini Değiştir / Change Currency Only". Para birimini fiyattan **önce** seç ki dialog çıkmasın.
-6. **Para birimi otomatik dolumu gecikmeli**: tenant varsayılanı formun açılmasından kısa süre sonra gelir. Snapshot'ta boş görürsen bekle.
+6. **Para birimi otomatik dolumu gecikmeli**: yeni üründe tenant varsayılanı formun açılmasından kısa süre sonra gelir ve kullanıcının seçimini ezmez. Snapshot'ta boş görürsen bekle; hiç dolmazsa para birimini elle seç.
 7. **Depo otomatik seçimi**: tek depolu tenantta sessizce seçilir; SKU yazınca mevcut stoğu olan depo seçilebilir. Özetten önce Stok sekmesindeki değeri oku.
 8. **Varyantlar otomatik oluşmaz**: eksen/değerleri girdikten sonra "Varyantları Yeniden Oluştur"a bas. SKU ve Temel Fiyat'ı **önce** gir (üretim anındaki değerler kopyalanır). Değer alanı küçük harfe zorlanır; Türkçe karakterler SKU'ya BÜYÜK harfle girer (ör. `-KIRMIZI`); gerekirse ASCII değer kullan.
-9. **Varyant stoğu + depo**: configurable'da Stok sekmesindeki Depo seçilmeden varyant miktarı >0 ise kayıt hiç başlamaz (satır içi hata). Ürün oluşur da varyantlar kaydedilemezse ürün **varyantsız** kalır; detaya yönlenir → ./product-edit.md Varyantlar sekmesinden tekrar dene.
+9. **Varyant stoğu + depo**: configurable'da Stok sekmesindeki Depo seçilmeden varyant miktarı >0 ise kayıt hiç başlamaz (satır içi hata). Ürün oluşur da varyantlar kaydedilemezse ürün **varyantsız** kalır; doğrudan düzenleme formunun Varyantlar sekmesi (`/products/{id}/edit?tab=variants`) açılır → ./product-edit.md; oradan kaydedip "Tekrar Dene" ile yeniden dene.
 10. **Attribute set otomatik seçilmez** ve set seçilince yüklenen zorunlu attribute'lar taslak kaydı bile engeller. Attribute select placeholder'ı "Select {label}".
 11. **Kategori ağacı**: aramada eşleşen alt kategori, ebeveyni kapalıysa görünmez → ebeveyndeki "Expand" butonuna bas. Checkbox aria-label "Select {ad}" (arayüz dilinden bağımsız).
 12. **Slug alanı yok** (varsayılan scope). İstenen özel slug ancak edit'te çeviri scope'unda (store view) girilebilir; varsayılan slug addan üretilir.

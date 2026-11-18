@@ -9,7 +9,7 @@
 ## Ön koşullar ve bağımlılıklar
 - Aynı/benzer adlı marka olmamalı → [brand-list.md](brand-list.md)'de ara (benzer ad 409 ile reddedilir).
 - Logo/banner medya kütüphanesinden seçilir ya da dialogda yüklenir.
-- Entity: [../../entities/brand.md](../../entities/brand.md). **Not:** ürün formunda marka alanı henüz yok (geliştiriliyor); marka oluşturmak ürüne atamak anlamına gelmez ([../../entities/product.md](../../entities/product.md)).
+- Entity: [../../entities/brand.md](../../entities/brand.md). **Not:** marka oluşturmak ürüne atamak anlamına gelmez; marka, ürün formunun Kimlik sekmesindeki "Marka" listesinden atanır ([../products/product-create.md](../products/product-create.md)).
 
 ## Yerleşim
 - Başlık "Marka Oluştur / Create Brand", "Ürün markalarını ve üreticileri yönetin", geri (→ `/brands`).

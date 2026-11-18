@@ -37,6 +37,7 @@ Kategoride ayrıca sistemin hesapladığı ve ekranlarda görünen bilgiler vard
 - Arşivlenmemiş **alt kategorisi** varsa → `ERR_CATEGORY_HAS_CHILDREN` 400 (önce çocukları sil/taşı).
 - Ürünü varsa → `ERR_CATEGORY_HAS_PRODUCTS` 400 (önce ürünleri çıkar).
 - Silinen kategori ebeveyninin alt kategorilerinden çıkar.
+- Toplu silme: seçilen kategoriler önce alt kategoriler, sonra ebeveynler olacak biçimde silinir; ebeveyn ile çocukları aynı seçimdeyse ikisi de silinir. Zaten arşivli kategoriler atlanır; ürünü olan kategori reddedilir ve reddedilen her kategori için neden satırı gösterilir. Tek tek silmeyle aynı yan etkiler geçerlidir.
 
 ## Ön koşul
 - En az 1 **aktif store view** yoksa yeni kategori formu açılmaz; yerine ön koşul kartı `/settings/store-views`'a yönlendirir.

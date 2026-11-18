@@ -8,7 +8,7 @@
 | "bu ürünü sisteme gir", "şu linkteki ürünü ekle", "varyantlı tişört oluştur" | [product-create](product-create.md) | products/new |
 | "cep telefonu için attribute ve attribute set ayarla", "ayakkabıya beden/renk kur" | [attribute-set-setup](attribute-set-setup.md) | attributes, attributes/sets |
 | "Elektronik altına Telefon kategorisi aç", "Apple markasını ekle" | [category-brand-setup](category-brand-setup.md) | categories, brands |
-| "ana sayfaya kampanya banner'ı ekle", "öne çıkan ürünler bölümü koy" | [homepage-component-add](homepage-component-add.md) | design/homepage |
+| "ana sayfaya kampanya banner'ı ekle", "öne çıkan ürünler bölümü koy" | [homepage-component-add](homepage-component-add.md) | design/homepage (taslak/yayın akışı, sürüm geri yükleme, hikâye anlatımı bloğu) |
 | "şu konuda blog yazısı yaz/yayınla", "bu yazının İngilizcesini gir" | [blog-post-create](blog-post-create.md) | content/blog |
 | "ilk depoyu kur", "İstanbul deposunu varsayılan yap" | [warehouse-setup](warehouse-setup.md) | inventory/warehouses |
 | "şu SKU'nun stoğunu 50 yap", "hasarlı 3 adedi stoktan düş" | [stock-adjust](stock-adjust.md) | inventory/stock |
@@ -18,7 +18,7 @@
 | "yeni müşteri ekle", "müşterinin adresini güncelle" | [customer-create](customer-create.md) | customers/new |
 | "son 6 ayda 3+ sipariş verenler segmenti" | [segment-create](segment-create.md) | customers/segments |
 | "X için fırsat aç", "fırsatı kazanıldı yap" | [crm-deal-create](crm-deal-create.md) | customers/crm/deals |
-| "%20 indirim yap", "500 TL üzeri kargo bedava", "kupon kodu için indirim kur" | [promotion-create](promotion-create.md) | marketing/promotions |
+| "%20 indirim yap", "500 TL üzeri kargo bedava", "kupon kodu için indirim kur", "2 al 1 öde", "kademeli/paket indirimi", "belirli ürünlere indirim" | [promotion-create](promotion-create.md) | marketing/promotions |
 | "KASIM10 kuponu oluştur", "500 adet tek kullanımlık kod üret", "kuponu uzat/kapat" | [coupon-create](coupon-create.md) | marketing/coupons, marketing/coupons/bulk |
 | "VIP segmentine indirim e-postası gönder", "yarın 10:00'da kampanya zamanla", "bülten at" | [campaign-create](campaign-create.md) | marketing/campaigns |
 | "bekleyen yorumları onayla", "şu yoruma yanıt yaz", "spam yorumu bayrakla" | [review-moderate](review-moderate.md) | marketing/reviews |

@@ -54,8 +54,9 @@ tutarı, varsa ürün/kategori/segment): [promotion.md](promotion.md#kurallar).
 - **Her müşteriye ayrı kod** → toplu üretim (her kod tek kullanımlık).
 - **Sepette en fazla 3 kod** uygulanabilir; aynı kod ikinci kez eklenemez. Birden çok kodun/promosyonun birlikte nasıl
   hesaplandığı promosyonların birleştirme ayarına bağlıdır (admin formunda yok; [promotion.md](promotion.md#sipariş-toplamına-etkisi)).
-- Admin ekranında olmayan kısıtlar: ürün/kategori/marka, müşteri grubu, segment, "ilk sipariş", en az ürün adedi,
-  birleştirilemezlik. Kullanıcı bunları isterse "bu sürümde admin ekranından kurulamaz" de; kural 3 gereği API ile kurma.
+- Ürün kısıtı artık promosyon formundan seçilebilir ([promotion.md](promotion.md)). Admin ekranında olmayan kısıtlar:
+  kategori/marka, müşteri grubu, segment, "ilk sipariş", en az ürün adedi, birleştirilemezlik. Çapraz satış (A al, B
+  indirimli) promosyonuna kupon bağlanamaz. Kullanıcı bunları isterse "bu sürümde admin ekranından kurulamaz" de; kural 3 gereği API ile kurma.
 
 ## Durum yaşam döngüsü
 ```

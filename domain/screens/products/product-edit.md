@@ -52,12 +52,12 @@ Varsayılan scope'taki tüm alanlar, locator'lar ve validasyonlar ./product-crea
 |---|---|
 | **Ürünü Güncelle / Update Product** | Taslak-farkında kayıt (create ile aynı kurallar: Yayında ise tam validasyon; değilse yalnız ad/SKU + zorunlu attribute'lar). Önce varyant stoğu için depo kontrolü (eksikse hiçbir şey kaydedilmez, Stok sekmesine geçer). Sonra ürün → çeviriler → varyant değişiklikleri. |
 | İptal / Cancel | Kaydedilmemiş değişiklik varsa "Kaydedilmemiş değişiklikler" dialog'u → "Ayrıl / Leave" → `/products` |
-| Tekrar Dene (toast aksiyonu ve Varyantlar sekmesindeki buton) | Yalnızca varyant değişiklikleri geçici bir hatayla kaydedilemediyse; formu aynı sırayla yeniden gönderir |
+| Tekrar Dene (toast aksiyonu ve Varyantlar sekmesindeki buton) | Yalnızca varyant değişiklikleri geçici bir hatayla kaydedilemediyse; formu aynı sırayla yeniden gönderir. Toast kendiliğinden kapanmaz: bir sonraki hata yenisiyle değiştirir, başarılı kayıt ya da sayfadan ayrılmak kapatır |
 | Etiket/Seçenek/Zamanlama dialog'larının kendi Kaydet butonları | **Ana formdan bağımsız, anında kalıcı** — ayrı onay gerektirir |
 
 Sonuçlar:
 - Tam başarı: toast "İşlem başarıyla tamamlandı" + "Ürün başarıyla güncellendi / Product updated successfully" → **`/products` listesine yönlenir**.
-- Varyant değişiklikleri kaydedilemedi: ürün ve çeviriler **kaydedilmiş** olur; toast "Bir hata oluştu" + "Ürün güncellendi ancak varyant değişiklikleri kaydedilemedi. Varyantlar sekmesini gözden geçirip tekrar deneyin." (tekrar denenebilirse "Tekrar Dene" aksiyonu); Varyantlar sekmesinde kırmızı uyarı. Depo kaynaklı ise mesaj Stok sekmesinde. Sayfada kalır.
+- Varyant değişiklikleri kaydedilemedi: ürün ve çeviriler **kaydedilmiş** olur; toast "Bir hata oluştu" + "Ürün güncellendi ancak varyant değişiklikleri kaydedilemedi. Varyantlar sekmesini gözden geçirip tekrar deneyin." (tekrar denenebilirse "Tekrar Dene" aksiyonu; toast bu durumda kapanmadan açık kalır); Varyantlar sekmesinde kırmızı uyarı. Depo kaynaklı ise mesaj Stok sekmesinde. Sayfada kalır.
 - Ürün kaydı hatası: create'teki hata eşlemeleri + `PRODUCT_RELATION_SELF_REFERENCE` → "Bir ürün kendisiyle ilişkilendirilemez. İlişkiler sekmesinden ürünün kendisini kaldırıp tekrar kaydedin."
 - Belirsiz varyant sonucu: "Varyant değişikliklerinizin kaydedilip kaydedilmediğini doğrulayamadık…" → sayfayı yenileyip kontrol et.
 
@@ -65,12 +65,13 @@ Sonuçlar:
 - Vitrin ve vitrin araması birkaç dakika içinde güncellenir; "Görünmez" yapılan veya arşivlenen ürün aramadan düşer.
 - Basit üründe miktar değişirse seçili depodaki stok güncellenir.
 - Varyant değişiklikleri: varyantlar oluşturulur/güncellenir/silinir; stoklu silinen varyantların stok kayıtları arşivlenir.
-- Çeviriler store view başına ayrı kayıtlar olarak tutulur.
+- Çeviriler store view başına ayrı kayıtlar olarak tutulur; vitrin araması çevrilmiş ad/açıklamayı o store view'da da bulur.
+- Ürünün durumu değişince (yayınla, yayından kaldır, arşivle) bağlı kategorilerin aktif ürün sayısı güncellenir.
 
 ## Tuzaklar
 1. **Kaydetme adım adımdır**: ürün kaydı başarılı olup ardından çeviri veya varyant adımı başarısız olabilir; ürün alanları yine de kaydedilmiştir. Aynı formu tekrar kaydetmek güvenlidir.
 2. **Store view seçiliyken diğer sekmeler kilitli** (tıklanamaz). Fiyat/stok/kategori değiştirmek için çubuğu "Varsayılan"a al.
-3. **Çeviri slug kuralı**: Türkçe karakter, büyük harf, boşluk → validasyon hatası ("URL must contain only lowercase letters, numbers, and hyphens").
+3. **Çeviri slug kuralı**: Türkçe karakter, büyük harf, boşluk → validasyon hatası ("URL must contain only lowercase letters, numbers, and hyphens"). Çeviri slug'ı mağazadaki **başka bir ürünün slug'ıyla aynı olamaz** (çakışma `DUPLICATE_RECORD` 409 ile reddedilir; farklı bir slug seç).
 4. **Çeviri SEO limitleri** 60/160 (varsayılan 100/300'den düşük).
 5. **Basit üründe stok değiştirmek depo ister**: Depo boşken miktar değiştirilirse kayıt reddedilir ve **hiçbir alan kaydedilmez** (`WAREHOUSE_ID_REQUIRED`, mesaj Stok sekmesinde). Depoyu seçip yeniden kaydet ve detayda değerleri kontrol et.
 6. **Kademe fiyatları**: dokunmadıysan gönderilmez (mevcut kurallar olduğu gibi kalır). Yeni/değişen satırda Min Miktar ≥2.
@@ -81,6 +82,9 @@ Sonuçlar:
 11. **URL kısayolu değişince** vitrindeki ürün adresi değişir ve eski adres için **otomatik yönlendirme oluşmaz**. Eski adres paylaşıldıysa / arama motorunda varsa değişiklik özetine "eski adres için yönlendirme" adımını ekle ve ayrı onayla aç ([../seo/redirects.md](../seo/redirects.md), [../../../playbooks/redirect-create.md](../../../playbooks/redirect-create.md)).
 12. Yükleme sırasında iskelet görünür; snapshot'ı alanlar dolduktan sonra al (Temel Bilgiler'de Ürün Adı input'u dolu olmalı).
 13. create'teki tüm alan tuzakları (etiketler `fill`, nokta ondalık, kategori ağacı Expand, para birimi dialog'u, varyantları yeniden oluşturma) burada da geçerli: ./product-create.md "Tuzaklar".
+14. **Nitelik Seti değiştirme**: üründe bir setten başka sete geçilirse, eski setin **yeni sette olmayan** attribute'larının değerleri kayıtta silinir; iki sette ortak attribute'ların değerleri ve hiçbir sette olmayan kodların değerleri korunur. Değişiklik özetinde hangi niteliklerin değerinin kaybolacağını yaz. Önceden setsiz olan ürüne set atamak hiçbir değeri silmez.
+15. **Kimlik/Stok alanlarında boşaltma kuralı**: UPC, MPN ve GTIN boşaltılıp kaydedilirse kayıttaki değer **silinir**; Marka "-- Marka yok --" yapılırsa marka kaldırılır. Buna karşılık Yayın Tarihi, Stok Uyarı Seviyesi ve En Yüksek Sipariş Adedi boş bırakılırsa mevcut değer **korunur** (bu alanlar edit'te silinemez); Yayın Tarihi'nde gün değiştirilmedikçe kayıtlı tarih ve saati aynen kalır.
+16. **Fiyat sorunuz**: edit'te kapatılırsa kaydedilmiş fiyatlar geri gelir; kayıtlı fiyat yoksa Temel Fiyat boş açılır ve girilmesi zorunludur. Toplu/CSV ile "Fiyat sorunuz" işaretlenmiş her tipteki üründe (paket, hediye kartı vb. dahil) seçenek formda görünür ve kapatılabilir.
 
 ## Doğrulama
 1. Toast "Ürün başarıyla güncellendi" ve `/products` listesine yönlenme.

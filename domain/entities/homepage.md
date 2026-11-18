@@ -11,7 +11,10 @@ Ana sayfa (tenant başına 1, "ana sayfa" işaretli CMS sayfası, slug "homepage
  ├─ blok listesi  ─ blok {tip, içerik, stil ayarları, sıra, görünürlük}   ← birincil dil
  │                     └ tip "columns" → sütun başına iç blok listesi
  ├─ SEO {başlık, açıklama, anahtar kelimeler, kanonik URL, OG/Twitter, indeksleme, link takibi, odak anahtar kelime}
- └─ çeviriler ─ {dil, durum (taslak|yayında), başlık, slug, SEO, blok listesi}  ← dil başına ayrı blok listesi
+ ├─ şablon (galeriden seçilen düzen adı; "varsayılan" = seçilmemiş)
+ ├─ çeviriler ─ {dil, durum (taslak|yayında), başlık, slug, SEO, blok listesi}  ← dil başına ayrı blok listesi
+ ├─ kayıtlı taslak (yalnız yayındaki ana sayfada; bloklar, çeviriler, SEO, şablon, başlık için) ← canlıyı değiştirmez
+ └─ sürüm geçmişi (son 5 yayın)
         │
 vitrin ─► yayınlanmış ana sayfayı okur ─► ürün/kategori/paket blokları güncel katalogdan doldurulur
 ```
@@ -28,28 +31,40 @@ vitrin ─► yayınlanmış ana sayfayı okur ─► ürün/kategori/paket blok
 | SEO | boş | Başlık, açıklama, anahtar kelime, kanonik URL, OG/Twitter görsel ve metinleri, indeksleme/link takibi. |
 | Çeviriler | boş | Dil başına blok listesi + SEO + **kendi durumu**. Dil = dil kodu (`tr`, `en`…). |
 
-**Sürüm / geçmiş yok.** Ana sayfa için snapshot, geri alma veya taslak kopyası yoktur. Admin'deki Geri Al/İleri Al
-yalnız kaydedilmemiş düzenleme oturumu içindir. Cihaz varyantı (mobil/masaüstü ayrı blok) yok.
+**Taslak ve sürümler.** Yayındaki ana sayfada "Kaydet" yeni içeriği **kayıtlı taslağa** yazar; canlı ana sayfa "Yayınla"
+ya kadar değişmez. Sayfanın adresi, durumu, yayın tarihi gibi taslağa girmeyen alanlar doğrudan canlıya yazılır (tasarımcı
+ekranı bunları değiştirmez). Her yayınlama bir **sürüm** saklar; **son 5 sürüm** tutulur, daha eskiler silinir. Bir sürüm
+"geri yüklenince" canlı değil **taslak** olur (yeniden yayınlanana kadar vitrin değişmez). Admin'deki Geri Al/İleri Al yalnız
+kaydedilmemiş düzenleme oturumu içindir. Cihaz varyantı (mobil/masaüstü ayrı blok) yok. Bu taslak/sürüm düzeni yalnız ana
+sayfa kaydı içindir; diğer CMS sayfalarında taslak yoktur.
+
+**Sayfa düzeni yetkisi.** Sayfanın şablonunu değiştirmek ve bir sayfayı ana sayfa yapmak/yapmamak `content:write`'a ek
+olarak `design:write` ister (varsayılan rollerde Admin ve Süper Admin). Taslağın veya geri yüklenen sürümün şablonu
+canlıdakinden farklıysa, yayınlamak/geri yüklemek de bu yetkiyi ister.
 
 ## Yaşam döngüsü
 
 ```
-(kayıt yok) ──ilk Kaydet/Yayınla──► taslak ──Yayınla──► yayında
-                                     ▲   Kaydet            │ Güncelle ve Yayınla → yazıldığı an canlı
-                                     └──── Yayından kaldır ◄┘
-çeviri durumu: taslak ──(o dil seçiliyken) Yayınla──► yayında (sayfa durumundan bağımsız)
+(kayıt yok) ──ilk Kaydet/Yayınla──► taslak ──Yayınla──► yayında ◄─┐
+                                     ▲   Kaydet (sayfaya)  │  Kaydet → kayıtlı TASLAK (canlı aynı)
+                                     └──── Yayından kaldır ◄┘  Yayınla → taslak canlıya + yeni sürüm
+                                                              Sürüm geri yükle → taslak
+çeviri durumu: taslak ──(o dil seçiliyken) Yayınla──► yayında (sayfa durumundan bağımsız; kayıtlı taslağı da yayınlar)
 ```
 
 | Admin aksiyonu | Etki |
 |---|---|
 | İlk Kaydet/Yayınla (kayıt yok) | Yeni ana sayfa kaydı oluşur, durum taslak (Yayınla ile hemen yayında) |
-| Kaydet (taslak) | Bloklar, çeviriler ve SEO kaydedilir; **durum değişmez** — sayfa yayındaysa değişiklik doğrudan canlı |
-| Yayınla / Güncelle ve Yayınla (varsayılan dil) | Kaydeder ve yayınlar; yayın tarihi güncellenir |
-| Yayınla (çeviri dili seçiliyken) | Bloklar kaydedilir, yalnız o çevirinin durumu yayında olur. **Sayfa taslaksa ana sayfa yine canlı değildir.** Bu yolda SEO kaydedilmez |
+| Kaydet (sayfa taslaktayken) | Bloklar, çeviriler, SEO ve şablon sayfaya kaydedilir; durum taslak kalır (vitrin zaten göstermez) |
+| Kaydet (sayfa yayındayken) | Aynı içerik **kayıtlı taslağa** yazılır; **canlı ana sayfa değişmez**, rozet "Yayınlanmamış değişiklikler" |
+| Yayınla (varsayılan dil) | Taslak sayfada: kaydeder ve yayınlar. Yayındaki sayfada: kayıtlı taslağı canlıya alır, yeni sürüm saklar, yayın tarihi güncellenir |
+| Yayınla / Güncelle ve Yayınla (çeviri dili seçiliyken) | Bloklar kaydedilir, o çevirinin durumu yayında olur ve **sayfadaki kayıtlı tüm taslak değişikliği** de canlıya çıkar (ekran önce diyalogla sorar). **Sayfa taslaksa ana sayfa yine canlı değildir.** Bu yolda SEO kaydedilmez |
+| Sürüm geri yükle | Seçilen sürüm taslak olur; canlı değişmez; ekrandaki kaydedilmemiş düzenleme yerini sürüme bırakır |
 | Yayından kaldır | Durum taslağa döner → vitrin ana sayfası hata ekranına düşer (bu ekranda buton yok) |
 
 Çeviri durumu yalnız o dilin yayınla/yayından kaldır işlemiyle değişir; yeni eklenen dil taslak başlar.
-→ Yayınlanmış bir çevirinin bloklarını kaydetmek de anında canlıdır.
+→ Yayınlanmış bir dilde ekran tek bir "Güncelle ve Yayınla" butonu sunar: dilin değişikliklerini kaydedip hemen canlıya
+alır (taslak çalışma alanı yoktur).
 
 ### Ana sayfa devri (homepage takeover)
 Bir CMS sayfasında Ayarlar sekmesindeki "Ana Sayfa Olarak Ayarla / Set as Homepage" switch'i açılıp kaydedilirse
@@ -60,11 +75,13 @@ yükler, eski ana sayfa `homepage` slug'ıyla sıradan sayfa olarak kalır.
 
 | Method | Yol | Yetki | Ne işe yarar |
 |---|---|---|---|
-| GET | `/cms/pages/homepage/admin` | `content:read` | Tasarımcının ana sayfayı yüklemesi (durumdan bağımsız; kayıt yoksa boş) |
+| GET | `/cms/pages/homepage/admin` | `content:read` | Tasarımcının ana sayfayı yüklemesi (durumdan bağımsız; kayıtlı taslak varsa taslak içerik gösterilir; kayıt yoksa boş) |
 | POST | `/cms/pages` | `content:write` | İlk oluşturma |
 | GET | `/cms/pages/admin/slug/:slug` | `content:read` | Slug ile sayfa okuma |
-| PUT | `/cms/pages/:id` | `content:write` | Kaydet |
-| PUT | `/cms/pages/:id/publish` · `/unpublish` | `content:write` | Yayınla / yayından kaldır |
+| PUT | `/cms/pages/:id` | `content:write` (+ şablon/ana sayfa değişiminde `design:write`) | Kaydet (yayındaki ana sayfada taslağa) |
+| PUT | `/cms/pages/:id/publish` · `/unpublish` | `content:write` | Yayınla (taslağı canlıya alır) / yayından kaldır |
+| GET | `/cms/pages/:id/versions` · `/cms/pages/:id/versions/:versionId` | `content:read` | Yayınlanmış son 5 sürümü listele / bir sürümü oku |
+| POST | `/cms/pages/:id/versions/:versionId/restore` | `content:write` | Sürümü taslak olarak geri yükle |
 | PUT | `/cms/pages/:id/translations/:language/publish` · `/unpublish` | `content:write` | Çeviri yayınla / kaldır |
 | DELETE | `/cms/pages/:id` | `content:delete` | Sayfa silme |
 | GET | `/cms/pages/render/homepage?lang=` | Public | Vitrinin okuduğu yayınlanmış ana sayfa (ürün/kategori blokları doldurulmuş) |
@@ -83,10 +100,12 @@ yükler, eski ana sayfa `homepage` slug'ıyla sıradan sayfa olarak kalır.
 | Ana slug + çeviri slug'ları başka sayfanın adresiyle çakışmaz | 409 `CMS_PAGE_ADDRESS_TAKEN` |
 | Çeviri yayınlarken blok listesi boş olamaz | `CMS_TRANSLATION_EMPTY` |
 | Sayfa bulunamadı | 404 `CMS_PAGE_NOT_FOUND` |
+| Şablon/ana sayfa değişimi `design:write` olmadan | 403 `CMS_DESIGN_WRITE_REQUIRED` |
+| Hikâye anlatımı bloğu: plan yok / 3 MB üstü / eksik alan | 403 / `ERR_CONTENT_STORYTELLING_TOO_HEAVY` / doğrulama — bkz. [../screens/design/storytelling-block.md](../screens/design/storytelling-block.md) |
 
 ## Storefront render zinciri
 
-1. Vitrin ana sayfası her istekte güncel yayınlanmış ana sayfayı gösterir; admin yayını blok yapısı/metin için
+1. Vitrin ana sayfası her istekte güncel **yayınlanmış** ana sayfayı gösterir (kayıtlı taslak yalnız önizleme bağlantısıyla görülür); admin yayını blok yapısı/metin için
    en geç ~1-1.5 dk içinde yansır.
 2. Dil seçimi: istenen dilin çevirisi **yayında ve bloklu** ise onun blokları + dolu başlık/SEO alanları
    (boş SEO alanları birincil dilden alınır, kanonik URL hariç); aksi halde birincil dil.
@@ -99,6 +118,7 @@ yükler, eski ana sayfa `homepage` slug'ıyla sıradan sayfa olarak kalır.
 5. **Header ilişkisi**: ilk görünür blok `carousel` ise header carousel'in üstüne bindirilir (şeffaf header) ve
    carousel sayfanın ana manşeti olur. Carousel'de slayt yoksa blok **hiç görünmez** ve header normal görünür.
 6. `form` blokları seçilen yayınlanmış formu gösterir; form bulunamazsa blok görünmez.
+   `storytelling` (hikâye anlatımı) bloğu ilk görünür blok ise vitrinde tam ekran sahne kahramanı olarak açılır; ayrıntı [../screens/design/storytelling-block.md](../screens/design/storytelling-block.md). Planda özellik yoksa blok vitrinde görünmez.
 7. Yayınlanmış ana sayfa yoksa vitrin ana sayfası "No published homepage content was found…" hata ekranı gösterir
    (yedek içerik yok; header/footer da görünmez).
 8. SEO'da indekslemeye / link takibine izin kapalıysa sayfa arama motorlarına noindex/nofollow bildirir.
@@ -124,10 +144,12 @@ yükler, eski ana sayfa `homepage` slug'ıyla sıradan sayfa olarak kalır.
 İçerik listesi: [homepage-components.md](homepage-components.md#hazır-bölümler-ana-sayfa-bölüm-ekle--add-section-ve-şablonlar-ve-bölümler-sekmesi).
 
 ## Operatör için kritik davranışlar
-- **Yayındaki ana sayfada her yazma canlıdır.** Kaydet durumu korur; taslak kopyası, sürüm geçmişi, geri alma yok.
-  Onay, "Kaydet / Güncelle ve Yayınla"ya basmadan önce alınır. Mevcut blok listesini değiştirmeden önce özete eski
-  durumu (blok sırası/tipleri) yaz — geri dönüş ancak elle yeniden girişle olur.
-- **Çeviri dilinde "Yayınla" sayfayı yayınlamaz**; sayfa taslaksa önce varsayılan dilde yayınla.
+- **Yayındaki ana sayfada "Kaydet" canlıyı değiştirmez**, kayıtlı taslağa yazar; canlıya çıkaran adım "Yayınla"dır.
+  Onay (canlıya çıkacak değişikliklerin özeti) "Yayınla"dan önce alınır; "Kaydet" için de ayrı özet/onay gerekir.
+  Yanlış yayın son 5 sürümden biri geri yüklenip yeniden yayınlanarak düzeltilebilir (geri yükleme taslak yapar, tekrar
+  "Yayınla" gerekir).
+- **Çeviri dilinde "Yayınla / Güncelle ve Yayınla" sayfanın durumunu değiştirmez ama kayıtlı tüm taslağı canlıya alır**;
+  sayfa taslaksa önce varsayılan dilde yayınla.
 - **Yayınlanmış çevirisi olan dil** birincil bloklara eklenen yeni bloğu görmez (kendi listesi var).
 - **Tenant başına tek ana sayfa.** CMS sayfasında "Ana Sayfa Olarak Ayarla" switch'ine dokunmak mevcut ana sayfayı
   sessizce devirir → bu switch geri alınamaz/yan etkili işlem gibi ayrıca onaylanmalı.
@@ -137,4 +159,7 @@ yükler, eski ana sayfa `homepage` slug'ıyla sıradan sayfa olarak kalır.
   ürün/kategori verisi değişikliği en geç ~5 dk; sekmeli öne çıkanlar bölümü anında. Ürün bloğu boş görünüyorsa önce
   kaynağın (öne çıkan işareti, kategori ürünleri, stok) dolu olduğunu kontrol et — boş blok hata göstermez, gizlenir.
 - Kaydettikten sonra vitrinde bloğu gözle doğrula.
-- Kaydedilmemiş değişiklikler yalnız açık editördedir; sayfa yenilenir veya terk edilirse kaybolur.
+- Kaydedilmemiş değişiklikler yalnız açık editördedir; sayfa yenilenir veya terk edilirse kaybolur. Kaydedilen taslak ise
+  kalıcıdır ve sonraki açılışta yüklenir.
+- **Önizleme:** "Müşteri gözüyle önizle", kayıtlı taslağı gerçek vitrinde (telefon/masaüstü çerçevesinde) gösterir;
+  arama motorlarına kapalıdır, bağlantı 30 dk geçerlidir. Yayınlanmış hâl için vitrinin kendisine bakılır.

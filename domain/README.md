@@ -4,7 +4,7 @@ Lean Cart admin panelinin, Claude'un tarayıcıda ekran kullanarak iş yapabilme
 haritası: ekranlar, alanlar, iş kuralları, kayıtlar arası ilişkiler ve kullanıcının gördüğü davranış. Kod yolu,
 altyapı, iç veri modeli ve bug notu içermez (CLAUDE.md kural 8).
 
-- Son senkron: kod tabanı `ffe83d857` (2026-10-22).
+- Son senkron: kod tabanı `d2bc39e17` (2026-11-18).
 - URL'ler `{ADMIN_URL}/<path>` biçimindedir; locale öneki yoktur. Varsayılan arayüz dili `en`; dil, girişten sonra
   header'daki dil seçiciyle değiştirilir.
 - Haritalar canlı UI'da henüz tam denenmedi. İlk kullanımlarda farklar `CHANGELOG.md`'ye.
@@ -16,7 +16,7 @@ altyapı, iç veri modeli ve bug notu içermez (CLAUDE.md kural 8).
 | Proje | `project/environments-and-auth.md` | Hangi URL, giriş nasıl anlaşılır, tenant/rol nereden okunur? |
 | | `project/navigation.md` | Menüde ne nerede, hangi yetkiyle? |
 | | `project/ui-conventions.md` | Select, combobox, dialog, tablo, upload, toast nasıl sürülür? |
-| | `project/screen-index.md` | Tüm ekranlar (190 route) tek tabloda |
+| | `project/screen-index.md` | Tüm ekranlar (193 route) tek tabloda |
 | | `project/dependency-graph.md` | Ne neden önce var olmalı? |
 | | `project/permissions.md` | Roller ve yetkiler |
 | | `project/brand-voice.md` | Metin üretmeden önce marka sesi: nereden okunur, yoksa nasıl önerilir |

@@ -1,8 +1,8 @@
 # Pazarlama (hub)
 - URL: {ADMIN_URL}/marketing
 - Menü yolu: sidebar'daki "Pazarlama / Marketing" grup butonu bu sayfaya **gitmez** (yalnız alt menüyü açar); sayfaya URL
-  ile gidilir. Alt menü öğeleri: Kampanyalar, Promosyonlar, Kuponlar, Değerlendirmeler, Meta Reklamlar
-  ([../../project/navigation.md](../../project/navigation.md)).
+  ile gidilir. Alt menü öğeleri: Kampanyalar, Promosyonlar, Kuponlar, Değerlendirmeler, Meta Reklamlar, Terk edilen
+  sepetler, Teklif talepleri ([../../project/navigation.md](../../project/navigation.md)).
 - Sayfa başlığı: "Pazarlama / Marketing"; açıklama "Pazarlama kampanyalarınızı, promosyonlarınızı ve müşteri
   etkileşimlerinizi yönetin / Manage your marketing campaigns, promotions, and customer engagement".
 - Amaç: Pazarlama ekranlarına hızlı giriş. Salt gezinme sayfasıdır; hiçbir kayıt oluşturmaz/değiştirmez.
@@ -32,6 +32,8 @@
 | Ekran | URL | Nasıl açılır | Harita |
 |---|---|---|---|
 | Promosyonlar / Promotions | `/marketing/promotions` | Sidebar "Pazarlama" → "Promosyonlar" | [promotions.md](promotions.md) |
+| Terk edilen sepetler / Abandoned carts | `/marketing/abandoned-carts` | Sidebar "Pazarlama" → "Terk edilen sepetler" | [abandoned-carts.md](abandoned-carts.md) |
+| Teklif talepleri / Quote requests | `/marketing/quote-requests` | Sidebar "Pazarlama" → "Teklif talepleri" | [quote-requests.md](quote-requests.md) |
 | Otomasyonlar (iş akışları) / Workflows | `/marketing/workflows` | Menüde ve hub'da yok; yalnız URL ile | [workflows.md](workflows.md) |
 | Meta ayarları | `/marketing/meta/settings` | Meta Reklamlar genel bakış → "Ayarlar" kartı / bağlantı bandı | [meta/meta-settings.md](meta/meta-settings.md) |
 | E-posta yönetimi | `/email-management` | — | E-posta yönetimi — kapsam dışı |
@@ -56,7 +58,7 @@
 ## Tuzaklar
 - Kart açıklamasında "tüm kanallarda" yazsa da kampanyalar bu sürümde yalnız **e-posta** kanalıyla oluşturulur
   ([campaigns.md](campaigns.md)).
-- Promosyonlar ve Otomasyonlar hub'da kart olarak yok; yukarıdaki tablodan git.
+- Promosyonlar, Terk edilen sepetler, Teklif talepleri ve Otomasyonlar hub'da kart olarak yok; yukarıdaki tablodan git.
 
 ## Doğrulama
 - Sayfa başlığı "Pazarlama" ve 4 özellik kartı görünür; karta tıklayınca URL ilgili ekrana döner.

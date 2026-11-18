@@ -26,13 +26,13 @@ Adım 1 — sağlayıcı kartları (yalnız kurulmamışlar; desteklenen para bi
 | Sağlayıcı | Adım 2 alanları (label tr / en) | Desteklenen para birimi |
 |---|---|---|
 | Stripe | API Anahtarı / API Key 🔒, Gizli Anahtar / Secret Key 🔒, Para Birimi | tümü |
-| Iyzico | API Anahtarı 🔒, Gizli Anahtar 🔒, Geri Dönüş URL / Callback URL, Temel URL / Base URL, Para Birimi | TRY, USD, EUR, GBP |
+| Iyzico | API Anahtarı 🔒, Gizli Anahtar 🔒, Para Birimi, **Mod / Mode** (Test / Canlı) | TRY, USD, EUR, GBP |
 | PayPal | API Anahtarı 🔒, Gizli Anahtar 🔒, Para Birimi | tümü |
 | PayTR | Mağaza No / Merchant ID, API Anahtarı 🔒, Gizli Anahtar 🔒, Para Birimi | TRY, USD, EUR, GBP, RUB |
 
-🔒 = gizli alan (kullanıcı doldurur). Locator: `#add-<alan>` (ör. `#add-merchantId`); Para Birimi aramalı combobox (placeholder "örneğin USD, TRY, EUR", arama "Para birimi ara...").
-- "Kur / Set Up" → sağlayıcı oluşur → toast "Ödeme sağlayıcısı başarıyla yapılandırıldı" → liste yenilenir. "İptal" adım 1'e döner.
-- Para birimi zorunludur; eksik/yanlış alanlarda hata toast'ı alan adıyla gelir (ör. "{alan} alanı zorunludur.", "{alan} biçimi geçersiz. Sağlayıcının verdiği değeri olduğu gibi yapıştırın.", "PayTR için {alan} zorunludur.").
+🔒 = gizli alan (kullanıcı doldurur). Adımdaki tüm alanlar zorunludur (label'da kırmızı `*`). **Iyzico'da Geri Dönüş URL ve Temel URL girilmez**: test/canlı uç noktasını "Mod" seçimi belirler, ödeme sonrası dönüş adresini vitrin kendisi bildirir. Mod seçici yalnız Iyzico'nun Ekle adımında vardır ("Test / Testing" — Gerçek ödeme işlenmez, **varsayılan**; "Canlı / Live" — Gerçek ödemeler işlenir; `#mode-testing` / `#mode-live`); diğer sağlayıcılarda Ekle adımında mod sorulmaz, mod Yapılandır ekranından ayarlanır. Locator: `#add-<alan>` (ör. `#add-merchantId`); Para Birimi aramalı combobox (placeholder "örneğin USD, TRY, EUR", arama "Para birimi ara...").
+- "Kur / Set Up" (basılınca "Kuruluyor…") → sağlayıcı oluşur → toast "Ödeme sağlayıcısı başarıyla yapılandırıldı" → liste yenilenir. "İptal" adım 1'e döner.
+- Para birimi zorunludur; boş bırakılan zorunlu alan istek gönderilmeden önce hata toast'ıyla alan adıyla bildirilir (ör. "{alan} alanı zorunludur."); sunucu hataları da aynı cümleyle gelir (ör. "{alan} biçimi geçersiz. Sağlayıcının verdiği değeri olduğu gibi yapıştırın.", "PayTR için {alan} zorunludur.").
 - Aynı sağlayıcı ikinci kez kurulamaz.
 
 ### Liste aksiyonları
@@ -53,15 +53,14 @@ Adım 1 — sağlayıcı kartları (yalnız kurulmamışlar; desteklenen para bi
 | Kart | Label (tr / en) | Kontrol | Zorunlu | Varsayılan / validasyon | Locator | Not |
 |---|---|---|---|---|---|---|
 | Kimlik bilgileri | Yardım kutusu + "Kimlik bilgileri sayfasını aç" (dış link) | Alert | — | — | — | Sağlayıcı panelinin adresi; Claude açmaz |
-| Kimlik bilgileri | API Anahtarı / API Key (PayTR'de "Mağaza Parola") | Input | sağlayıcıya göre | Kayıtlı değer maskeli/kısaltılmış görünür; PayTR'de gizli alan | `#provider-field-apiKey` | 🔒 Claude dokunmaz |
+| Kimlik bilgileri | API Anahtarı / API Key (PayTR'de "Mağaza Parola") | Input | sağlayıcıya göre (zorunlu alanların label'ında kırmızı `*`) | Kayıtlı değer maskeli/kısaltılmış görünür; PayTR'de gizli alan | `#provider-field-apiKey` | 🔒 Claude dokunmaz |
 | Kimlik bilgileri | Gizli Anahtar / Secret Key (PayTR'de "Mağaza Gizli Anahtar") | password | evet | Kayıtlıysa altında "Bir şifre zaten ayarlanmış. Mevcut değeri korumak için boş bırakın." | `#provider-field-secretKey` | 🔒 |
 | Kimlik bilgileri | Webhook Şifresi / Webhook Secret | password | hayır | aynı ipucu | `#provider-field-webhookSecret` | 🔒; PayTR'de yok |
 | Kimlik bilgileri | Mağaza No / Merchant ID | Input | PayTR'de evet | düz metin | `#provider-field-merchantId` | Yalnız PayTR; gizli değil |
 | Kimlik bilgileri | Para Birimi / Currency | aramalı combobox | evet | sağlayıcının desteklediği liste | label ile | |
-| Kimlik bilgileri | Geri Dönüş URL / Callback URL | Input | Iyzico'da evet ("Devam etmek için Geri Dönüş URL girin") | | `#provider-field-callbackUrl` | Stripe'ta isteğe bağlı; PayTR'de yok |
-| Kimlik bilgileri | Temel URL / Base URL | Input | Iyzico'da evet ("Devam etmek için Temel URL girin") | | `#provider-field-baseUrl` | Iyzico |
+| Kimlik bilgileri | Geri Dönüş URL / Callback URL | Input | hayır | | `#provider-field-callbackUrl` | Yalnız Stripe'ta (isteğe bağlı); Iyzico ve PayTR'de alan yok |
 | Kimlik bilgileri | İptal URL / Cancel URL | Input | hayır | | `#provider-field-cancelUrl` | PayPal |
-| Kimlik bilgileri › Mod / Mode | "Test / Testing" (Gerçek ödeme işlenmez) · "Canlı / Live" (Gerçek ödemeler işlenir) | RadioGroup (kart) | — | kayıtlı mod | `#mode-testing` / `#mode-live` | **Canlıya geçiş kritik** — aşağıya bak |
+| Kimlik bilgileri › Mod / Mode | "Test / Testing" (Gerçek ödeme işlenmez) · "Canlı / Live" (Gerçek ödemeler işlenir) | RadioGroup (kart) | — | kayıtlı mod | `#mode-testing` / `#mode-live` | **Canlıya geçiş kritik** — aşağıya bak. Iyzico'da Test/Canlı uç noktayı da belirler (ayrı Temel URL alanı yok) |
 | Bildirim URL (yalnız PayTR) | Bildirim URL / Notification URL | salt okunur + kopyala | — | — | aria-label "Bildirim URL kopyala" | Gizli değil; kullanıcı PayTR panelinde "Destek & Kurulum → Ayarlar → Bildirim URL" alanına yapıştırır (protokol https, kutuya `https://` yazılmaz) |
 | Taksit Ayarları (Iyzico, PayTR) | Taksiti Etkinleştir | Switch (kart başlığında) | — | kapalı | aria-label "Taksiti Etkinleştir" | Kapalıyken kartın geri kalanı görünmez |
 | Taksit | Banka Komisyon Oranları (Sağlayıcıdan) | açılır panel, salt okunur tablo + "Oranları Yenile" | — | — | | Sağlayıcıdan okunur; sağlayıcı panelinden yönetilir |

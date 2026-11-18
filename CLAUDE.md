@@ -25,18 +25,30 @@ Bu proje kod değil, **operasyon** projesidir. Kullanıcı Lean Cart admin panel
    etkilenen kayıt sayısıyla birlikte, tek tek onaylanır.
 6. **Anında canlı / otomatik kayıt ekranları** — onay, alana dokunmadan **önce** alınır (hook bunları yakalayamaz):
    - `layout-settings`: alan değişince ~3 sn sonra canlı config'e otomatik kaydeder.
-   - Ana sayfa ve yayınlanmış CMS sayfaları: taslak yok; "Güncelle ve Yayınla" / "Kaydet" doğrudan canlıya yazar.
+   - Ana sayfa: yayındaki ana sayfada "Kaydet" **taslağa** yazar (canlı değişmez, rozet "Yayınlanmamış değişiklikler");
+     canlıya çıkaran adım "Yayınla"dır → onay "Yayınla"dan önce alınır, özette taslaktaki tüm değişiklikler listelenir.
+     Sürüm geçmişinden "Geri yükle" taslak yapar, canlıyı değiştirmez. Yayınlanmış bir **dil** seçiliyken "Güncelle ve
+     Yayınla" ve dilin "Yayınla" butonu sayfadaki **tüm** kayıtlı taslağı doğrudan canlıya alır. Ana sayfa **olmayan**
+     yayınlanmış CMS sayfalarında taslak yok: "Güncelle ve Yayınla" / "Kaydet" doğrudan canlıya yazar.
+   - SSS (İçerik > SSS): satırdaki "Yayınla" diyalogsuz yayınlar; yayındaki soruyu düzenlemek anında canlıdır.
+   - Genel ayarlar: "Ödeme deneyimi" (müşterinin ödeme akışını değiştirir), "Destek butonu" (vitrinde WhatsApp/Instagram
+     butonu) ve Google Tag Manager "Kapsayıcıyı kaydet/kaldır" canlı vitrini değiştirir; özet butondan önce.
+   - Kargo yöntemleri kartı (kargo firması olmayan mağaza): yöntem panelinin Kaydet'i ve "Aktif" anahtarı diyalogsuz
+     canlıya yazar ve ödeme adımını anında etkiler. Sistem kullanıcısında "İzinleri Yönet" → Kaydet kişinin yetkisini
+     anında değiştirir.
    - Navigasyon: tek başına "Kaydet" menüyü taslağa çevirir ve vitrinden kaldırır → her zaman "Yayınla".
    - Branding: canlı markada "Taslağı Kaydet" vitrinden kaldırır → "Mağazaya Yayınla".
    - Ürün etiketleri, custom option'lar, zamanlanmış güncellemeler ve medya yüklemeleri anında kaydolur.
    - Operasyon ekranları: sipariş detayındaki durum seçicisi ve listedeki toplu "Durum Güncelle" diyalogsuz kaydeder
      ve müşteriye e-posta gönderir; kargo gönderimi paneli ("Siparişi Kargola") kargo firmasına yazar ve ücretlidir, panel
-     açılmadan önce onay al; platform modunda fatura/e-Fatura gönderimi GİB'e gider; iade talebi (RMA) adım butonları,
+     açılmadan önce onay al; platform modunda fatura/e-Fatura gönderimi GİB'e gider; iade talebi (RMA) adım butonları, teklif talebi çekmecesindeki "Talebi kapat" (geri alınamaz) ve terk edilen sepet
+     çekmecesindeki "Ulaşıldı olarak işaretle" / "Notu kaydet" (diyalogsuz),
      admin kullanıcısını askıya alma/etkinleştirme, CRM "Aşamaya Taşı", müşteri grubu ve segment
      Etkinleştir/Devre Dışı/Yeniden Oluştur, depo formundaki "Bu adresi kargo hesabımda oluştur" anında uygulanır.
    - Pazarlama: promosyon listesindeki Yayınla/Duraklat diyalogsuz kaydeder, yayındaki promosyonu düzenlemek anında
      canlıdır; kupon ve kampanya "Kopyala" diyalogsuz yeni kayıt açar; kampanya "Yayınla" müşterilere gönderir (geri
-     alınamaz); otomasyon "Yayına al" otomatik müşteri e-postalarını başlatır, "Yeni otomasyon" / "Bu şablonu kullan"
+     alınamaz); kademeli / paket / Al-Kazan promosyonda "Ödemede otomatik uygulanır" seçiliyken Yayınla, kod gerekmeden
+     kuralı sağlayan her sepete indirim uygular; otomasyon "Yayına al" otomatik müşteri e-postalarını başlatır, "Yeni otomasyon" / "Bu şablonu kullan"
      anında kayıt açar.
    - Dış sistemler: Meta huni "Yayınla" reklam harcaması başlatır, deney Başlat/Durdur diyalogsuzdur (Durdur geri
      alınamaz), Meta kitlesi müşteri e-posta/telefonunu Meta'ya gönderir; pazaryeri "Kanala Gönder" kanala yazar ve

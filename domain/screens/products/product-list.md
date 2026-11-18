@@ -51,7 +51,7 @@ Tek kart içinde yukarıdan aşağı:
 | 4 | SKU | `sku` | hayır | |
 | 5 | Tür / Type | `type` rozet | hayır | Basit, Varyantlı (hızlı filtrede "Yapılandırılabilir"), Gruplu, Sanal, Paket, İndirilebilir, Hediye Kartı, Abonelik |
 | 6 | Durum / Status | `status` rozet | hayır | Taslak/Draft, Yayında/Published, Arşivlendi/Archived, Stokta Yok/Out of Stock, Üretimi Durdu/Discontinued |
-| 7 | Fiyat / Price | `price` (+ üstü çizili `compareAtPrice` > fiyat ise) | evet | para birimi yoksa hücre boş |
+| 7 | Fiyat / Price | `price` (+ üstü çizili `compareAtPrice` > fiyat ise); "Fiyat sorunuz" işaretli üründe fiyat yerine "Fiyat sorunuz" yazısı | evet | para birimi yoksa hücre boş |
 | 8 | Stok / Stock | miktar (yeşil=stokta, kırmızı=yok) + varyantlıysa "{count} varyant" rozeti | evet | |
 | 9 | Güncellendi / Updated | `updatedAt` (tarih) | hayır | |
 | 10 | (aksiyon menüsü) ekran okuyucu metni "Menüyü Aç / Open menu" | — | — | üç nokta ikon butonu |

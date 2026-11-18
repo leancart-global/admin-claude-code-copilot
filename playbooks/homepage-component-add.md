@@ -7,11 +7,12 @@ URL'ler locale öneksizdir: `{ADMIN_URL}/design/homepage`.
 ---
 
 ## 0. Kural hatırlatması
-- **Yayındaki ana sayfada "taslak" yok:** durum "Yayında" ise tek kaydet butonu "Güncelle ve Yayınla"dır ve basıldığı an canlıya çıkar. Bu yüzden onay, bu butona basmadan **önce** alınır ve özet "canlıya çıkacak" diye açıkça yazılır.
+- **Yayındaki ana sayfada "Kaydet" taslağa yazar, canlıya çıkarmaz:** durum "Yayında" iken "Kaydet" değişikliği kayıtlı taslağa alır (rozet "Yayınlanmamış değişiklikler"); canlıya çıkaran buton "Yayınla"dır. Onay iki aşamalıdır: "Kaydet" öncesi (taslağa yazılacak değişiklik özeti) ve "Yayınla" öncesi (canlıya çıkacak her şey, "canlıya çıkacak" diye açıkça yazılır). Çoklu dilde yayınlanmış bir dil seçiliyken "Güncelle ve Yayınla" ise tek adımda **doğrudan canlıdır** ve sayfadaki kayıtlı tüm taslağı da yayınlar.
 - Editördeki değişiklikler kaydedilene kadar yalnız açık editördedir (yenileme/çıkış kaybettirir) — onay beklerken sayfadan ayrılma, yenileme.
 - Medyaya dosya yüklemek kalıcıdır (sayfa kaydedilmese bile) → yüklemeyi de özete koy ve onayla.
 - Ön koşul kayıt değişiklikleri (ürünü "Öne Çıkan" yapmak, kategoriye görsel eklemek, form yayınlamak) **ayrı** onaylı işlerdir.
-- Kullanıcı açıkça "değiştir/şablon uygula" demedikçe **şablon uygulama** (tüm blokları siler) ve mevcut blokları silme.
+- Kullanıcı açıkça "değiştir/şablon uygula" demedikçe **şablon uygulama** (tüm blokları siler) ve mevcut blokları silme. Şablon uygulamak ve sayfa şablonunu değiştirmek ayrıca `design:write` yetkisi ister (Admin / Süper Admin); yetki yoksa kullanıcıya söyle.
+- Hikâye anlatımı (kaydırmalı sahneli) isteniyorsa ayrıntılar `../domain/screens/design/storytelling-block.md`; blok yalnız planda özellik açıksa menüde çıkar.
 
 ## 1. İsteği çözümle → blok tipi + alan taslağı
 1. Doğal dil → blok tipi: entity dosyasındaki "Doğal dil → blok tipi eşlemesi" tablosu. Belirsizse en yakın 1-2 seçeneği tek cümleyle sor (ör. "kayan çoklu slayt mı (Slayt Gösterisi), tek büyük görsel mi (Hero)?").
@@ -37,7 +38,7 @@ Eksik zorunlu bilgileri **tek seferde** sor. Kullanıcı görsel vermediyse: med
 ## 2. Ekranı aç ve mevcut durumu oku (salt okunur)
 1. `{ADMIN_URL}/design/homepage` → skeleton bitene kadar bekle ("Düzenleyici / Editor" sekmesi görünür).
 2. Tam ekran şablon galerisi geldiyse ("Ana Sayfanızı Tasarlayın") → ana sayfa kaydı yok. Kullanıcıya bildir: bir şablon ("Boş Sayfa" dahil) seçilmeli; ilk kayıt yeni homepage oluşturur ve storefront ana sayfası yayınlanana kadar hata ekranı gösterir. Şablon seçimini onaylat.
-3. `browser_snapshot` ile: durum rozeti (Taslak / Yayında), mevcut blok kartlarının sırası ve tipleri, dil seçici var mı. Bunu "önce" durumu olarak not et.
+3. `browser_snapshot` ile: durum rozeti (Taslak / Yayında / Yayınlanmamış değişiklikler), mevcut blok kartlarının sırası ve tipleri, dil seçici var mı. Bunu "önce" durumu olarak not et. Rozet "Yayınlanmamış değişiklikler" ise sayfada zaten bekleyen bir taslak vardır: kullanıcıya söyle (yayınlandığında onun değişiklikleri de canlıya çıkar); gerekirse "Sürüm geçmişi"ne bak.
 
 ## 3. Veri bağımlılıklarını çöz (salt okunur kontroller)
 | Blok/alan | Kontrol | Eksikse |
@@ -77,6 +78,7 @@ Eksik zorunlu bilgileri **tek seferde** sor. Kullanıcı görsel vermediyse: med
 ## 6. Önizle
 1. Araç çubuğu cihaz butonları "Mobil / Mobile" ve "Masaüstu / Desktop" ile tuvali daralt/genişlet; "Önizleme / Preview" toggle ile admin önizlemesi (gizli bloklar hariç). Gerekirse ekran görüntüsü al (özet için).
 2. Bu önizleme vitrin görünümü değildir (ürün blokları yer tutucu gösterir: "{limit} ürün ({source}…)") — özette belirt.
+3. Gerçek vitrin görünümü için önce "Kaydet" ile taslağı kaydet, sonra "Müşteri gözüyle önizle" panelini aç (Telefon / Masaüstü): kayıtlı taslak gerçek vitrinde, canlıya çıkmadan görünür. Kaydedilmemiş değişiklikler orada görünmez.
 
 ## 7. Özet → ONAY BEKLE
 Ortam (config/local.json) + şu tabloyu göster, açık "evet/onaylıyorum" bekle:
@@ -89,19 +91,19 @@ Ortam (config/local.json) + şu tabloyu göster, açık "evet/onaylıyorum" bekl
 | Alanlar | alan → değer (varsayılanları "varsayılan" diye işaretle) |
 | Görseller | dosya adı → yüklenecek/yüklendi (kütüphaneye kalıcı) |
 | Diğer değişiklikler | taşınan/gizlenen/silinen bloklar |
-| Kaydetme şekli | Durum Taslak ise: "Kaydet" (canlıya çıkmaz) **veya** "Yayınla / Go Live". Durum Yayında ise: **"Güncelle ve Yayınla" — anında canlı** |
+| Kaydetme şekli | Durum Taslak ise: "Kaydet" (canlıya çıkmaz) **veya** "Yayınla / Go Live". Durum Yayında ise: önce "Kaydet" (taslağa; canlı değişmez), ardından ayrı onayla "Yayınla" (**canlıya çıkar**; sürüm geçmişine yeni sürüm eklenir) |
 | Bilinen etkiler | ürün/kategori blokları vitrine en geç ~5 dk içinde yansır; kaynakta ürün yoksa blok görünmez; çoklu dilde diğer diller etkilenmez/etkilenir |
 
-Kullanıcı "taslak olarak kaydet" isterse ama sayfa Yayında ise: mümkün olmadığını söyle; seçenekler: (a) şimdi canlıya al, (b) bloğu **gizli** ekleyip "Güncelle ve Yayınla" (canlıda görünmez, sonra göster), (c) iptal.
+Kullanıcı "taslak olarak kaydet / yayınlamadan hazırla" isterse ve sayfa Yayında ise: "Kaydet" yeterlidir (taslağa yazar), "Yayınla"ya basma; "Müşteri gözüyle önizle" ile birlikte göster. Çoklu dilde seçili dil yayınlanmışsa o dilde tek buton "Güncelle ve Yayınla"dır (anında canlı) — taslak istenen dil için kullanıcıya bunu söyle.
 
 ## 8. Kaydet / Yayınla
-- Onaylanan butona bas: "Kaydet / Save" | "Yayınla / Go Live" | "Güncelle ve Yayınla / Update & Publish" (yalnız onaylanan).
-- Toast'ı oku: "Değişiklikleriniz kaydedildi." / "Ana sayfanız artık yayında." (veya dil kapsamlı varyantı). Hata toast'ında homepage-builder.md "Aksiyonlar" altındaki eşlemeye göre düzelt; validasyon hatasında ilgili bloğu (features uzunluk sınırları / package-comparison kaynak seçimi) aç ve düzelt → yeniden **özet+onay** (değer değiştiyse).
+- Onaylanan butona bas: "Kaydet / Save" | "Yayınla / Publish" (yayındaki sayfada) | "Yayınla / Go Live" (taslak sayfada) | "Güncelle ve Yayınla / Update & Publish" (yalnız yayınlanmış dilde) — yalnız onaylanan.
+- Toast'ı oku: "Değişiklikleriniz taslak olarak kaydedildi…" (yayındaki sayfada Kaydet) / "Değişiklikleriniz kaydedildi." (taslak sayfa) / "Ana sayfanız artık yayında." (veya dil kapsamlı varyantı). Dil seçiliyken yayınlarken "Kaydedilen tüm değişiklikler yayınlansın mı?" diyaloğu çıkarsa bu ayrı onaydır: sayfadaki tüm kayıtlı değişiklikler listelenmeden "Hepsini yayınla"ya basma. Hata toast'ında homepage-builder.md "Aksiyonlar" altındaki eşlemeye göre düzelt; validasyon hatasında ilgili bloğu (features uzunluk sınırları / package-comparison kaynak seçimi) aç ve düzelt → yeniden **özet+onay** (değer değiştiyse).
 - Çoklu dilde ve kullanıcı "tüm dillerde" dediyse: her dil için dil seçicide geç → "Senkronize et..." → varsayılan kaynağı seç (yapıyı alır, çevirileri korur) → yeni bloğun metinlerini o dilde düzenle → o dil için yayın. Her dil ayrı özet/onay (veya kullanıcı toplu onay verdiyse tek).
 
 ## 9. Doğrula
-1. Admin: `/design/homepage` yenile → blok doğru konumda, ayarları kalıcı; rozet beklenen durumda; "Kaydedilmemiş Değişiklikler" yok.
-2. Vitrin (yayınlandıysa): "Mağazayı Önizle / Preview Store" ya da `{STOREFRONT_URL}` → yeni bölüm beklenen konumda başlığı/görseli/butonuyla görünmeli (carousel ilk bloksa sayfanın en üstünde manşet olarak, öne çıkan ürünler ilk ürün bloğuysa sekmeli bölüm). Mobil genişlikte de (`browser_resize` 375px) kontrol et (mobil görsel, sütun düşüşü).
+1. Admin: `/design/homepage` yenile → blok doğru konumda, ayarları kalıcı; rozet beklenen durumda (Kaydet sonrası "Yayınlanmamış değişiklikler", Yayınla sonrası "Yayında"); "Kaydedilmemiş Değişiklikler" yok. Yayınladıysan "Sürüm geçmişi"nde yeni sürüm görünür.
+2. Vitrin (yalnız yayınlandıysa; yalnız Kaydet yaptıysan vitrin değişmez, "Müşteri gözüyle önizle" ile kontrol et): "Mağazayı Önizle / Preview Store" ya da `{STOREFRONT_URL}` → yeni bölüm beklenen konumda başlığı/görseli/butonuyla görünmeli (carousel ilk bloksa sayfanın en üstünde manşet olarak, öne çıkan ürünler ilk ürün bloğuysa sekmeli bölüm). Mobil genişlikte de (`browser_resize` 375px) kontrol et (mobil görsel, sütun düşüşü).
 3. Görünmüyorsa sırayla: blok `isVisible`? sayfa gerçekten Yayında mı? doğru dil mi (`?lang`/store view prefix)? ürün/kategori kaynağı boş mu? ~5 dk yansıma süresi doldu mu? Sonucu kullanıcıya raporla.
 4. Rapor: eklenen blok, konum, yüklenen medya URL'leri, storefront linki, bekleyen işler (ör. "öne çıkan ürün yok — işaretlemek ister misiniz?"). Haritada fark gördüysen `domain/CHANGELOG.md`.
 
@@ -109,4 +111,5 @@ Kullanıcı "taslak olarak kaydet" isterse ama sayfa Yayında ise: mümkün olma
 - **"X bölümünü kaldır/gizle":** Adım 2 → hedef kartı içerik metniyle bul → Adım 5 → Adım 7-9 (silme ayrı onay).
 - **"Sıralamayı değiştir":** Adım 5 (yukarı/aşağı) → özet "önce/sonra sırası" → 8-9.
 - **"Mevcut bannerın görselini/linkini değiştir":** kartı bul → ayarlar → alanı değiştir → 7-9.
+- **"Yanlış yayınladım / eski haline döndür":** "Sürüm geçmişi" → hedef sürümde "Geri yükle" → onay diyaloğu (taslak olur, canlı değişmez) → özet+onay → "Yayınla". Yalnız son 5 yayın geri yüklenebilir.
 - **"Ana sayfayı baştan tasarla / şablon uygula":** "Şablonlar ve Bölümler" sekmesi → şablon → "Değiştir" dialogu **tüm blokları siler**; önce mevcut blokları özette listele, ayrıca onay al.

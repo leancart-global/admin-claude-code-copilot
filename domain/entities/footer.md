@@ -37,7 +37,7 @@ Footer yapılandırması (name, preset?, isDefault, isActive, status draft|publi
 ### Alt nesneler
 | Yol | Varsayılan | Kural | Vitrinde |
 |---|---|---|---|
-| `logo.*` | açık, 120×40 | genişlik 50–200, yükseklik 20–80 | Logo görseli **her zaman marka (branding) logosudur**. Marka logosu yoksa footer'da logo görünmez. |
+| `logo.*` | açık, 120×40 | genişlik 50–200, yükseklik 20–80 | Logo görseli marka (branding) logosudur; marka logosu yoksa footer'da logo görünmez. Footer zemin rengi **koyuysa** ve `logo.darkModeUrl` ("Koyu zeminler için logo") seçilmişse vitrin ana logo yerine onu gösterir. Footer ekranında logo satırının switch'i (`logo.isEnabled`) logoyu açar/kapar. |
 | `etbis.imageUrl` / `linkUrl` | — | mutlak `https://` URL → aksi halde `FOOTER_ETBIS_IMAGE_URL_INVALID` / `FOOTER_ETBIS_LINK_URL_INVALID` | Açık ve görsel doluysa logonun altında görünür; link varsa yeni sekmede açılır. Alt metin boşsa varsayılan "ETBİS" metni. |
 | `sections[].columnSpan` | admin yeni sütunda 1 | UI 1–3 | |
 | `sections[].links[].url` | "" | serbest metin | Güvensiz bağlantılar (`javascript:` vb.) gösterilmez; aynı mağazaya ait tam URL göreli linke çevrilir; iç linke dil öneki eklenir. |
@@ -60,6 +60,7 @@ Footer yapılandırması (name, preset?, isDefault, isActive, status draft|publi
 
 ## Kimlik, kardinalite, durum
 - Tenant başına **birden çok** footer kaydı olabilir (her preset seçimi yeni kayıt).
+- Preset'lerin hazır sütun bağlantıları yalnız vitrinin gerçekten sunduğu adreslere (`/products`, `/products?sort=newest`, `/customer-service`, `/privacy-policy`, `/terms-and-conditions` gibi) gider; giriş gerektiren sayfalara bağlanmaz. Bağlantılar sonradan ekrandan değiştirilebilir.
 - Vitrinde kullanılan: önce varsayılan + aktif + yayında olan, yoksa ilk aktif + yayında kayıt. Store view'a özel kayıt yoksa bu kayda düşer.
 - Yayınlama aynı kapsamdaki diğer yayınlanmış kaydı taslağa çeker, hedefi yayında + aktif yapar.
 - **Taslak aşaması yok**: oluşturulan kayıt yayında başlar ve her otomatik kayıt canlı kaydı günceller. Ayrıntı: layout-settings.md Tuzak 1.
@@ -95,7 +96,8 @@ Admin işlemleri: okuma `content:read`; oluşturma / güncelleme / yayınlama / 
   mağazada karşılığı olmayanları düzenleyin veya kaldırın.
 
 ## Vitrin davranışı
-- Yansıma süresi: footer değişikliği vitrinde **en geç ~30 dk** içinde görünür (CDN varsa daha uzun). Mağaza iletişim bilgisi değişikliği ~5 dk içinde.
+- Yansıma süresi: footer değişikliği vitrinde **en geç ~3 dk** içinde görünür. Mağaza iletişim bilgisi değişikliği ~5 dk içinde.
+- Ödeme yöntemi rozetlerinden görünür olanlar footer'da gösterilir; iyzico etkin mağazalarda iyzico'nun resmî logo bandı da eklenir (merchant kendi iyzico girişini eklemediyse). Footer'ın ve ödeme sayfasının altında "Powered by Leancart {yıl}" kredisi her zaman görünür, ayarı yoktur.
 - Header **veya** footer yayında değilse tüm sayfalar "Coming Soon".
 - Linkler **URL olarak** saklanır; bağlantı seçici `/pages/<slug>`, `/products/<kategori-slug>`, `/product/<slug>`, `/blog/<slug>` üretir.
   Hedef silinir veya slug değişirse link güncellenmez.
@@ -126,7 +128,7 @@ Admin işlemleri: okuma `content:read`; oluşturma / güncelleme / yayınlama / 
    linklerini footer'a eklemek yerine navigasyona ekle ya da sütuna kategori olmayan en az bir link koy.
 5. Linkler slug bazlıdır; sayfa/kategori slug'ı değişir veya silinirse footer linkini güncelle — işlem sonrası footer linklerini kontrol et.
 6. Adres/telefon/e-posta footer'da değil Ayarlar > Genel'de değişir; footer'da yalnız "İletişim Bilgileri" anahtarı var.
-7. Logo footer'dan değişmez (branding). Telif metnindeki `{storeName}` marka adıyla dolar.
+7. Ana logo footer'dan değişmez (branding); footer'dan yalnız koyu zemin logosu seçilir ve logo gösterimi açılıp kapatılır. Telif metnindeki `{storeName}` marka adıyla dolar.
 8. Çerez ayarları linki varsayılan **açık** ve en sonda; KVKK/gizlilik linkleri otomatik gelmez, yasal sheet'ten eklenmeli.
-9. Doğrulama: `GET /layout/footer/public/active` (auth'suz) kaydı hemen gösterir; vitrin 30 dk'ya kadar eski footer'ı gösterebilir.
+9. Doğrulama: `GET /layout/footer/public/active` (auth'suz) kaydı hemen gösterir; vitrin 3 dk'ya kadar eski footer'ı gösterebilir.
 10. Silme ve versiyon geri yükleme admin ekranında yok; gerekiyorsa API kullanımı CLAUDE.md kural 3'e aykırı → kullanıcıya bildir.

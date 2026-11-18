@@ -67,7 +67,7 @@ döngüsü, değer segmenti, sadakat puanı, e-posta doğrulama durumu, hesap du
 | Adres Satırı 2 | hayır | |
 | Ülke | evet | Detay ekranında yalnız **Türkiye** seçilebilir |
 | İl | evet | listeden (arama kutulu) |
-| İlçe | TR'de evet | il seçilmeden açılmaz; listeden |
+| İlçe | TR'de evet (ülke ilçe istiyorsa ve kargo ilçe listesi sunuyorsa) | il seçilmeden açılmaz; listeden. Kargo hesabı yoksa ve il için liste boşsa serbest metin, zorunlu değil. Kargo hesabı varken liste gelmezse ilçe seçilemez ve adres kaydedilemez |
 | Posta Kodu | evet | ülkeye göre format |
 | Telefon | doğrulanmadı | |
 

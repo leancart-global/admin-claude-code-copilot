@@ -11,7 +11,7 @@ listesinde bir kayıttır.
 
 | Alan | Not |
 |---|---|
-| Tip (`type`) | Blok türü. **UI'dan 17 tip eklenebilir** (aşağıda) |
+| Tip (`type`) | Blok türü. **UI'dan 17 tip eklenebilir** (aşağıda) + plana bağlı **hikâye anlatımı** bloğu |
 | İçerik (`content`) | Tipe göre değişir (bu dosyanın ana konusu) |
 | Stil ayarları (`settings`) | Ortak "Stil Ayarları / Style Settings": iç/dış boşluk, arka plan rengi, metin rengi, köşe yuvarlama, maksimum genişlik, özel CSS sınıfı. Carousel ayrıca yüksekliği burada tutar (`settings.height`) |
 | Sıra (`order`) | Her ekle/taşı/sil sonrası 0..n-1 olarak yeniden numaralanır. Vitrinde bloklar bu sırayla görünür |
@@ -30,6 +30,8 @@ Başlık "Stil Ayarları / Style Settings".
 | Köşe Yuvarlama / Border Radius | `borderRadius` | Input (`#borderRadius`) | örn. 8px veya 0.5rem | |
 | Maksimum Genişlik / Max Width | `maxWidth` | Input (`#maxWidth`) | örn. 800px veya 100% | |
 | Özel CSS Sınıfı / Custom CSS Class | `className` | Input (`#className`) | örn. ozel-sinif-adi | Tema yardımcı sınıfları da yazılabilir |
+
+Vitrinde bu ayarlar **tüm bloklarda** uygulanır (sütunlar, bülten, slayt gösterisi ve paket karşılaştırma dahil): iç/dış boşluk, arka plan, köşe yuvarlama, maksimum genişlik (blok ortalanır) ve özel sınıf. Maksimum genişlik ve yatay iç boşluk içeriğin kendi kapsayıcısını daraltır; sayfa kenar boşluğu sıfır yatay boşlukta da korunur. CTA ve bülten bloklarında bloğun kendi arka plan rengi alanı Stil Ayarları'ndaki renge göre önceliklidir; Hero'da Stil Ayarları kazanır. Editör önizlemesi de arka plan rengini ve ortalamayı gösterir.
 
 ### Ortak kontroller (locator için)
 
@@ -87,6 +89,7 @@ otomatik **açılmaz** (bloğa çift tık ya da dişli ikonu gerekir).
 | | `form` | Form / Form | Ziyaretçilerin doldurabileceği gömülü bir form | Yalnız sayfa ve blog bağlamında |
 | | `cookie-table` | Çerez Tablosu / Cookie Table | Çerez tablosu — platformun çerez listesinden… | ayarsız |
 | | `carousel` | Slayt Gösterisi / Carousel | Görsel slayt gösterisi | |
+| | `storytelling` | Hikaye Anlatımı / Storytelling | Görseller ve hareketle sahnelerle anlatılan, kaydırmaya duyarlı bir hikaye | **Plana bağlı** (planda yoksa menüde görünmez); yalnız sayfa bağlamı, yalnız üst seviye; ayrıntı [../screens/design/storytelling-block.md](../screens/design/storytelling-block.md) |
 | | `features` | Özellikler / Bölümler / Features / Sections | İstatistik şeridi, logo şeridi, özellik kartları veya güven rozeti listesi | |
 | E-Ticaret / Commerce | `products` | Ürünler / Products | Ürün izgarasi veya karuzeli | |
 | | `categories` | Kategoriler / Categories | Kategori görüntüleme | |
@@ -112,12 +115,13 @@ Galeri, gömülü içerik (embed), müşteri yorumları, akordeon ve ayırıcı 
 | "istatistik", "rakamlarla biz", "logo şeridi", "güven rozetleri", "neden biz kartları", "kargo/iade vaatleri" | `features` (layout seç) |
 | "metin/paragraf", "açıklama yazısı" | `text` |
 | "tek görsel" | `image` |
+| "kaydırdıkça ilerleyen hikâye / sahneli anlatım / marka hikâyesi / 3D ürün tanıtımı" | `storytelling` (planda varsa; başlangıç şablonu seç) |
 | "YouTube videosu" | `video` |
 | "yan yana metin ve görsel" | `columns` (veya hazır bölüm "Metin + Görsel Bolunmus") |
 | "iletişim formu" | `form` (önce Content → Forms'ta yayınlanmış form gerekir) |
 | "abonelik paketleri karşılaştırma" | `package-comparison` (yalnız sayfa, ana sayfada da `page` bağlamı → eklenebilir) |
 
-> Ana sayfa blok düzenleyicisi sayfa bağlamında açılır → tüm 17 blok eklenebilir.
+> Ana sayfa blok düzenleyicisi sayfa bağlamında açılır → tüm 17 blok eklenebilir; planında hikâye anlatımı özelliği varsa `storytelling` de eklenir.
 
 ---
 
@@ -131,7 +135,7 @@ Varsayılan: metin "Metninizi buraya girin...", hizalama `left`.
 | Metin Hizalama / Text Alignment | `alignment` | Select: Sol/Left `left`, Orta/Center `center`, Sağ/Right `right`, İki Yana Yasla/Justify `justify` | left | |
 | Stil Ayarları | settings | ortak | | |
 
-Vitrinde ortalanmış, okunabilir genişlikte metin bölümü olarak görünür; HTML güvenli hâle getirilerek gösterilir. Veri bağımlılığı yok.
+Vitrinde ortalanmış, okunabilir genişlikte metin bölümü olarak görünür; HTML güvenli hâle getirilerek gösterilir. Açılıp kapanan soru listesi için HTML'e `<details><summary>Soru</summary>cevap</details>` yazılabilir; vitrinde katlanır olarak çıkar (`open` gibi ek öznitelikler atılır, başlangıçta hep kapalıdır). Veri bağımlılığı yok.
 
 ## 2. `image` — Görsel / Image
 
@@ -180,7 +184,7 @@ doğrulanmadı). Kullanıcı açıkça istemedikçe tercih etme.
 
 ## 5. `button` — Buton / Button
 
-Varsayılan: metin "Tikla", link `#`, varyant `primary`, boyut `md`, hizalama `left`, renkler boş, köşe `md`, tam genişlik kapalı.
+Varsayılan: metin "Tikla", link `/products`, varyant `primary`, boyut `md`, hizalama `left`, renkler boş, köşe `md`, tam genişlik kapalı.
 
 | Bölüm | Label (tr / en) | key | Kontrol | Seçenekler |
 |---|---|---|---|---|
@@ -194,6 +198,14 @@ Varsayılan: metin "Tikla", link `#`, varyant `primary`, boyut `md`, hizalama `l
 | | Yazı Rengi / Text Color | `textColor` | color+input | |
 | | Köşe Yuvarlaklığı / Border Radius | `borderRadius` | Select | Yok `none`, Küçük `sm`, Orta `md`, Büyük `lg`, Tam (Hap) `full` |
 | | Tam Genişlik / Full Width | `fullWidth` | Switch | |
+| Simge / Icon | Simge / Icon | `icon` | Select (`#btn-icon`) | "Simge yok / No icon" (varsayılan) veya Instagram, Facebook, YouTube, Pinterest, TikTok, X, LinkedIn, WhatsApp, Telegram, Telefon, E-posta, Web sitesi, Mağaza, Konum |
+| | Ya da kendi logonuzu yükleyin / Or upload your own logo | `iconImage` | medya seçici | Yüklenen logo seçilen simgenin **yerine** geçer |
+| | Simge konumu / Icon position | `iconPosition` | Select (`#btn-iconPosition`) | Yazının solunda / sağında |
+| | Simge boyutu (px) / Icon size | `iconSize` | number Input | boş = "Otomatik" (buton boyutuna uyar) veya 8–64 arası tam sayı |
+| | Simge yerleşimi / Icon placement | `iconLayout` | Select | Yazının yanında (`inline`) / Düğmenin kenarında (`edge`) |
+| | Simge rengi / Icon colour | `iconColor` | Select | Yazıyla aynı / Marka rengi |
+
+Simge yalnız süstür (ekran okuyucuya okunmaz); simge seçilmeyen buton eskisi gibi görünür. Konum/boyut/yerleşim/renk alanları yalnız simge ya da logo seçilince anlamlıdır (alanların ne zaman göründüğü doğrulanmadı).
 
 ## 6. `columns` — Sütunlar / Columns
 
@@ -210,7 +222,7 @@ Varsayılan: düzen `50-50`, iki boş sütun.
 
 Boş renk alanlarında marka renkleri kullanılır.
 Varsayılan: başlık "Hos Geldiniz", alt başlık "Alt başlığınızı buraya yazın", görsel ve arka plan rengi boş, buton
-"Daha Fazla" → `#`, hizalama `center`, kaplama opaklığı 50, yükseklik `medium`, metin rengi boş.
+"Daha Fazla" → `/products`, hizalama `center`, kaplama opaklığı 50, yükseklik `medium`, metin rengi boş.
 
 | Bölüm | Label (tr / en) | key | Kontrol | Varsayılan (editör gösterimi) | Not |
 |---|---|---|---|---|---|
@@ -236,7 +248,7 @@ Veri bağımlılığı: arka plan görseli (medya), link hedefleri (ürün/kateg
 
 ## 8. `banner` — Banner
 
-Varsayılan: başlık "Özel Teklif", alt başlık "Sınırli süre", görsel boş, buton "Alışverişe Başla" → `#`, arka plan rengi boş.
+Varsayılan: başlık "Özel Teklif", alt başlık "Sınırli süre", görsel boş, buton "Alışverişe Başla" → `/products`, arka plan rengi boş.
 
 | Bölüm | Label (tr / en) | key | Kontrol | Varsayılan | Not |
 |---|---|---|---|---|---|
@@ -256,7 +268,7 @@ Vitrinde arka plan rengi boşsa marka ana rengi kullanılır; görsel arka plan,
 
 ## 9. `cta` — Harekete Geçirici / Call to Action
 
-Varsayılan: başlık "Başlamaya hazır misiniz?", açıklama "Binlerce mutlu müşteriye katilin", buton "Hemen Başla" → `#`, arka plan rengi boş.
+Varsayılan: başlık "Başlamaya hazır misiniz?", açıklama "Binlerce mutlu müşteriye katilin", buton "Hemen Başla" → `/contact`, arka plan rengi boş.
 
 | Bölüm | Label (tr / en) | key | Kontrol | Not |
 |---|---|---|---|---|
@@ -298,7 +310,7 @@ Vitrinde geri sayım sayacı. Geçmiş tarih → sıfırda kalır (doğrulanmad�
 
 ## 12. `carousel` — Slayt Gösterisi / Carousel (slider)
 
-Varsayılan: 3 slayt (başlık "Slayt N", görsel boş, link `#`), otomatik oynatma, göstergeler ve oklar açık.
+Varsayılan: 3 slayt (başlık "Slayt N", görsel boş, link `/products`), otomatik oynatma, göstergeler ve oklar açık.
 
 Slayt başına (kart "Slayt {n} / Slide {n}", sağda çöp kutusu `aria-label` "Slaytı kaldır / Remove slide"):
 

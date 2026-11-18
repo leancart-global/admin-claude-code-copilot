@@ -82,7 +82,7 @@
 | Bölüm | Label (tr / en) | Kontrol tipi | Zorunlu | Validasyon/varsayılan | Locator ipucu | Not |
 |---|---|---|---|---|---|---|
 | Kimlik diyaloğu | App ID / App ID | Input | evet | — | `#appId` | **Gizli alan — kullanıcı girer** |
-| Kimlik diyaloğu | App Secret / App Secret | Input (şifre) | evet | ikisi boşsa toast "Please enter both App ID and App Secret" | `#appSecret` | **Gizli alan — kullanıcı girer** |
+| Kimlik diyaloğu | App Secret / App Secret | Input (şifre) | evet | ikisi boşsa toast "App ID ve App Secret değerlerinin ikisini de girin." | `#appSecret` | **Gizli alan — kullanıcı girer** |
 | Reklam Hesabı | (Select) "Bir reklam hesabı seçin" | shadcn Select | evet (tam bağlantı için) | — | SelectTrigger placeholder metni | **Seçim anında kaydedilir**, ayrı Kaydet yok |
 
 ### Pixel
@@ -97,11 +97,11 @@
 ### Ayarlar
 | Buton | Ne olur | Toast |
 |---|---|---|
-| Kimlik Bilgilerini Ayarla → (kullanıcı doldurur) → Kimlik Bilgilerini Kaydet | Meta uygulama kimlik bilgileri mağazaya kaydedilir; alanlar temizlenir | "Credentials saved successfully" / hata metni |
-| **Meta Hesabını Bağla** | Tarayıcı Meta'nın giriş/izin sayfasına yönlenir; kullanıcı onaylayınca ayarlar ekranına geri döner | Dönüşte durum yeniden yüklenir; hata halinde "OAuth failed: …" |
-| Reklam hesabı Select'inden seçim | **Diyalogsuz, anında** reklam hesabı seçilir ve bağlantı "Bağlı" moda geçer | "Ad account selected" / "Failed to select ad account" |
-| Yenile | Meta'dan reklam hesabı listesini yeniden çeker (salt okunur) | hata: "Failed to load ad accounts" |
-| **Bağlantıyı Kes** → diyalog "Meta Hesabı Bağlantısı Kesilsin mi?" ("Bu işlem Meta hesap bağlantınızı kaldırır. Aktif kampanyalar Meta'da çalışmaya devam eder, ancak yeniden bağlanana kadar buradan yönetemezsiniz.") → "Bağlantıyı Kes" | Meta erişimi kaldırılır, mod "Bağlı değil"e (pixel kayıtlıysa "Manuel"e) düşer | "Meta account disconnected" |
+| Kimlik Bilgilerini Ayarla → (kullanıcı doldurur) → Kimlik Bilgilerini Kaydet | Meta uygulama kimlik bilgileri mağazaya kaydedilir; alanlar temizlenir | "Kimlik bilgileri kaydedildi." / hata "Kimlik bilgileri kaydedilemedi. Tekrar deneyin." |
+| **Meta Hesabını Bağla** | Tarayıcı Meta'nın giriş/izin sayfasına yönlenir; kullanıcı onaylayınca ayarlar ekranına geri döner | Dönüşte durum yeniden yüklenir; başarıda "Meta hesabı bağlandı."; hata halinde "Meta hesabınızı bağlayamadı: …"; başlatılamazsa "Meta bağlantısı başlatılamadı. Tekrar deneyin." |
+| Reklam hesabı Select'inden seçim | **Diyalogsuz, anında** reklam hesabı seçilir ve bağlantı "Bağlı" moda geçer | "Reklam hesabı seçildi." / "Reklam hesabı seçilemedi. Tekrar deneyin." |
+| Yenile | Meta'dan reklam hesabı listesini yeniden çeker (salt okunur) | hata: "Reklam hesaplarınız yüklenemedi. Tekrar deneyin." |
+| **Bağlantıyı Kes** → diyalog "Meta Hesabı Bağlantısı Kesilsin mi?" ("Bu işlem Meta hesap bağlantınızı kaldırır. Aktif kampanyalar Meta'da çalışmaya devam eder, ancak yeniden bağlanana kadar buradan yönetemezsiniz.") → "Bağlantıyı Kes" | Meta erişimi kaldırılır, mod "Bağlı değil"e (pixel kayıtlıysa "Manuel"e) düşer | "Meta hesabının bağlantısı kesildi." (hata: "Meta hesabınızın bağlantısı kesilemedi. Tekrar deneyin.") |
 
 ### Pixel
 | Buton | Ne olur | Toast |
